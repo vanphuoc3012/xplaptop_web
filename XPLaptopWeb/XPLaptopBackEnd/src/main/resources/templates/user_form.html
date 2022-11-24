@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Create New User - XPLaptop Control Panel</title>
+	
+	<script type="text/javascript" th:src="@{/webjars/jquery/dist/jquery.min.js}" ></script>
+	<link rel="stylesheet" type="text/css"
+		th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+	
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" ></script>
+
+	
+</head>
+<body>
+	<div class="container-fluid">
+		<div>
+			<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+				<a class="navbar-brand" th:href="@{/}">
+					<img alt="logo" th:src="@{/images/xplaptoplogosmall.png}">
+				</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar123">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="topNavbar123">
+					<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/users}">Users</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/categories}">Categories</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/products}">Products</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/customers}">Customers</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/shipping}">Shipping</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/orders}">Orders</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/reports}">Reports</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/articles}">Articles</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/menus}">Menus</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" th:href="@{/settings}">Settings</a>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+	
+	
+		<div>
+			<h2>User Management | Create New User</h2>
+		</div>
+		
+		
+			<div class="border border-secondary rounded border-2 ">
+				<form th:action="@{/users/save}" th:object="${user}" method="post">
+					<div class=" m-3 row text-center">
+						<label class="col-sm-2 col-form-label">Email: </label>
+						<div class="col-sm-8">
+							<input class="form-control" type="email" th:field="*{email}" placeholder="name@email.com" 
+							required="required" maxlength="128"/>
+						</div>
+					</div>
+					
+					<div class="m-3 row text-center">
+						<label class="col-sm-2 col-form-label">Password: </label>
+						<div class="col-sm-8">
+							<input class="form-control" type="password" th:field="*{password}" placeholder="password"
+							required="required" minlength="8" maxlength="64"/>
+						</div>
+					</div>
+					
+					<div class="m-3 row text-center">
+						<label class="col-sm-2 col-form-label">First Name: </label>
+						<div class="col-sm-8">
+							<input class="form-control" type="text" th:field="*{firstName}" placeholder="First Name"
+							required="required" minlength="2" maxlength="64"/>
+						</div>
+					</div>
+					
+					<div class="m-3 row text-center">
+						<label class="col-sm-2 col-form-label">Last Name: </label>
+						<div class="col-sm-8">
+							<input class="form-control" type="text" th:field="*{lastName}" placeholder="Last Name"
+							required="required" minlength="2" maxlength="64"/>
+						</div>
+					</div>
+					
+					
+					<div class="form-group m-3 row">
+						<label class="col-sm-2 col-form-label text-center">Roles: </label>
+						<div class="row checkbox-row col-sm-8">
+								<div th:each="role : ${listRoles}">
+									<input class="form-check-input" type="checkbox" th:field="*{roles}" th:value="${role.id}"/>
+									<label class="form-check-lable" th:text="${role.name}"></label>
+									- <small th:text="${role.description}"></small>
+								</div>
+						</div>
+					</div>
+					
+					<div class="form-group m-3 row">
+						<label class="col-sm-2 col-form-label text-center">Enabled: </label>
+						<div class="row checkbox-row col-sm-8">
+							<div>
+								<input class="form-check-input" type="checkbox" th:field="*{enabled}"/>
+								<label>- Check to enable user</label>	
+							</div>																			
+						</div>
+					</div>
+					
+					<div class="text-center mb-3">
+						<input type="submit" value="Save" class="btn btn-primary btn-sm"/>
+						<input type="button" value="Cancel" class="btn btn-secondary btn-sm" id="buttonCancel"/>
+					</div>
+				</form>
+			</div>
+			
+
+		
+		<div class="text-center">
+			<p>XPLaptop Control Panel - Copyright &copy; XPLaptop </p>
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#buttonCancel").on("click", function() {
+				window.location = "[[@{/users}]]";
+			});
+		});
+	</script>
+
+</body>
+	
+</html>
