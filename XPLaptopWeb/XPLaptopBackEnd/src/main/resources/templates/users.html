@@ -7,6 +7,12 @@
 	<title>User Management - XPLaptop Control Panel</title>
 	
 	<script type="text/javascript" th:src="@{/webjars/jquery/dist/jquery.min.js}" ></script>
+	
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/fontawesome.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/solid.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/color.css}" />
+	
+	
 	<link rel="stylesheet" type="text/css"
 		th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
 	
@@ -84,23 +90,52 @@
 						<td>Last Name</td>
 						<td>Roles</td>
 						<td>Enable</td>
-						<td>#</td>
+						<td>Edit / Delete</td>
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:each="user : ${listUsers}">
 						<td th:text="${user.id}"></td>
-						<td th:text="${user.photos}"></td>
+						<td><i class="fa-regular fa-circle-user fa-3x color-gray"></i></td>
 						<td th:text="${user.email}"></td>
 						<td th:text="${user.firstName}"></td>
 						<td th:text="${user.lastName}"></td>
 						<td th:text="${user.roles}"></td>
-						<td th:text="${user.enabled}"></td>
-						<td>Edit Remove</td>
+						<td class="text-center">
+							<a th:if="${user.enabled == true}" class="fa-solid fa-circle-check color-green" th:href="@{'/users/enable/'+${user.id}}"></a>
+							<a th:if="${user.enabled == false}" class="fa-solid fa-circle-check color-gray" th:href="@{'/users/enable/'+${user.id}}"></a>
+						</td>
+						<td class="text-center">
+							<a class="fa-solid fa-pen-to-square color-green fa-1x" th:href="@{'/users/edit/'+${user.id}}" title="Edit this user"></a>
+							<a class="fa-solid fa-delete-left color-gray fa-1x link-delete" th:href="@{'/users/delete/'+${user.id}}" 
+							style="margin-left: 5px" title="Delete this user" 
+							th:userId="${user.id}" th:email="${user.email}"></a>
+						</td>
 					</tr>
 				</tbody>
 				
 			</table>
+		</div>
+		
+		<div class="modal fade text-center" id="modalDelete">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					
+					<div class="modal-header">
+						<h4 class="modal-title" id="modalTitle">Warning</h4>
+						<button class="btn-close" type="button" data-bs-dismiss="modal"></button>
+					</div>
+					
+					<div class="modal-body">
+						<span id="modalBody"></span>
+					</div>
+					
+					<div class="modal-footer">
+						<a class="btn btn-primary" id="yesBtn" href="">Yes</a>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>	
+					</div>
+				</div>
+			</div>
 		</div>
 		
 		<div class="text-center">
@@ -109,6 +144,21 @@
 	</div>
 	
 	
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".link-delete").on("click", function(e) {
+			e.preventDefault();
+			
+			link = $(this);
+			userId = link.attr("userId");
+			email =  link.attr("email");
+			$("#yesBtn").attr("href", link.attr("href"));
+			$("#modalBody").text("Are you sure to delete this user, ID: "+userId+ ". Email: "+email);
+			$("#modalDelete").modal("show");
+			
+		});
+	})
 
+</script>
 </body>
 </html>
