@@ -96,7 +96,10 @@
 				<tbody>
 					<tr th:each="user : ${listUsers}">
 						<td th:text="${user.id}"></td>
-						<td><i class="fa-regular fa-circle-user fa-3x color-gray"></i></td>
+						<td>
+							<i th:if="${user.photos == null}" class="fa-regular fa-circle-user fa-3x color-gray"></i>
+							<img th:if="${user.photos != null}" th:src="@{${user.photoPath}}" style="height: 100px"/>
+							</td>
 						<td th:text="${user.email}"></td>
 						<td th:text="${user.firstName}"></td>
 						<td th:text="${user.lastName}"></td>
@@ -117,6 +120,54 @@
 			</table>
 		</div>
 		
+<!-- 		show user page -->
+		<div>
+			<div class="d-flex justify-content-center" th:if="${totalUser > 0}">
+				<span>Showing users # [[${startUser}]] to [[${endUser}]] of [[${totalUser}]]</span>
+			</div>
+			<div class="d-flex justify-content-center" th:if="${totalUser == 0}">	
+					<span>No users found</span>
+			</div>
+			
+			<div th:if="${totalPage > 0}">
+				<nav class="col" aria-label="Page navigation example">
+				  <ul class="pagination justify-content-center">
+				    <li class="page-item">
+				      <a class="page-link" th:href="@{'/users/page/'+${pageNumber-1}}" th:classappend="${pageNumber < 2 ? 'disabled' : ''}" aria-label="Previous">
+				        <span aria-hidden="true">&laquo;</span>
+				      </a>
+				    </li>
+				    <li class="page-item" th:if="${pageNumber - 5 > 1}">
+			    		<a class="page-link disabled" href="#" aria-label="Next">
+				        	<span aria-hidden="true">&hellip;</span>
+				      	</a>
+				    </li>
+				    <li class="page-item" th:classappend="${i == pageNumber ? 'active' : ''}"
+				    	th:each="i : ${#numbers.sequence(pageNumber - 5 > 1 ? pageNumber - 5 : 1, pageNumber + 5 < totalPage ? pageNumber + 5 : totalPage ,1)}">
+				    	<a class="page-link" th:href="@{'/users/page/'+${i}}" th:text="${i}"></a>
+				    </li>
+				    <li class="page-item" th:if="${pageNumber + 5 < totalPage}">
+			    		<a class="page-link disabled" href="#" aria-label="Next">
+				        	<span aria-hidden="true">&hellip;</span>
+				      	</a>
+				    </li>
+				    <li class="page-item">
+				      <a class="page-link" th:href="@{'/users/page/'+${pageNumber+1}}" th:classappend="${pageNumber > totalPage-1 ? 'disabled' : ''}" aria-label="Next">
+				        <span aria-hidden="true">&raquo;</span>
+				      </a>
+				    </li>
+				    <li class="page-item">
+				      <a class="page-link" th:href="@{'/users/page/'+${totalPage}}" aria-label="Next">
+				        <span aria-hidden="true">Last</span>
+				      </a>
+				    </li>
+				  </ul>
+				</nav>
+			</div>
+		</div>
+		
+		
+<!-- 		show confirm delete dialog -->
 		<div class="modal fade text-center" id="modalDelete">
 			<div class="modal-dialog">
 				<div class="modal-content">

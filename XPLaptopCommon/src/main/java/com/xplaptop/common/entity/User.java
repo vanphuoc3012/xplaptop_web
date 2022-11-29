@@ -13,6 +13,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import org.springframework.data.annotation.Transient;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -69,6 +71,15 @@ public class User {
 	public String toString() {
 		return "User [id=" + id + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName
 				+ ", photos=" + photos + ", enabled=" + enabled + ", roles=" + roles + "]";
+	}
+	
+	@Transient
+	public String photoPath() {
+		if(this.id == null || this.photos == null) {
+			return "/images/defaultuserimg.png";
+		} else {
+			return "/users-photos/"+id+"/"+photos;
+		}
 	}
 	
 	

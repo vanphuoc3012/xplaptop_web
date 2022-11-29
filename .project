@@ -3,6 +3,10 @@
 	<name>XPLaptopProject</name>
 	<comment></comment>
 	<projects>
+		<project>XPLaptopBackEnd</project>
+		<project>XPLaptopCommon</project>
+		<project>XPLaptopFrontEnd</project>
+		<project>XPLaptopWeb</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
