@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,11 +34,16 @@ public class UserService {
 		return (List<User>) userRepo.findAll();
 	}
 	
-	public Page<User> listByPage(Integer pageNumber) {
-		Pageable pageable = PageRequest.of(pageNumber - 1, USER_PER_PAGE);
+	public Page<User> listByPage(Integer pageNumber, Sort sort, String keyword) {
+		
+		Pageable pageable = PageRequest.of(pageNumber - 1, USER_PER_PAGE, sort);
 		Page<User> page = userRepo.findAll(pageable);
 		
-		return page;
+		if(keyword == null || keyword.isEmpty() ) {
+			return page;
+		}
+		
+		return userRepo.findAll(keyword, pageable);
 	}
 	
 	public List<Role> listAllRoles() {
@@ -54,6 +60,16 @@ public class UserService {
 			encodePassword(user);
 		}	
 		return userRepo.save(user);
+	}
+	
+	public User updateAccount(User userInform) {
+		User user = userRepo.getUserByEmail(userInform.getEmail());
+		if(userInform.getPassword() == null|| userInform.getPassword().isEmpty() ) {
+			userInform.setPassword(user.getPassword());
+		} else {
+			encodePassword(userInform);
+		}
+		return userRepo.save(userInform);
 	}
 	
 	public void encodePassword(User user) {
@@ -79,8 +95,15 @@ public class UserService {
 			return userRepo.findById(id).get();
 		} catch (NoSuchElementException e) {
 			throw new UserNotFoundException("Could not find user with ID: "+id);
-		}
-		
+		}	
+	}
+	
+	public User getUserByEmail(String email) throws UserNotFoundException {
+		try {
+			return userRepo.getUserByEmail(email);
+		} catch (NoSuchElementException e) {
+			throw new UserNotFoundException("Could not find user with email: "+email);
+		}	
 	}
 	
 	public void deleteUserById(Integer id) throws UserNotFoundException {

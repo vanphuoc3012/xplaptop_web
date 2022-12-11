@@ -1,0 +1,191 @@
+<div class="modal-header">
+	<h1 class="modal-title fs-5" id="exampleModalLabel">Product Details</h1>
+	<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+	<nav>
+	  <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+	    <button class="nav-link active" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview" type="button" role="tab">Overview</button>
+	    <button class="nav-link" id="nav-description-tab" data-bs-toggle="tab" data-bs-target="#nav-description" type="button" role="tab">Description</button>
+	    <button class="nav-link" id="nav-images-tab" data-bs-toggle="tab" data-bs-target="#nav-images" type="button" role="tab">Images</button>
+	    <button class="nav-link" id="nav-details-tab" data-bs-toggle="tab" data-bs-target="#nav-details" type="button" role="tab">Details</button>
+	    <button class="nav-link" id="nav-shipping-tab" data-bs-toggle="tab" data-bs-target="#nav-shipping" type="button" role="tab">Shipping</button>
+	  </div>
+	</nav>
+	<div class="tab-content" id="nav-tabContent">
+		<!-- Overview Tab -->
+		<div class="tab-pane fade show active" id="nav-overview" role="tabpanel" tabindex="0">
+		 		<!-- name field -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Product name: </label>
+				<div class="col-sm">
+					<input class="form-control" type="text" th:field="${product.name}" readonly/>
+				</div>
+			</div>
+			<!-- alias field -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Alias: </label>
+				<div class="col-sm">
+					<input class="form-control" type="text" th:field="${product.alias}" readonly/>
+				</div>
+			</div>
+			<!--brand select field  -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Brand: </label>
+				<div class="col-sm">
+					<input class="form-control" type="text" th:field="${product.brand.name}" readonly/>
+				</div>
+			</div>
+			<!-- category select field, send post request with brand_id to receive listCategory -->
+			<div class=" m-3 row" id="categorySelection">
+				<label class="col-sm-3 col-form-label">Category: </label>
+				<div class="col-sm">
+					<input class="form-control" type="text" th:field="${product.category.name}" readonly/>
+				</div>
+			</div>
+			
+			<!-- enable field -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Enable: </label>
+				<div class="col-sm">
+					<input class="form-check-input" type="checkbox" th:field="${product.enabled}" onclick="return false"/>
+					<label> - <small>Check/uncheck this to show/hide product on your shop.</small> </label>
+				</div>
+			</div>
+			
+			<!-- inStock field -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Ready in stock: </label>
+				<div class="col-sm">
+					<input class="form-check-input" type="checkbox" th:field="${product.inStock}" onclick="return false"/>
+					<label> - <small>Check this if product is ready in stock.</small> </label>
+				</div>
+			</div>
+			
+			<!-- cost field -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Cost: </label>
+				<div class="col-sm">
+					<input class="form-control" type="text" th:field="${product.cost}" readonly/>
+				</div>
+			</div>
+			
+			<!-- price field -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Price: </label>
+				<div class="col-sm">
+					<input class="form-control" type="text" th:field="${product.price}" readonly/>
+				</div>
+			</div>
+			
+			<!-- discountPercent field -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Discount (%): </label>
+				<div class="col-sm">
+					<input class="form-control" type="text" th:field="${product.discountPercent}" readonly/>
+				</div>
+			</div>
+			
+			<!-- last edit -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Last edit: </label>
+				<div class="col-sm">
+					<span th:text="${#temporals.format(product.updatedTime, 'dd-MM-yyyy HH:mm:ss')}"></span>
+				</div>
+			</div>				
+		</div>
+	  	
+	  	<!-- Description Tab -->
+		<div class="tab-pane fade" id="nav-description" role="tabpanel">
+			<p class="mt-3 fw-bold">Short Description:</p>	
+			<div class="border rounded m-1">
+				<span class="p-2" th:utext="${product.shortDescription}" id="shortDescription"></span>
+			</div>	  			
+			
+			<p class="mt-3 fw-bold">Full Description:</p>
+			<div class="border rounded m-1">
+				<span th:utext="${product.fullDescription}" id="fullDescription"></span>
+			</div>				  		
+		</div>
+		
+		<!-- upload images field -->
+		<div class="tab-pane fade mt-3 mb-3" id="nav-images" role="tabpanel">		
+			<div class="row">
+				<!-- main product image -->
+				<div class="row col-sm-3 justify-content-center ms-1">									
+					<img class="img-thumbnail" alt="Preview photo" th:src="@{${product.imagePath}}" style="width: 200px" id="previewMainImg" />
+					<p class="fw-bold text-center">Main image</p>			
+				</div>
+			
+				<!-- load existing product image -->
+				
+				<th:block th:each="productImage : ${product.productImages}">
+					<div class="row col-sm-3 justify-content-center ms-1 mt-2">									
+					<img class="img-thumbnail" alt="Preview photo" th:src="@{${productImage.extraImagePath}}" style="width: 200px" />
+					<p class="fw-bold text-center"><small>Extra image (optional)</small> </p>
+					</div>
+				</th:block>
+			</div>
+		</div>
+	
+		<!-- product detail field -->
+	  	<div class="tab-pane fade" id="nav-details" role="tabpanel">
+	  		<table class="table table-striped table-hover table-sm">
+	  			<thead>
+	  				<tr class="table-dark"> 
+	  					<td>Name</td>
+	  					<td>Value</td>
+	  				</tr>
+	  			</thead>
+	  			<tbody>
+		  			<tr th:each="pd : ${product.productDetails}">
+		  				<td><span th:text="${pd.name}"></span></td>
+		  				<td><span th:text="${pd.value}"></span></td>
+		  			</tr>
+	  			</tbody>
+	  		</table>
+	  		
+		</div>		
+
+		<!-- shipping field -->
+		<div class="tab-pane fade" id="nav-shipping" role="tabpanel">
+			<p>The following information is important to calculate shipping cost for the product</p>
+			<p>The dimensions (L x W x H) is for the shipping package - not the product's dimensions</p>
+			<!-- length -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Length: </label>
+				<div class="col-sm">
+					<input class="form-control" type="number" th:field="${product.length}" readonly/>
+				</div>
+			</div>
+			
+			<!-- width -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Width: </label>
+				<div class="col-sm">
+					<input class="form-control" type="number" th:field="${product.width}" readonly/>
+				</div>
+			</div>
+			
+			<!-- height -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Height: </label>
+				<div class="col-sm">
+					<input class="form-control" type="number" th:field="${product.height}" readonly/>
+				</div>
+			</div>
+			
+			<!-- weight -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Weight: </label>
+				<div class="col-sm">
+					<input class="form-control" type="number" th:field="${product.weight}" readonly/>
+				</div>
+			</div>
+		</div>	
+	</div>
+</div>
+
+<div class="modal-footer">
+	<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+</div>

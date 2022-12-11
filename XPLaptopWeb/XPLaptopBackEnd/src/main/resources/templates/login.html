@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head('Login - XPLaptop Control Panel')">
+</head>
+<body>
+	<div class="container-fluid text-center">
+		<div>
+			<img class="img-fluid" th:src="@{/images/xplaptoplogo500x500.png}" />
+		</div>
+		<h1>Login - XPLaptop Control Panel</h1>
+	
+		<form th:action="@{/login}" method="post" id="loginForm" style="max-width: 350px; margin: 0 auto;">
+			<div class="border border-3 rounded border-warning" >
+				<div th:if="${param.error}">
+					<p class="text-danger m-3" th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}"></p>
+				</div>
+				<div th:if="${param.logout}">
+					<p class="text-warning m-3">You have been logged out</p>
+				</div>
+				<p class="m-3">
+					<input class="form-control" type="text" required="required" placeholder="Email" name="email"/>
+				</p>
+				<p class="m-3">
+					<input class="form-control" type="password" required="required" placeholder="Password" name="password"/>
+				</p>
+				<input class="form-check-input" type="checkbox" name="remember-me" id="flexCheckDefault">
+				<label class="form-check-label" for="flexCheckDefault">
+				    Remember me
+				</label>
+				<p class="m-3">
+					<input class="btn btn-primary" type="submit" value="Login"/>
+				</p>				
+			</div>
+		</form>
+		
+		<div class="text-center">
+			<p>XPLaptop Control Panel - Copyright &copy; XPLaptop </p>
+		</div>
+	
+	</div>
+	
+</body>
+</html>

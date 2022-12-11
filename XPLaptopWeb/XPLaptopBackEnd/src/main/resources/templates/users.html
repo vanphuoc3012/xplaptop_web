@@ -1,95 +1,84 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-
-	<title>User Management - XPLaptop Control Panel</title>
-	
-	<script type="text/javascript" th:src="@{/webjars/jquery/dist/jquery.min.js}" ></script>
-	
-	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/fontawesome.css}" />
-	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/solid.css}" />
-	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/color.css}" />
-	
-	
-	<link rel="stylesheet" type="text/css"
-		th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
-	
-	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" ></script>
-
-	
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments :: head('Users - XPLaptop Control Panel')"></head>
 <body>
 	<div class="container-fluid">
-		<div>
-			<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
-				<a class="navbar-brand" th:href="@{/}">
-					<img alt="logo" th:src="@{/images/xplaptoplogosmall.png}">
-				</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar123">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="collapse navbar-collapse" id="topNavbar123">
-					<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/users}">Users</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/categories}">Categories</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/products}">Products</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/customers}">Customers</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/shipping}">Shipping</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/orders}">Orders</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/reports}">Reports</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/articles}">Articles</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/menus}">Menus</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" th:href="@{/settings}">Settings</a>
-						</li>
-					</ul>
-				</div>
-			</nav>
-		</div>
+		<nav th:replace="fragments :: navBar"></nav>
 	
 	
 		<div>
 			<h2>User Management</h2>
 		</div>
 		
-		<div th:if="${message != null}" th:text="${message}" class="alert alert-success text-center">
+		<div th:if="${message != null}" th:text="${message}" class="alert alert-success text-center"></div>
+		
+		<div class="m-3">
+			<a th:href="@{/users/new}"><i class="fa-solid fa-user-plus fa-2x"></i></a>
+			|
+			<a th:href="@{/users/export/csv}"><i class="fa-solid fa-file-csv fa-2x"></i></a>
+			|
+			<a th:href="@{/users/export/excel}"><i class="fa-sharp fa-solid fa-file-excel fa-2x"></i></a>
+			|
+			<a th:href="@{/users/export/pdf}"><i class="fa-solid fa-file-pdf fa-2x"></i></a>
 		</div>
 		
+		<!-- search user -->
 		<div>
-			<a th:href="@{/users/new}">Create new user</a>
+			<form class="row g-3 mb-3" th:action="@{/users/page/1}">
+				<input type="hidden" name="sortField" th:value="${sortField}">
+				<input type="hidden" name="sortDir" th:value="${sortDir}">
+				<div class="col-auto">
+					<label>Search keyword: </label>					
+				</div>
+				<div class="col-auto">					
+					<input type="text" class="form-control" required="required" name="keyword" th:value="${keyword == null ? '' : keyword}">
+				</div>
+				<div class="col-auto">
+					<input type="submit" value="Search" class="btn btn-primary">
+				</div>
+				<div class="col-auto">
+					<input type="button" value="Clear" class="btn btn-secondary" onclick="clearFilter()">
+				</div>
+			</form>
 		</div>
 		
-		<div>
-			<table class="table table-responsive table-striped table-hover table-bordered">
+		<!-- 		Less details table -->
+		<div class="less-details">
+				<div th:each="user : ${listUsers}" class="row mb-3">
+					<div class="col-4">
+						<i th:if="${user.photos == null}" class="fa-regular fa-circle-user fa-2x color-gray"></i>
+						<img th:if="${user.photos != null}" th:src="@{${user.photoPath}}" style="width: 100px"/>
+					</div>
+					<div class="col-8">
+						<p th:text="${user.getEmail}" class="text-break mb-1"></p>
+						<p th:text="${user.getFullName}" class="text-break mb-1"></p>
+						<p th:text="${user.getRoles}" class="text-break mb-1"></p>
+						<div class="row">
+							<a th:if="${user.enabled == true}" class="fa-solid fa-circle-check fa-1x color-green col" th:href="@{'/users/enable/'+${user.id}}"></a>
+							<a th:if="${user.enabled == false}" class="fa-solid fa-circle-check fa-1x color-gray col" th:href="@{'/users/enable/'+${user.id}}"></a>
+							<a class="fa-solid fa-pen-to-square color-green fa-1x col" th:href="@{'/users/edit/'+${user.id}}" title="Edit this user"></a>
+							<a class="fa-solid fa-delete-left color-gray fa-1x link-delete col" th:href="@{'/users/delete/'+${user.id}}" 
+							style="margin-left: 5px" title="Delete this user" 
+							th:userId="${user.id}" th:email="${user.email}"></a>
+						</div>
+					</div>
+					
+				</div>
+		</div>
+		
+		<!--	Full Table -->
+		<div class="full-details">
+			<table class="table table-responsive-xl table-striped table-hover table-bordered">
 				<thead class="table-dark">
 					<tr>
-						<td>User ID</td>
+						<td th:replace="fragments :: column_link('users', 'id', 'User ID')"></td>						
 						<td>Photos</td>
-						<td>Email</td>
-						<td>First Name</td>
-						<td>Last Name</td>
+						<td th:replace="fragments :: column_link('users', 'email', 'Email')"></td>
+						<td th:replace="fragments :: column_link('users', 'firstName', 'First Name')"></td>
+						<td th:replace="fragments :: column_link('users', 'lastName', 'Last Name')"></td>						
 						<td>Roles</td>
-						<td>Enable</td>
+						<td th:replace="fragments :: column_link('users', 'enabled', 'Enabled')"></td>						
 						<td>Edit / Delete</td>
 					</tr>
 				</thead>
@@ -99,20 +88,18 @@
 						<td>
 							<i th:if="${user.photos == null}" class="fa-regular fa-circle-user fa-3x color-gray"></i>
 							<img th:if="${user.photos != null}" th:src="@{${user.photoPath}}" style="height: 100px"/>
-							</td>
+						</td>
 						<td th:text="${user.email}"></td>
 						<td th:text="${user.firstName}"></td>
 						<td th:text="${user.lastName}"></td>
 						<td th:text="${user.roles}"></td>
+						<td th:replace="fragments :: enableStatusColumn(${user}, 'users')"></td>
 						<td class="text-center">
-							<a th:if="${user.enabled == true}" class="fa-solid fa-circle-check color-green" th:href="@{'/users/enable/'+${user.id}}"></a>
-							<a th:if="${user.enabled == false}" class="fa-solid fa-circle-check color-gray" th:href="@{'/users/enable/'+${user.id}}"></a>
-						</td>
-						<td class="text-center">
-							<a class="fa-solid fa-pen-to-square color-green fa-1x" th:href="@{'/users/edit/'+${user.id}}" title="Edit this user"></a>
+							<a th:replace="fragments :: editButton(${user}, 'users')"></a>
 							<a class="fa-solid fa-delete-left color-gray fa-1x link-delete" th:href="@{'/users/delete/'+${user.id}}" 
 							style="margin-left: 5px" title="Delete this user" 
 							th:userId="${user.id}" th:email="${user.email}"></a>
+<!-- 							th:userId and th:email are used as attribute to show confirm dialog -->
 						</td>
 					</tr>
 				</tbody>
@@ -120,54 +107,11 @@
 			</table>
 		</div>
 		
-<!-- 		show user page -->
-		<div>
-			<div class="d-flex justify-content-center" th:if="${totalUser > 0}">
-				<span>Showing users # [[${startUser}]] to [[${endUser}]] of [[${totalUser}]]</span>
-			</div>
-			<div class="d-flex justify-content-center" th:if="${totalUser == 0}">	
-					<span>No users found</span>
-			</div>
-			
-			<div th:if="${totalPage > 0}">
-				<nav class="col" aria-label="Page navigation example">
-				  <ul class="pagination justify-content-center">
-				    <li class="page-item">
-				      <a class="page-link" th:href="@{'/users/page/'+${pageNumber-1}}" th:classappend="${pageNumber < 2 ? 'disabled' : ''}" aria-label="Previous">
-				        <span aria-hidden="true">&laquo;</span>
-				      </a>
-				    </li>
-				    <li class="page-item" th:if="${pageNumber - 5 > 1}">
-			    		<a class="page-link disabled" href="#" aria-label="Next">
-				        	<span aria-hidden="true">&hellip;</span>
-				      	</a>
-				    </li>
-				    <li class="page-item" th:classappend="${i == pageNumber ? 'active' : ''}"
-				    	th:each="i : ${#numbers.sequence(pageNumber - 5 > 1 ? pageNumber - 5 : 1, pageNumber + 5 < totalPage ? pageNumber + 5 : totalPage ,1)}">
-				    	<a class="page-link" th:href="@{'/users/page/'+${i}}" th:text="${i}"></a>
-				    </li>
-				    <li class="page-item" th:if="${pageNumber + 5 < totalPage}">
-			    		<a class="page-link disabled" href="#" aria-label="Next">
-				        	<span aria-hidden="true">&hellip;</span>
-				      	</a>
-				    </li>
-				    <li class="page-item">
-				      <a class="page-link" th:href="@{'/users/page/'+${pageNumber+1}}" th:classappend="${pageNumber > totalPage-1 ? 'disabled' : ''}" aria-label="Next">
-				        <span aria-hidden="true">&raquo;</span>
-				      </a>
-				    </li>
-				    <li class="page-item">
-				      <a class="page-link" th:href="@{'/users/page/'+${totalPage}}" aria-label="Next">
-				        <span aria-hidden="true">Last</span>
-				      </a>
-				    </li>
-				  </ul>
-				</nav>
-			</div>
-		</div>
+			<!-- 		show page navigation -->
+		<div th:replace="fragments :: pageNavigation('users')"></div>
 		
 		
-<!-- 		show confirm delete dialog -->
+		<!-- 		show confirm delete dialog -->
 		<div class="modal fade text-center" id="modalDelete">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -189,9 +133,8 @@
 			</div>
 		</div>
 		
-		<div class="text-center">
-			<p>XPLaptop Control Panel - Copyright &copy; XPLaptop </p>
-		</div>
+<!-- 		footer -->
+		<div th:replace="fragments :: footer"></div>
 	</div>
 	
 	
@@ -209,6 +152,10 @@
 			
 		});
 	})
+	
+	function clearFilter() {
+		window.location = "[[@{/users}]]";
+	}
 
 </script>
 </body>

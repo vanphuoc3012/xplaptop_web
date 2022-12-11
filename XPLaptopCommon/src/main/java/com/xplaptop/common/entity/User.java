@@ -82,5 +82,10 @@ public class User {
 		}
 	}
 	
+	@Transient
+	public String getFullName() {
+		return this.getFirstName()+" "+this.getLastName();
+	}
+	
 	
 }

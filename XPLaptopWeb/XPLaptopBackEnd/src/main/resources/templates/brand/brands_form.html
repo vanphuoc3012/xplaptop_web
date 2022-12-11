@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head('Brand - XPLaptop Control Panel')"></head>
+<body>
+	<div class="container-fluid">
+		<nav th:replace="fragments :: navBar"></nav>
+		
+		<div class="row justify-content-center">
+			<div class="mb-5">
+				<h2>Brand Management | [[${title}]]</h2>
+			</div>
+		
+			<div class="border border-secondary rounded border-2 mb-3" style="width: 700px">
+				<form th:action="@{'/brands/save?path='+${path}}" th:object="${brand}" method="post"
+					enctype="multipart/form-data" id="brandForm">
+					<input type="hidden" th:field="*{id}">
+					<input type="hidden" th:field="*{logo}">
+					
+					<div class=" m-3 row text-center">
+						<label class="col-sm-3 col-form-label">Brand name: </label>
+						<div class="col-sm">
+							<input class="form-control" type="text" th:field="*{name}" placeholder="brand name" id="brandName"
+							required="required" maxlength="128"/>
+						</div>
+					</div>
+									
+					
+<!-- 					upload photo -->
+					<div class="form-group m-3 row">
+						<label class="col-sm-3 col-form-label text-center">Image: </label>
+						<div class="row col-sm">
+							<div>
+								<input class="form-control mb-3" type="file" accept="image/png, image/jpeg" id="fileImg" name="brandLogo"/>
+							</div>	
+							<div class="row justify-content-center">
+								<img class="img-thumbnail" alt="Preview photo" th:src="@{${brand.imagePath}}" style="width: 150px" id="previewImg" />
+							</div>																							
+						</div>
+					</div>
+					
+<!-- 					choose brand categories -->
+					<div class="m-3 row text-center" >
+						<label class="col-sm-3 col-form-label">Select one or more categories: </label>
+
+						<div class="col-sm text-start overflow-auto border" style="height : 200px">
+							<div th:each="c : ${categoriesInForm}">
+								<input class="form-check-input me-2 checkedCategories" type="checkbox" 
+								th:field="*{categories}" th:value="${c.id}" th:data-brand-name="${c.name}"/>
+								<label class="form-check-lable" th:text="${c.name}"></label>
+							</div>	
+						</div>
+					</div>
+					
+<!-- 					selected categories -->
+					<div class=" m-3 row">
+						<label class="col-sm-3 col-form-label text-center">Selected Categories: </label>
+						<div class="col-sm" id="selectedCategories">
+						<th:block th:each="c : ${brand.categories}">
+							<span class="me-1 p-1 badge bg-secondary text-light border border-dark rounded" th:text="${c.name}"></span>
+						</th:block>
+							
+						</div>
+					</div>
+								
+<!-- 					save button and cancel button	 -->
+					<div class="text-center mb-3">
+						<input type="button" value="Save" class="btn btn-primary btn-sm" id="btnSubmit"/>
+						<input type="button" value="Cancel" class="btn btn-secondary btn-sm" id="buttonCancel"/>
+					</div>
+				</form>
+			</div>
+		</div>
+		
+		<div th:replace="fragments :: footer"></div>
+	</div>
+	
+	<!-- dialog when the brand name has already existed in database-->
+		<div class="modal fade text-center" id="modalDialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					
+					<div class="modal-header">
+						<h4 class="modal-title" id="modalTitle">Warning</h4>
+						<button class="btn-close" type="button" data-bs-dismiss="modal"></button>
+					</div>
+					
+					<div class="modal-body">
+						<span id="modalBody"></span>
+					</div>
+					
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			// cancle button
+			$("#buttonCancel").on("click", function() {
+				window.location = "[[@{/brands}]]";
+			});
+			
+			// preview photo			
+			$("#fileImg").change(function() {
+				fileSize = this.files[0].size;
+				sizeInMb = fileSize/1048576
+				if(fileSize > 1048576) {
+					alert("Size of image must less than 1Mb. Your image: "+sizeInMb.toFixed(2)+" Mb")
+				} else {
+					showImgThumbnail(this);
+				}
+			})		
+			
+			$("#btnSubmit").on("click", checkUnique);
+			
+			$(".checkedCategories").on("change", function() {
+				checkedCategory = $(this).attr('data-brand-name').replaceAll("-","");
+				console.log($(this));
+				
+				if($(this).is(':checked')) {
+					$("#selectedCategories").append('<span class="me-1 p-1 badge bg-secondary text-light border border-dark rounded">'+checkedCategory+'</span>');					
+				} else {
+					$("#selectedCategories").children().each(function() {					
+						console.log(this.textContent);
+						if(checkedCategory == this.textContent) {
+							this.remove();
+						} 
+					});	
+				}
+				
+			});
+		});
+		
+		function showImgThumbnail(fileInput) {
+			const file = fileInput.files[0];
+			let reader = new FileReader();
+			reader.onload = function(event) {
+				$("#previewImg").attr("src", event.target.result);
+			}
+			reader.readAsDataURL(file);
+		}		
+		
+		function checkUnique(event) {
+			url = "[[@{/brands/check_unique}]]";
+			bid = $("#id").val();
+			bname = $("#brandName").val();			
+			csrfValue = $("input[name='_csrf']").val();			
+			
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			
+			$(document).ajaxSend(function(e, xhr, options) {
+		        if (options.type == "POST") {
+		            xhr.setRequestHeader(header, token);
+		        }
+		    });
+			
+			$.ajax({
+			    url: url,
+			    dataType: 'text',
+			    type: 'post',
+			    contentType: 'application/json',
+			    data: JSON.stringify({
+									 "id": bid,
+									 "name": bname,									 
+									 "logo": null,									 								 
+									 "categories": null
+									    }),
+			    processData: false,
+			    success: function(data){
+			    	console.log(data);
+			        if(data == "OK") {
+			        	$("#brandForm").submit();
+			        } else {        			        	    		     	
+			       		showModalDialog("Duplicated Brand", "This brand "+bname+" has been used, please enter another brand");		        			        	
+			        }
+			    },
+			    error: function(xhr,status,error){
+			    	showModalDialog("Error", `Could not connect to the server`);
+			    }
+			});
+		}
+		
+		function showModalDialog(title, message) {
+			$("#modalTitle").text(title);
+			$("#modalBody").text(message);
+			$("#modalDialog").modal("show");
+		}
+	</script>
+
+</body>
+	
+</html>

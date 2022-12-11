@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta th:name="_csrf" th:content="${_csrf.token}"/>
+	<meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+	<title>[[${title}]]</title>
+	
+	<script type="text/javascript" th:src="@{/webjars/jquery/dist/jquery.js}" ></script>
+	<script type="text/javascript" th:src="@{/js/logout.js}" ></script>
+	
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/fontawesome.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/solid.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/color.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/main.css}" />	
+	
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.css}" />
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}" ></script>
+	
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" th:href="@{/css/richtext.min.css}">
+	<script th:src="@{/js/jquery.richtext.min.js}"></script>
+	
+</head>
+<body>
+	<div class="container-fluid">
+		<nav th:replace="fragments :: navBar"></nav>
+		
+		<div class="row justify-content-center">
+			<div class="mb-5">
+				<h2>Products Management | [[${title}]]</h2>
+			</div>
+		
+			<div class="border border-secondary rounded border-2 mb-3" style="width: 1100px">
+				<form th:action="@{'/products/save?path='+${path}}" th:object="${product}" method="post"
+					enctype="multipart/form-data" id="productForm">
+					<input type="hidden" th:field="*{id}">
+					<input type="hidden" th:field="*{mainImage}">
+					<th:block th:each="pi : ${productImages}">
+						<input type="hidden" th:field="*{productImages}" th:value="pi.id">
+					</th:block>
+					<th:block th:each="pd : ${productDetails}">
+						<input type="hidden" th:field="*{productDetails}" th:value="pd.id">
+					</th:block>
+					
+					<nav>
+					  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+					    <button class="nav-link active" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview" type="button" role="tab">Overview</button>
+					    <button class="nav-link" id="nav-description-tab" data-bs-toggle="tab" data-bs-target="#nav-description" type="button" role="tab">Description</button>
+					    <button class="nav-link" id="nav-images-tab" data-bs-toggle="tab" data-bs-target="#nav-images" type="button" role="tab">Images</button>
+					    <button class="nav-link" id="nav-details-tab" data-bs-toggle="tab" data-bs-target="#nav-details" type="button" role="tab">Details</button>
+					    <button class="nav-link" id="nav-shipping-tab" data-bs-toggle="tab" data-bs-target="#nav-shipping" type="button" role="tab">Shipping</button>
+					  </div>
+					</nav>
+					<div class="tab-content" id="nav-tabContent">
+						<div th:replace="fragments :: overviewTab"></div>
+					  	
+					  	<div th:replace="fragments :: descriptionTab"></div>
+						
+						<div th:replace="fragments :: imagesTab"></div>
+					  
+					  	<div th:replace="fragments :: detailTab"></div>
+					  
+					  	<div th:replace="fragments :: shippingTab"></div>
+					</div>
+					
+					<!-- save button and cancel button	 -->
+					<div class="text-center mb-3 mt-3">
+						<input type="submit" value="Save" class="btn btn-primary btn-sm" id="btnSubmit"/>
+						<input type="button" value="Cancel" class="btn btn-secondary btn-sm" id="buttonCancel"/>
+					</div>
+					
+				</form>
+			</div>
+		</div>
+		
+		<div th:replace="fragments :: footer"></div>
+	</div>
+	
+	<!-- dialog when the product name has already existed in database-->
+		<div class="modal fade text-center" id="modalDialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+				
+					<div class="modal-header">
+						<h4 class="modal-title" id="modalTitle">Warning</h4>
+						<button class="btn-close" type="button" data-bs-dismiss="modal"></button>
+					</div>
+					
+					<div class="modal-body">
+						<span id="modalBody"></span>
+					</div>
+					
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	
+	<script type="text/javascript">
+		moduleURL = "[[@{/products}]]";
+		checkUniqueUrl = "[[@{/products/check_unique}]]";
+		defaultImg = "[[@{/images/productDefault.png}]]";
+		getcategoriesURL = "[[@{/products/getCategory}]]";
+	</script>	
+	<script th:src="@{/js/products_form.js}"></script>
+	<script th:src="@{/js/products_form_details.js}"></script>
+	<script th:src="@{/js/products_form_images.js}"></script>
+</body>
+	
+</html>

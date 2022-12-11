@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments :: head('Brands - XPLaptop Control Panel')"></head>
+<body>
+	<div class="container-fluid">
+		<nav th:replace="fragments :: navBar"></nav>
+
+		<div>
+			<h2>Category Management</h2>
+		</div>
+		
+		<div th:if="${message != null}" th:text="${message}" class="alert alert-success text-center"></div>
+		
+		<div class="m-3">
+			<a th:href="@{'/brands/new'+'?path='+${path == null ? '' : path}}"><i class="fa-solid fa-circle-plus fa-2x"></i></a>
+			|
+			<a th:href="@{/brands/export/csv}"><i class="fa-solid fa-file-csv fa-2x"></i></a>
+<!-- 			| -->
+<!-- 			<a th:href="@{/brands/export/excel}"><i class="fa-sharp fa-solid fa-file-excel fa-2x"></i></a> -->
+<!-- 			| -->
+<!-- 			<a th:href="@{/brands/export/pdf}"><i class="fa-solid fa-file-pdf fa-2x"></i></a> -->
+		</div>
+		
+		<!-- search brands -->
+		<div>
+			<form class="row g-3 mb-3" th:action="@{/brands/page/1}">			
+				<input type="hidden" name="sortDir" th:value="${sortDir}">
+				<div class="col-auto">
+					<label>Search keyword: </label>					
+				</div>
+				<div class="col-auto">					
+					<input type="text" class="form-control" required="required" name="keyword" th:value="${keyword == null ? '' : keyword}">
+				</div>
+				<div class="col-auto">
+					<input type="submit" value="Search" class="btn btn-primary">
+				</div>
+				<div class="col-auto">
+					<input type="button" value="Clear" class="btn btn-secondary" onclick="clearFilter()">
+				</div>
+			</form>
+		</div>
+		
+		<!-- 		Less details table -->
+		<div class="less-details">
+				<div th:each="brand : ${listBrands}" class="row mb-3">
+					<div class="col-4">						
+						<img th:src="@{${brand.imagePath}}" style="width: 100px"/>
+					</div>
+					<div class="col-8">
+						<div class="row-auto">
+							<p th:text="${brand.name}" class="text-break col mb-1 fw-bold"></p>
+							<div >
+								<span class="mb-1 me-1 h-25 p-1 badge bg-secondary text-light border border-dark rounded col-auto" th:each="category : ${brand.categories}" th:text="${category.name}"></span>
+							</div>
+						</div>
+											
+						<div class="row">
+							<div class="col-2">
+								<a class="fa-solid fa-pen-to-square color-green fa-1x" th:href="@{'/brands/edit/'+${brand.id}+'?path='+${path}}" title="Edit"></a>
+							</div>
+							<div class="col-2">
+								<a class="fa-solid fa-delete-left color-gray fa-1x link-delete col" 
+								th:href="@{'/brands/delete/'+${brand.id}+'?path='+${path == null ? '' : path}}" 
+								style="margin-left: 5px" title="Delete this"
+								th:catName="${brand.name}"></a>
+							</div>			
+						</div>
+					</div>
+					
+				</div>
+		</div>
+		
+		<!--	Full Table -->
+		<div class="full-details">
+			<table class="table table-responsive-xl table-striped table-hover table-bordered">
+				<thead class="table-dark">
+					<tr>
+						<td class="text-center">Brand ID</td>						
+						<td class="text-center">Brand Logo</td>
+						<td th:replace="fragments :: column_link('brands', 'name', 'Brand Name')"></td>
+						<td class="text-center">Categories</td>						
+						<td class="text-center">Edit / Delete</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="brand : ${listBrands}">
+						<td th:text="${brand.id}"></td>
+						<td>
+							<img th:src="@{${brand.imagePath}}" style="height: 70px"/>
+						</td>
+						<td th:text="${brand.name}"></td>	
+						<td>	
+							<span class="me-1 h-25 p-1 badge bg-secondary text-light border border-dark rounded" th:each="category : ${brand.categories}" th:text="${category.name}"></span>						
+						</td>											
+						<td class="text-center">
+							<a th:replace="fragments :: editButton(${brand}, 'brands')"></a>
+							<a class="fa-solid fa-delete-left color-gray fa-2x link-delete col" 
+							th:href="@{'/brands/delete/'+${brand.id}+'?path='+${path == null ? '' : path}}" 
+							style="margin-left: 5px" title="Delete this"
+							th:catName="${brand.name}"></a>
+						</td>
+					</tr>
+				</tbody>
+				
+			</table>
+		</div>
+		
+			<!-- 		show page navigation -->
+		<div th:replace="fragments :: pageNavigation('brands')"></div>
+		
+		
+		<!-- 		show confirm delete dialog -->
+		<div class="modal fade text-center" id="modalDelete">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					
+					<div class="modal-header">
+						<h4 class="modal-title" id="modalTitle">Warning</h4>
+						<button class="btn-close" type="button" data-bs-dismiss="modal"></button>
+					</div>
+					
+					<div class="modal-body">
+						<span id="modalBody"></span>
+					</div>
+					
+					<div class="modal-footer">
+						<a class="btn btn-primary" id="yesBtn" href="">Yes</a>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>	
+					</div>
+				</div>
+			</div>
+		</div>
+		
+<!-- 		footer -->
+		<div th:replace="fragments :: footer"></div>
+	</div>
+	
+	
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".link-delete").on("click", function(e) {
+			e.preventDefault();
+			
+			link = $(this);
+			name = link.attr("catName");
+			$("#yesBtn").attr("href", link.attr("href"));
+			$("#modalBody").text("Are you sure to delete this category: "+name+ "?");
+			$("#modalDelete").modal("show");
+			
+		});
+	})
+	
+	function clearFilter() {
+		window.location = "[[@{/brands}]]";
+	}
+
+</script>
+</body>
+</html>

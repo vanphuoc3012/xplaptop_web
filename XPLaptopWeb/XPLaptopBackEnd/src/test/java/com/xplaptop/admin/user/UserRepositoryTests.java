@@ -124,4 +124,27 @@ public class UserRepositoryTests {
 		System.out.println(page.getContent());
 		assertThat(page.getContent().size()).isEqualTo(5);
 	}
+	
+	@Test 
+	public void testFindUserByKeyword() {
+		String keyword = "Jack";
+		
+		int pageNumber = 0;
+		int userPerPage = 5;
+		
+		Pageable pageable =  PageRequest.of(pageNumber, userPerPage);
+		
+		Page<User> page = repo.findAll(keyword, pageable);
+		System.out.println(page.getContent());
+		assertThat(page.getContent().size()).isGreaterThan(0);
+	}
+	
+	@Test
+	public void testFindUserByEmail() {
+		String email = "aryastark@codejava.net";
+		User user = repo.findByEmail(email).get();
+		System.out.println(user);
+		assertThat(user.getEmail()).isEqualTo("aryastark@codejava.net");
+		
+	}
 }

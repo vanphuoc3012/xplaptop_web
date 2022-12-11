@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head('Category - XPLaptop Control Panel')"></head>
+<body>
+	<div class="container-fluid">
+		<nav th:replace="fragments :: navBar"></nav>
+		
+		<div class="row justify-content-center">
+			<div class="mb-5">
+				<h2>Category Management | [[${title}]]</h2>
+			</div>
+		
+			<div class="border border-secondary rounded border-2 mb-3" style="width: 700px">
+				<form th:action="@{'/categories/save?path='+${path}}" th:object="${category}" method="post"
+					enctype="multipart/form-data" id="catForm">
+					<input type="hidden" th:field="*{id}">
+					<input type="hidden" th:field="*{image}">
+					
+					<div class=" m-3 row text-center">
+						<label class="col-sm-3 col-form-label">Category name: </label>
+						<div class="col-sm">
+							<input class="form-control" type="text" th:field="*{name}" placeholder="category name" id="categoryName"
+							required="required" maxlength="128"/>
+						</div>
+					</div>
+					
+					<div class="m-3 row text-center">
+						<label class="col-sm-3 col-form-label">Category alias: </label>
+						<div class="col-sm">
+							<input class="form-control" type="text" th:field="*{alias}" placeholder="category alias" id="categoryAlias"
+							required="required" maxlength="128"/>
+						</div>
+					</div>
+					
+					<div class="m-3 row text-center">
+						<label class="col-sm-3 col-form-label">Parent category: </label>
+						<div class="col-sm">
+							<select class="form-select" th:field="*{parent}">
+							  <option th:value="null" selected>[No parent]</option>												  
+							  	<th:block th:each="c : ${categoriesInForm}">
+							  		<option th:value=${c.id}>[[${c.getName}]]</option>	
+							  	</th:block>							  
+							</select>
+						</div>
+					</div>
+					
+					<div class="form-group m-3 row">
+						<label class="col-sm-3 col-form-label text-center">Enabled: </label>
+						<div class="col-sm-8">
+							<div>
+								<input class="form-check-input" type="checkbox" th:field="*{enabled}"/>
+								<label>- Check to enable this category</label>	
+							</div>																			
+						</div>
+					</div>
+					
+<!-- 					upload photo -->
+					<div class="form-group m-3 row">
+						<label class="col-sm-3 col-form-label text-center">Image: </label>
+						<div class="row col-sm">
+							<div>
+								<input class="form-control mb-3" type="file" name="cateImage" accept="image/png, image/jpeg" id="fileImg"/>
+							</div>	
+							<div class="row justify-content-center">
+								<img class="img-thumbnail" alt="Preview photo" th:src="@{${category.imagePath}}" style="width: 200px" id="previewImg" />
+							</div>																							
+						</div>
+					</div>
+									
+					<div class="text-center mb-3">
+						<input type="button" value="Save" class="btn btn-primary btn-sm" id="btnSubmit"/>
+						<input type="button" value="Cancel" class="btn btn-secondary btn-sm" id="buttonCancel"/>
+					</div>
+				</form>
+			</div>
+		</div>
+		
+		<div th:replace="fragments :: footer"></div>
+	</div>
+	
+	<!-- dialog when the email has already existed in database-->
+		<div class="modal fade text-center" id="modalDialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					
+					<div class="modal-header">
+						<h4 class="modal-title" id="modalTitle">Warning</h4>
+						<button class="btn-close" type="button" data-bs-dismiss="modal"></button>
+					</div>
+					
+					<div class="modal-body">
+						<span id="modalBody"></span>
+					</div>
+					
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			// cancle button
+			$("#buttonCancel").on("click", function() {
+				window.location = "[[@{/categories}]]";
+			});
+			
+			// preview photo			
+			$("#fileImg").change(function() {
+				fileSize = this.files[0].size;
+				sizeInMb = fileSize/1048576
+				if(fileSize > 1048576) {
+					alert("Size of image must less than 1Mb. Your image: "+sizeInMb.toFixed(2)+" Mb")
+				} else {
+					showImgThumbnail(this);
+				}
+			})
+			
+			$("#categoryName").on("keyup", function() {
+				name = $("#categoryName").val();			
+				$("#categoryAlias").val(name.toLowerCase().replaceAll(" ", "_"));
+			})			
+			
+			$("#btnSubmit").on("click", checkUnique);
+		});
+		
+		function showImgThumbnail(fileInput) {
+			const file = fileInput.files[0];
+			let reader = new FileReader();
+			reader.onload = function(event) {
+				$("#previewImg").attr("src", event.target.result);
+			}
+			reader.readAsDataURL(file);
+		}		
+		
+		function checkUnique(event) {
+			url = "[[@{/categories/check_unique}]]";
+			cid = $("#id").val();
+			cname = $("#categoryName").val();
+			calias = $("#categoryAlias").val();
+			csrfValue = $("input[name='_csrf']").val();
+			
+			let sm = false;
+			
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			
+			$(document).ajaxSend(function(e, xhr, options) {
+		        if (options.type == "POST") {
+		            xhr.setRequestHeader(header, token);
+		        }
+		    });
+			
+			$.ajax({
+			    url: url,
+			    dataType: 'text',
+			    type: 'post',
+			    contentType: 'application/json',
+			    data: JSON.stringify({
+									 "id": cid,
+									 "name": cname,
+									 "alias": calias,
+									 "image": null,
+									 "enable": false,
+									 "parent": null,
+									 "children": null
+									    }),
+			    processData: false,
+			    success: function(data){
+			    	console.log(data);
+			        if(data == "OK") {
+			        	$("#catForm").submit();
+			        } else {        	
+			        	if(data == "DuplicatedName") {
+			        		showModalDialog("Duplicated Name", "This name "+cname+" has been used, please choose another name");			    
+			        	} else if(data == "DuplicatedAlias"){
+			        		showModalDialog("Duplicated Alias", "This alias "+calias+" has been used, please choose another name");
+			        	}		        	
+			        }
+			    },
+			    error: function(xhr,status,error){
+			    	showModalDialog("Error", `Could not connect to the server`);
+			    }
+			});
+		}
+		
+		function showModalDialog(title, message) {
+			$("#modalTitle").text(title);
+			$("#modalBody").text(message);
+			$("#modalDialog").modal("show");
+		}
+	</script>
+
+</body>
+	
+</html>

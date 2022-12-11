@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta th:name="_csrf" th:content="${_csrf.token}"/>
+	<meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+	<title>[[${title}]]</title>
+	
+	<script type="text/javascript" th:src="@{/webjars/jquery/dist/jquery.js}" ></script>
+	<script type="text/javascript" th:src="@{/js/logout.js}" ></script>
+	
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/fontawesome.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/solid.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/color.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/main.css}" />	
+	
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.css}" />
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}" ></script>
+	
+</head>
+<body>
+	<nav th:fragment="navBar" class="navbar navbar-expand-lg bg-dark navbar-dark">
+				<div class="container-fluid">
+					<a class="navbar-brand" th:href="@{/}">
+						<img alt="logo" th:src="@{/images/xplaptoplogosmall.png}">
+					</a>
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar123">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="topNavbar123">
+						<ul class="nav nav-tabs navbar-nav me-auto my-2 my-lg-0">
+							<li class="nav-item" sec:authorize="hasAuthority('Admin')">
+								<a class="nav-link" th:href="@{/users}">Users</a>
+							</li>
+							<li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+								<a class="nav-link" th:href="@{/categories}">Categories</a>
+							</li>
+							<li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+								<a class="nav-link" th:href="@{/brands}">Brands</a>
+							</li>
+							<li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson', 'Shipper')">
+								<a class="nav-link" th:href="@{/products}">Products</a>
+							</li>
+							<li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Assistant')">
+								<a class="nav-link" th:href="@{/questions}">Questions</a>
+							</li>
+							<li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Assistant')">
+								<a class="nav-link" th:href="@{/reviews}">Reviews</a>
+							</li>
+							<li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
+								<a class="nav-link" th:href="@{/customers}">Customers</a>
+							</li>
+							<li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
+								<a class="nav-link" th:href="@{/shipping}">Shipping</a>
+							</li>
+							<li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Salesperson', 'Shipper')">
+								<a class="nav-link" th:href="@{/orders}">Orders</a>
+							</li>
+							<li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Salesperson')">
+								<a class="nav-link" th:href="@{/reports}">Reports</a>
+							</li>
+							<li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+								<a class="nav-link" th:href="@{/articles}">Articles</a>
+							</li>
+							<li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+								<a class="nav-link" th:href="@{/menus}">Menus</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" th:href="@{/settings}" sec:authorize="hasAuthority('Admin')">Settings</a>
+							</li>
+							<li class="nav-item">
+								<span th:if="${#authentication.principal.photos == null}" class="fa-regular fa-circle-user fa-3x color-gray"></span>
+								<img th:if="${#authentication.principal.photos != null}" th:src="@{${#authentication.principal.photosPath}}" style="height: 30px"/>
+							</li>
+							
+							<li class="nav-item dropdown">							
+						 	 	<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"
+						 	 	sec:authentication="principal.fullName"></a>
+							    <ul class="dropdown-menu dropdown-menu-dark">
+							      <li><a class="dropdown-item" th:href="@{/account}">My account</a></li>
+							      <li><a class="dropdown-item" href="#">Another action</a></li>
+							      <li><a class="dropdown-item" href="#">Something else here</a></li>
+							      <li><hr class="dropdown-divider"></li>
+							      <li><a class="dropdown-item" href="" id=logoutLink>Logout</a></li>
+							    </ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<form th:hidden="true" id="logoutForm" th:action="@{/logout}" method="post">
+					<input type="submit">
+				</form>				
+			</nav>
+			
+<!-- 	head table user fragment -->
+	<td th:fragment="column_link(entityURL ,fieldName, columnLabel)" class="text-center">
+		<a class="text-white" th:if="${sortField == fieldName}" 
+		th:href="@{'/'+${entityURL}+'/page/1/?sortField='+${fieldName}+'&sortDir='+${sortDir == 'asc' ? 'desc' : 'asc'}+${keyword != null ? '&keyword=' + keyword : ''}}">
+		[[${columnLabel}]]
+		</a>
+		<a  class="text-white" th:if="${sortField != fieldName}" 
+		th:href="@{'/'+${entityURL}+'/page/1/?sortField=' + ${fieldName} + '&sortDir=asc'+ ${keyword != null ? '&keyword=' + keyword : '' }}">
+		[[${columnLabel}]]
+		</a>
+		<i th:if="${sortField == fieldName && sortDir == 'asc'}" class="fa-solid fa-angles-down"></i>
+		<i th:if="${sortField == fieldName && sortDir == 'desc'}" class="fa-solid fa-angles-up"></i>
+	</td>
+	
+<!-- 	enable status fragment -->
+	<td class="text-center" th:fragment="enableStatusColumn(entityName, entityURL)">
+		<a th:if="${entityName.enabled == true}" class="fa-solid fa-circle-check color-green fa-2x" th:href="@{'/'+${entityURL}+'/enable/'+${entityName.id}+'?path='+${path}}"></a>
+		<a th:if="${entityName.enabled == false}" class="fa-solid fa-circle-check color-gray fa-2x" th:href="@{'/'+${entityURL}+'/enable/'+${entityName.id}+'?path='+${path}}"></a>
+	</td>
+	
+<!-- 	edit button -->
+	<a th:fragment="editButton(entity, entityURL)"
+	class="fa-solid fa-pen-to-square color-green fa-2x" th:href="@{'/'+${entityURL}+'/edit/'+${entity.id}+'?path='+${path}}" title="Edit"></a>
+	
+	<div th:fragment="footer" class="text-center">
+		<p>XPLaptop Control Panel - Copyright &copy; XPLaptop </p>
+	</div>
+	
+<!-- 	for page navigation -->
+	<div th:fragment="pageNavigation(entityURL)">
+			<div class="d-flex justify-content-center" th:if="${totalElement > 0}">
+				<span>Showing [[${entityURL}]] # [[${startElement}]] to [[${endElement}]] of [[${totalElement}]]</span>
+			</div>
+			<div class="d-flex justify-content-center" th:if="${totalElement == 0}">	
+					<span>No [[${entityURL}]] found</span>
+			</div>
+			
+			<div th:if="${totalPage > 0}">
+				<nav class="col">
+				  <ul class="pagination justify-content-center">
+				    <li class="page-item">
+				      <a class="page-link" th:href="@{'/'+${entityURL}+'/page/'+${pageNumber-1}+'/?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}+${keyword != null ? '&keyword=' + keyword : ''}}" 
+				      th:classappend="${pageNumber < 2 ? 'disabled' : ''}" aria-label="Previous">
+				        <span aria-hidden="true">&laquo;</span>
+				      </a>
+				    </li>
+				    <li class="page-item" th:if="${pageNumber - 5 > 1}">
+			    		<a class="page-link disabled" href="#" aria-label="Next">
+				        	<span aria-hidden="true">&hellip;</span>
+				      	</a>
+				    </li>
+				    <li class="page-item" th:classappend="${i == pageNumber ? 'active' : ''}"
+				    	th:each="i : ${#numbers.sequence(pageNumber - 5 > 1 ? pageNumber - 5 : 1, pageNumber + 5 < totalPage ? pageNumber + 5 : totalPage ,1)}">
+				    	<a class="page-link" th:href="@{'/'+${entityURL}+'/page/'+${i}+'/?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}+${keyword != null ? '&keyword=' + keyword : ''}}" 
+				    	th:text="${i}"></a>
+				    </li>
+				    <li class="page-item" th:if="${pageNumber + 5 < totalPage}">
+			    		<a class="page-link disabled" href="#" aria-label="Next">
+				        	<span aria-hidden="true">&hellip;</span>
+				      	</a>
+				    </li>
+				    <li class="page-item">
+				      <a class="page-link" th:href="@{'/'+${entityURL}+'/page/'+${pageNumber+1}+'/?sortField=' + ${sortField} + '&sortDir='+${sortDir}+${keyword != null ? '&keyword=' + keyword : ''}}" 
+				      th:classappend="${pageNumber > totalPage-1 ? 'disabled' : ''}" aria-label="Next">
+				        <span aria-hidden="true">&raquo;</span>
+				      </a>
+				    </li>
+				    <li class="page-item">
+				      <a class="page-link" th:href="@{'/'+${entityURL}+'/page/'+${totalPage}+'/?sortField=' + ${sortField} + '&sortDir='+${sortDir}+${keyword != null ? '&keyword=' + keyword : ''}}" th:classappend="${pageNumber == totalPage ? 'disabled' : ''}" aria-label="Next">
+				        <span aria-hidden="true">Last</span>
+				      </a>
+				    </li>
+				  </ul>
+				</nav>
+			</div>
+		</div>
+	
+		<!-- Overview Tab -->
+  	<div th:fragment="overviewTab" class="tab-pane fade show active" id="nav-overview" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+  		<!-- name field -->
+		<div class=" m-3 row">
+			<label class="col-sm-3 col-form-label">Product name: </label>
+			<div class="col-sm">
+				<input class="form-control" type="text" th:field="*{name}" placeholder="product name" id="productName"
+				required maxlength="255"/>
+			</div>
+		</div>
+		<!-- alias field -->
+		<div class=" m-3 row">
+			<label class="col-sm-3 col-form-label">Alias: </label>
+			<div class="col-sm">
+				<input class="form-control" type="text" th:field="*{alias}" placeholder="product alias" id="productAlias"
+				required maxlength="255"/>
+			</div>
+		</div>
+		<!--brand select field  -->
+		<div class=" m-3 row">
+			<label class="col-sm-3 col-form-label">Brand: </label>
+			<div class="col-sm">
+				<select class="form-select" th:field="*{brand}" required>
+					<option selected value="">No brand</option>
+					<th:block th:each="b : ${listBrands}">
+						<option th:value="${b.id}" th:text="${b.name}"></option>
+					</th:block>								
+				</select>
+			</div>
+		</div>
+		<!-- category select field, send post request with brand_id to receive listCategory -->
+		<div class=" m-3 row" id="categorySelection">
+			<label class="col-sm-3 col-form-label">Category: </label>
+			<div class="col-sm">
+				<select class="form-select" th:field="*{category}" required>
+					<option value="">No category</option>									
+					<th:block th:if="${product.brand != null}">
+					<th:block th:each="c : ${product.brand.categories}">
+						<option th:value="${c.id}" th:text="${c.name}"></option>
+					</th:block>	
+					</th:block>			
+				</select>
+			</div>
+		</div>
+		
+		<!-- enable field -->
+		<div class=" m-3 row">
+			<label class="col-sm-3 col-form-label">Enable: </label>
+			<div class="col-sm">
+				<input class="form-check-input" type="checkbox" th:field="*{enabled}"/>
+				<label> - <small>Check/uncheck this to show/hide product on your shop.</small> </label>
+			</div>
+		</div>
+		
+		<!-- inStock field -->
+		<div class=" m-3 row">
+			<label class="col-sm-3 col-form-label">Ready in stock: </label>
+			<div class="col-sm">
+				<input class="form-check-input" type="checkbox" th:field="*{inStock}"/>
+				<label> - <small>Check this if product is ready in stock.</small> </label>
+			</div>
+		</div>
+		
+		<!-- cost field -->
+		<div class=" m-3 row">
+			<label class="col-sm-3 col-form-label">Cost: </label>
+			<div class="col-sm">
+				<input class="form-control" type="number" th:field="*{cost}" placeholder="0.0" min="0.0"
+				required step="0.1"/>
+			</div>
+		</div>
+		
+		<!-- price field -->
+		<div class=" m-3 row">
+			<label class="col-sm-3 col-form-label">Price: </label>
+			<div class="col-sm">
+				<input class="form-control" type="number" th:field="*{price}" placeholder="0.0" min="0.0"
+				required step="0.1"/>
+			</div>
+		</div>
+		
+		<!-- discountPercent field -->
+		<div class=" m-3 row">
+			<label class="col-sm-3 col-form-label">Discount (%): </label>
+			<div class="col-sm">
+				<input class="form-control" type="number" th:field="*{discountPercent}" placeholder="0.0" min="0.0" max="100"
+				required step="0.1"/>
+			</div>
+		</div>				
+	</div>
+
+	<!-- Description Tab -->
+  	<div th:fragment="descriptionTab" class="tab-pane fade" id="nav-description" role="tabpanel">
+  		<p class="mt-3 fw-bold">Short Description:</p>		  			
+  		<textarea class="form-control" th:field="*{shortDescription}" required ></textarea>
+  		
+  		<p class="mt-3 fw-bold">Full Description:</p>				  		
+  		<textarea class="form-control" th:field="*{fullDescription}" required ></textarea>
+	</div>
+
+	<!-- upload images field -->
+	<div th:fragment="imagesTab" class="tab-pane fade mt-3 mb-3" id="nav-images" role="tabpanel">		
+		<div class="row">
+			<!-- main product image -->
+			<div class="row col-sm-3 justify-content-center ms-1">									
+				<img class="img-thumbnail" alt="Preview photo" th:src="@{${product.imagePath}}" style="width: 200px" id="previewMainImg" />
+				<button type="button" class="btn-close delImage" onclick="resetThumnail(this)"></button>
+				<p class="fw-bold text-center">Main image</p>			
+				<input class="form-control form-control-sm uploadImage" type="file" name="fileMainImage" th:required="${product.mainImage ==  null}"
+				accept="image/png, image/jpeg" id="fileMainImg"/>
+			</div>
+		
+			<!-- load existing product image -->
+			
+				<th:block th:each="productImage : ${product.productImages}">
+					<div class="row col-sm-3 justify-content-center ms-1 mt-2">									
+					<img class="img-thumbnail" alt="Preview photo" th:src="@{${productImage.extraImagePath}}" style="width: 200px" />
+					<button type="button" class="btn-close delImage float-right" onclick="resetThumnail(this)"></button>
+					<p class="fw-bold text-center"><small>Extra image (optional)</small> </p>
+					<input type="hidden" name="existingExtraImages" th:value="${productImage.name}">			
+					<input class="extraImage form-control form-control-sm uploadImage" type="file" accept="image/png, image/jpeg"/>
+					</div>
+				</th:block>
+			
+			<!-- extra product image -->
+			<div class="row col-sm-3 justify-content-center ms-1 mt-2">									
+				<img class="img-thumbnail" alt="Preview photo" th:src="@{/images/productDefault.png}" style="width: 200px" />
+				<button type="button" class="btn-close delImage float-right" onclick="resetThumnail(this)"></button>
+				<p class="fw-bold text-center"><small>Extra image (optional)</small> </p>			
+				<input class="extraImage form-control form-control-sm uploadImage" type="file" name="newExtraImage" accept="image/png, image/jpeg" id="extraImage0"/>
+			</div>																																		
+		</div>
+	</div>
+
+	<!-- product detail field -->
+  	<div th:fragment="detailTab" class="tab-pane fade" id="nav-details" role="tabpanel">
+  		<th:block th:each="pd : ${product.productDetails}">
+			<div class="row border m-1 rounded">
+				<div class="row col-sm m-1">
+					<label class="form-label mb-1 col-sm-2 align-items-center">Name:</label>
+					<input class="form-control col-sm" type="text" name="detailNames" th:value="${pd.name}" maxlength="256">
+				</div>
+				<div class="row col-sm m-1">
+					<label class="form-label mb-1 col-sm-2 align-items-center">Value:</label>
+					<input class="form-control col-sm" type="text" name="detailValues" th:value="${pd.value}" maxlength="512">
+				</div>
+				
+				<!-- delete this product detail button -->
+				<div class="col-sm-1 row align-items-center">
+					<a href="#" onclick="deleteThisSection(this)" class="fa-solid fa-circle-xmark fa-2x"></a>
+				</div>					
+			</div>
+  		</th:block>
+		<div class="row border m-1 rounded">
+			<div class="row col-sm m-1">
+				<label class="form-label mb-1 col-sm-2 align-items-center">Name:</label>
+				<input class="form-control col-sm" type="text" name="detailNames">
+			</div>
+			<div class="row col-sm m-1">
+				<label class="form-label mb-1 col-sm-2 align-items-center">Value:</label>
+				<input class="form-control col-sm" type="text" name="detailValues">
+			</div>
+			
+			<!-- delete this product detail button -->
+			<div class="col-sm-1 row align-items-center">
+			</div>					
+		</div>
+		
+		<!-- button add detail -->
+		<div class="ms-3 mt-3 mb-3">
+			<button type="button" class="btn btn-primary" id="btnAddDetail" onclick="addDetailSection(this)">Add detail</button>
+		</div>
+	</div>
+
+	<!-- shipping field -->
+	<div th:fragment="shippingTab" class="tab-pane fade" id="nav-shipping" role="tabpanel">
+		<p>The following information is important to calculate shipping cost for the product</p>
+		<p>The dimensions (L x W x H) is for the shipping package - not the product's dimensions</p>
+		<!-- length -->
+		<div class=" m-3 row">
+			<label class="col-sm-3 col-form-label">Length: </label>
+			<div class="col-sm">
+				<input class="form-control" type="number" th:field="*{length}" placeholder="0.0"
+				required="required" step="0.1"/>
+			</div>
+		</div>
+		
+		<!-- width -->
+		<div class=" m-3 row">
+			<label class="col-sm-3 col-form-label">Width: </label>
+			<div class="col-sm">
+				<input class="form-control" type="number" th:field="*{width}" placeholder="0.0"
+				required="required" step="0.1"/>
+			</div>
+		</div>
+		
+		<!-- height -->
+		<div class=" m-3 row">
+			<label class="col-sm-3 col-form-label">Height: </label>
+			<div class="col-sm">
+				<input class="form-control" type="number" th:field="*{height}" placeholder="0.0"
+				required="required" step="0.1"/>
+			</div>
+		</div>
+		
+		<!-- weight -->
+		<div class=" m-3 row">
+			<label class="col-sm-3 col-form-label">Weight: </label>
+			<div class="col-sm">
+				<input class="form-control" type="number" th:field="*{weight}" placeholder="0.0"
+				required="required" step="0.1"/>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
