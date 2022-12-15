@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -23,9 +22,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.xplaptop.admin.FileUploadUtils;
 import com.xplaptop.admin.brand.BrandService;
+import com.xplaptop.admin.category.CategoryService;
 import com.xplaptop.admin.product.ProductNotFoundException;
 import com.xplaptop.admin.product.ProductService;
 import com.xplaptop.common.entity.Brand;
+import com.xplaptop.common.entity.Category;
 import com.xplaptop.common.entity.product.Product;
 import com.xplaptop.common.entity.product.ProductDetail;
 import com.xplaptop.common.entity.product.ProductImage;
@@ -39,12 +40,15 @@ public class ProductController {
 	@Autowired
 	private BrandService brandService;
 	
+	@Autowired
+	private CategoryService categoryService;
+	
 	@GetMapping("/products")
 	public String listAllProducts(Model model,
 									HttpServletRequest request
 									) {
 		
-		return listPageProducts(model, request, 1, "asc", "name", null);
+		return listPageProducts(model, request, 1, "asc", "name", null, 0);
 	}
 	
 	@GetMapping("/products/page/{pageNumber}")
@@ -53,7 +57,8 @@ public class ProductController {
 									@PathVariable(name = "pageNumber") Integer pageNumber,
 									@RequestParam(name = "sortDir", required = false) String sortDir,
 									@RequestParam(name = "sortField", required = false) String sortField,
-									@RequestParam(name = "keyword", required = false) String keyword) {
+									@RequestParam(name = "keyword", required = false) String keyword,
+									@RequestParam(name = "categoryId", required = false) Integer categoryId) {
 		if(sortDir == null) {
 			sortDir = "asc";
 		}
@@ -66,8 +71,9 @@ public class ProductController {
 		model.addAttribute("reverseSortDir", reverseSortDir);
 		model.addAttribute("sortField", sortField);
 		model.addAttribute("keyword", keyword);
+		model.addAttribute("categoryId", categoryId);
 		
-		Page<Product> page = productService.pageProductPage(pageNumber, sortDir, sortField, keyword);
+		Page<Product> page = productService.pageProductPage(pageNumber, sortDir, sortField, keyword, categoryId);
 		int totalPage = page.getTotalPages();
 		int categoryPerPage = page.getNumberOfElements();
 		long totalElement = page.getTotalElements();
@@ -79,8 +85,11 @@ public class ProductController {
 		model.addAttribute("startElement", startElement);
 		model.addAttribute("endELement", endELement);
 		
-		List<Product> listProducts = productService.listProductPage(pageNumber, sortDir, sortField, keyword);
+		List<Product> listProducts = productService.listProductPage(pageNumber, sortDir, sortField, keyword, categoryId);
 		model.addAttribute("listProducts", listProducts);
+		
+		List<Category> listCategories = categoryService.categoriesUsedInForm("asc");
+		model.addAttribute("listCategories", listCategories);
 		
 		String queryString  = request.getQueryString();
 		String path = request.getServletPath();

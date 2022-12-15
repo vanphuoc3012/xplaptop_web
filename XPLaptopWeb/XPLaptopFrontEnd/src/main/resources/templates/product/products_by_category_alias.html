@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head(${category.name})"></head>
+<body>
+<div class="container-fluid">
+	<nav th:replace="navigation :: navBar"></nav>
+	<h1>Category: [[${category.name}]]</h1>
+	
+	<div th:replace="fragments :: breadcrumb"></div>
+	
+	<!-- child categories list -->
+	<div class="row">
+		<th:block th:each="c : ${category.children}">
+			<div class="col">
+				<th:block th:if="${c.enabled ==  true}">
+					<a th:href="@{'/c/'+${c.alias}}">
+						<img th:alt="${c.name}" th:src="@{${c.imagePath}}" style="width: 100px">
+						<br>
+						<b th:text="${c.name}"></b>
+					</a>
+				</th:block>			
+			</div>
+			
+
+		</th:block>
+	</div>
+	
+	<!-- products list -->
+	<div th:if="${!productsByCategory.isEmpty}">
+		<div class="row">
+			<th:block th:each="product : ${productsByCategory}">
+				<div class="col">
+					<div>
+						<a th:href="@{'/p/'+${product.alias}}">
+							<img alt="" th:src="@{${product.imagePath}}" class="img-thumbnail" style="width: 200px">
+							<br>
+							<b >[[${product.shortName}]]</b>
+						</a>
+					</div>
+					<div>
+						<th:block th:if="${product.discountPercent <= 0}">
+							<span class="fs-4 fw-bold price">[[${product.price}]]</span>
+						</th:block>
+						<th:block th:if="${product.discountPercent > 0}">
+							<span class="fs-4 fw-bold price">[[${product.discountPrice}]]</span>
+							-
+							<span class="text-decoration-line-through price">[[${product.price}]]</span>
+						</th:block>
+					</div>
+				</div>
+			</th:block>
+		</div>
+	</div>
+	
+	<div th:replace="navigation :: pageNavigation(${'c/'+category.alias}, 'product')"></div>
+	
+	<div th:replace="navigation :: footer"></div>
+</div>
+	
+	<script type="text/javascript">
+		$(".price").each(function() {
+			console.log(Number($(this).text()).toFixed());
+			$(this).text(Number($(this).text()).toLocaleString()+' vnđ');
+		})
+	</script>
+</body>
+</html>

@@ -17,4 +17,11 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, I
 	
 	@Query("SELECT p FROM Product p WHERE CONCAT(p.name,' ', p.fullDescription,' ', p.shortDescription,' ', p.alias) LIKE %?1%")
 	Page<Product> findAll(String keyword, Pageable pageable);
+	
+	@Query("SELECT p FROM Product p WHERE p.category.id = ?1 OR p.category.allParentIds LIKE %?2%")
+	Page<Product> findAllInCategory(Integer categoryId, String categoryIdMatch, Pageable pageable);
+	
+	@Query("SELECT p FROM Product p WHERE (p.category.id = ?1 OR p.category.allParentIds LIKE %?2%) AND "
+			+"CONCAT(p.name,' ', p.fullDescription,' ', p.shortDescription,' ', p.alias) LIKE %?3%")
+	Page<Product> searchAllInCategory(Integer categoryId, String categoryIdMatch, String keyword, Pageable pageable);
 }

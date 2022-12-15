@@ -31,17 +31,37 @@
 					</button>
 					<div class="collapse navbar-collapse" id="topNavbar123">
 						<ul class="nav nav-tabs navbar-nav me-auto my-2 my-lg-0">
-							<li class="nav-item" sec:authorize="hasAuthority('Admin')">
-								<a class="nav-link" th:href="@{/users}">Users</a>
+							<li class="nav-item dropdown" sec:authorize="hasAuthority('Admin')">
+								<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" th:href="@{/users}">Users</a>
+								<ul class="dropdown-menu dropdown-menu-dark">
+							      <li><a class="dropdown-item" th:href="@{/users/new}">Create new user</a></li>
+							      <li><hr class="dropdown-divider"></li>
+							      <li><a class="dropdown-item" th:href="@{/users}">View all users</a></li>
+							    </ul>
 							</li>
-							<li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
-								<a class="nav-link" th:href="@{/categories}">Categories</a>
+							<li class="nav-item dropdown" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+								<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" th:href="@{/categories}">Categories</a>
+								<ul class="dropdown-menu dropdown-menu-dark">
+							      <li><a class="dropdown-item" th:href="@{'/categories/new'+'?path='}">Create new category</a></li>
+							      <li><hr class="dropdown-divider"></li>
+							      <li><a class="dropdown-item" th:href="@{/categories}">View all categories</a></li>
+							    </ul>
+							</li> 
+							<li class="nav-item dropdown" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+								<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" th:href="@{/brands}">Brands</a>
+								<ul class="dropdown-menu dropdown-menu-dark">
+							      <li><a class="dropdown-item" th:href="@{'/brands/new'+'?path='}">Create new brand</a></li>
+							      <li><hr class="dropdown-divider"></li>
+							      <li><a class="dropdown-item" th:href="@{/brands}">View all brands</a></li>
+							    </ul>
 							</li>
-							<li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor')">
-								<a class="nav-link" th:href="@{/brands}">Brands</a>
-							</li>
-							<li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson', 'Shipper')">
-								<a class="nav-link" th:href="@{/products}">Products</a>
+							<li class="nav-item dropdown" sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson', 'Shipper')">
+								<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" th:href="@{/products}">Products</a>
+								<ul class="dropdown-menu dropdown-menu-dark">
+							      <li><a class="dropdown-item" th:href="@{'/products/new'+'?path='}">Create new product</a></li>
+							      <li><hr class="dropdown-divider"></li>
+							      <li><a class="dropdown-item" th:href="@{/products}">View all products</a></li>
+							    </ul>
 							</li>
 							<li class="nav-item" sec:authorize="hasAnyAuthority('Admin', 'Assistant')">
 								<a class="nav-link" th:href="@{/questions}">Questions</a>
@@ -76,7 +96,7 @@
 							</li>
 							
 							<li class="nav-item dropdown">							
-						 	 	<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"
+						 	 	<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" 
 						 	 	sec:authentication="principal.fullName"></a>
 							    <ul class="dropdown-menu dropdown-menu-dark">
 							      <li><a class="dropdown-item" th:href="@{/account}">My account</a></li>

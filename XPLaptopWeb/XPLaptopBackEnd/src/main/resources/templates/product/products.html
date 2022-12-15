@@ -24,52 +24,65 @@
 		
 		<!-- search products -->
 		<div>
-			<form class="row g-3 mb-3" th:action="@{/products/page/1}">			
+			<form class="row g-3 mb-3" th:action="@{/products/page/1}" id="searchForm">			
 				<input type="hidden" name="sortDir" th:value="${sortDir}">
-				<div class="col-auto">
+					<div class="col-auto">
+						<label>Category: </label>					
+					</div>
+					<div class="col-auto">
+						<select class="form-select" name="categoryId" id="selectCategory">
+						<option value="0">All categories</option>
+						
+						<th:block th:each="category : ${listCategories}">
+							<option th:value="${category.id}" th:selected="${categoryId == category.id}">[[${category.name}]]</option>
+						</th:block>
+						</select>
+					</div>
+					<div class="col-auto">
 					<label>Search keyword: </label>					
-				</div>
-				<div class="col-auto">					
-					<input type="text" class="form-control" required="required" name="keyword" th:value="${keyword == null ? '' : keyword}">
-				</div>
-				<div class="col-auto">
-					<input type="submit" value="Search" class="btn btn-primary">
-				</div>
-				<div class="col-auto">
-					<input type="button" value="Clear" class="btn btn-secondary" onclick="clearFilter()">
-				</div>
+					</div>
+					<div class="col-auto">					
+						<input type="text" class="form-control" required="required" name="keyword" th:value="${keyword == null ? '' : keyword}">
+					</div>
+					<div class="col-auto">
+						<input type="submit" value="Search" class="btn btn-primary">
+					</div>
+					<div class="col-auto">
+						<input type="button" value="Clear" class="btn btn-secondary" onclick="clearFilter()">
+					</div>
 			</form>
 		</div>
 		
 		<!-- 		Less details table -->
-<!-- 		<div class="less-details"> -->
-<!-- 				<div th:each="product : ${listProducts}" class="row mb-3"> -->
-<!-- 					<div class="col-4">						 -->
-<!-- 						<img th:src="@{${product.imagePath}}" style="width: 100px"/> -->
-<!-- 					</div> -->
-<!-- 					<div class="col-8"> -->
-<!-- 						<div class="row-auto"> -->
-<!-- 							<p th:text="${product.name}" class="text-break col mb-1 fw-bold"></p> -->
-<!-- 							<div > -->
-<!-- 								<span class="mb-1 me-1 h-25 p-1 badge bg-secondary text-light border border-dark rounded col-auto" th:each="category : ${product.categories}" th:text="${category.name}"></span> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
+		<div class="less-details">
+				<div th:each="product : ${listProducts}" class="row mb-3">
+					<div class="col-4">						
+						<img th:src="@{${product.imagePath}}" style="width: 100px"/>
+					</div>
+					<div class="col-8">
+						<div class="row-auto">
+							<a class="link-details" th:href="@{'/products/detail/'+${product.id}+'?path='+${path == null ? '' : path}}" th:text="${product.name}" title="View details"></a>
+						</div>
 											
-<!-- 						<div class="row"> -->
-<!-- 							<div class="col-2"> -->
-<!-- 								<a class="fa-solid fa-pen-to-square color-green fa-1x" th:href="@{'/products/edit/'+${product.id}+'?path='+${path}}" title="Edit"></a> -->
-<!-- 							</div> -->
-<!-- 							<div class="col-2"> -->
-<!-- 								<a class="fa-solid fa-delete-left color-gray fa-1x link-delete col"  -->
-<!-- 								th:href="@{'/products/delete/'+${product.id}+'?path='+${path == null ? '' : path}}"  -->
-<!-- 								style="margin-left: 5px" title="Delete this" -->
-<!-- 								th:catName="${product.name}"></a> -->
-<!-- 							</div>			 -->
-<!-- 						</div> -->
-<!-- 					</div> -->
+						<div class="row">
+							<div class="col-2">
+								<a class="link-details col" th:href="@{'/products/detail/'+${product.id}+'?path='+${path == null ? '' : path}}"
+								style="margin: 0px 5px" title="Deltails"><i class="fa-solid fa-circle-info"></i></a>
+							</div>
+							<div class="col-2">
+								<a class="fa-solid fa-pen-to-square color-green fa-1x" th:href="@{'/products/edit/'+${product.id}+'?path='+${path}}" title="Edit"></a>
+							</div>
+							<div class="col-2">
+								<a class="fa-solid fa-delete-left color-gray fa-1x link-delete col" 
+								th:href="@{'/products/delete/'+${product.id}+'?path='+${path == null ? '' : path}}" 
+								style="margin-left: 5px" title="Delete this"
+								th:catName="${product.name}"></a>
+							</div>			
+						</div>
+					</div>
 					
-<!-- 				</div> -->
-<!-- 		</div> -->
+				</div>
+		</div>
 		
 		<!--	Full Table -->
 		<div class="full-details">
@@ -105,7 +118,7 @@
 						<td th:replace="fragments :: enableStatusColumn(${product}, 'products')"></td>
 																	
 						<td class="text-center">
-							<a class="link-details col" th:href="@{'/products/detail/'+${product.id}}"
+							<a class="link-details col" th:href="@{'/products/detail/'+${product.id}+'?path='+${path == null ? '' : path}}"
 							style="margin: 0px 5px" title="Deltails"><i class="fa-solid fa-circle-info fa-2x"></i></a>
 							<a th:replace="fragments :: editButton(${product}, 'products')"></a>
 							<a class="fa-solid fa-delete-left color-gray fa-2x link-delete col" 
@@ -174,6 +187,10 @@
 			event.preventDefault();
 			linkDetailsURL = $(this).attr("href");
 			$("#modalDetails").modal("show").find(".modal-content").load(linkDetailsURL);
+		});
+		
+		$("#selectCategory").on("change", function() {
+			$("#searchForm").submit();
 		})
 	})
 	

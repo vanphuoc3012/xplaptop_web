@@ -78,7 +78,7 @@ public class BrandController {
 	
 	@GetMapping("/brands/new")
 	public String createNewBrands(Model model,
-									@RequestParam(name = "path") String path) {
+									@RequestParam(name = "path", required = false) String path) {
 		Brand brand = new Brand();
 		model.addAttribute("brand", brand);
 		

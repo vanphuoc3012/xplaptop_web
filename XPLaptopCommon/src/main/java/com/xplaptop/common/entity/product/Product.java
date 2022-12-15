@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.Transient;
@@ -51,10 +52,11 @@ public class Product {
 	@Column(length = 1024, nullable = false)
 	private String shortDescription;
 	
-	@Column(length = 8096, nullable = false)
+	@Column(length = 12096, nullable = false)
 	private String fullDescription;
 	
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OrderBy("name asc")
 	private Set<ProductDetail> productDetails = new HashSet<>();
 	
 	private String mainImage;
@@ -135,5 +137,21 @@ public class Product {
 			}
 		}
 		return null;
+	}
+	
+	@Transient
+	public double discountPrice() {
+		if(this.discountPercent > 0) {
+			return price * ((100 - discountPercent) / 100);
+		}
+		return this.price;
+	}
+	
+	@Transient
+	public String getShortName() {
+		if(this.name.length() > 70) {
+			return this.name.substring(0, 67) + "...";
+		}
+		return this.name;
 	}
 }

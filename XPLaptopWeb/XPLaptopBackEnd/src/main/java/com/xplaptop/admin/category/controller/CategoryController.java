@@ -128,7 +128,7 @@ public class CategoryController {
 	
 	@GetMapping("/categories/new")
 	public String createNewCategory(Model model,
-									@RequestParam(name = "path") String path) {
+									@RequestParam(name = "path", required = false) String path) {
 		Category category = new Category();
 		category.setEnabled(true);
 		

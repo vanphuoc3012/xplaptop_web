@@ -31,12 +31,12 @@ public class ProductService {
 		return (List<Product>) productRepository.findAll();
 	}
 	
-	public List<Product> listProductPage(Integer pageNumber, String sortDir, String sortField, String keyword) {
-		Page<Product> page = pageProductPage(pageNumber, sortDir, sortField, keyword);
+	public List<Product> listProductPage(Integer pageNumber, String sortDir, String sortField, String keyword, Integer categoryId) {
+		Page<Product> page = pageProductPage(pageNumber, sortDir, sortField, keyword,categoryId);
 		return page.getContent();
 	}
 	
-	public Page<Product> pageProductPage(Integer pageNumber, String sortDir, String sortField, String keyword) {
+	public Page<Product> pageProductPage(Integer pageNumber, String sortDir, String sortField, String keyword, Integer categoryId) {
 		Sort sort = Sort.by(sortField);
 		if(sortDir.equals("asc")) {
 			sort = sort.ascending();
@@ -44,10 +44,19 @@ public class ProductService {
 			sort = sort.descending();
 		}
 		Pageable pageable = PageRequest.of(pageNumber-1, PRODUCT_PER_PAGE, sort);
-		if(keyword == null) {
-			return productRepository.findAll(pageable);
+		if(keyword != null && !keyword.isEmpty()) {
+			if(categoryId != null && categoryId > 0) {
+				String categoryIdMatch = "-"+categoryId+"-";
+				return productRepository.searchAllInCategory(categoryId, categoryIdMatch, keyword, pageable);
+			}
+			return productRepository.findAll(keyword, pageable);
 		}
-		return productRepository.findAll(keyword, pageable);
+		if(categoryId != null && categoryId > 0) {
+			String categoryIdMatch = "-"+categoryId+"-";
+			return productRepository.findAllInCategory(categoryId, categoryIdMatch, pageable);
+		}
+		return productRepository.findAll(pageable);
+		
 	}
 	
 	public Product findProductById(Integer id) throws ProductNotFoundException {

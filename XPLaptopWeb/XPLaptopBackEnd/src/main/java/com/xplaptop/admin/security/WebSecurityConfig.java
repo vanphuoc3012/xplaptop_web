@@ -31,7 +31,12 @@ public class WebSecurityConfig {
 		http.authorizeRequests()
 			.mvcMatchers("/users/**", "/setting/**").hasAuthority("Admin")
 			.mvcMatchers("/categories/**", "/brands/**","/articles/**", "/menus/**").hasAnyAuthority("Admin", "Editor")
-			.mvcMatchers("/products/**").hasAnyAuthority("Admin", "Salesperson", "Editor", "Shipper")
+			
+			.mvcMatchers("/products", "/products/page/**", "/products/detail/**").hasAnyAuthority("Admin", "Salesperson", "Editor", "Shipper")
+			.mvcMatchers("/products/new", "/product/delete/**").hasAnyAuthority("Admin", "Editor")
+			.mvcMatchers("products/edit/**", "/products/save", "/products/check_unique").hasAnyAuthority("Admin", "Salesperson", "Editor")
+			.mvcMatchers("/products/**").hasAnyAuthority("Admin", "Editor")
+			
 			.mvcMatchers("/questions/**", "/reviews/**").hasAnyAuthority("Admin", "Assistant")
 			.mvcMatchers("/customers/**", "/shipping/**", "/orders/**", "/reports/**").hasAnyAuthority("Admin")
 			.anyRequest().authenticated()

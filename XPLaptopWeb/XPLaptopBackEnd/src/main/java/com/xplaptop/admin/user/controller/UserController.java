@@ -222,10 +222,4 @@ public class UserController {
 		exporter.export(listUsers, response);
 		
 	}
-	
-	@GetMapping("/login")
-	public String loginPage() {
-		return "login";
-	}
-
 }

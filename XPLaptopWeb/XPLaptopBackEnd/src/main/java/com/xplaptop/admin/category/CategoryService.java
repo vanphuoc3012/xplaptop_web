@@ -92,7 +92,13 @@ public class CategoryService {
 		}
 	}
 	
-	public Category save(Category category) {		
+	public Category save(Category category) {	
+		Category parentCategory = category.getParent();
+		if(parentCategory != null) {
+			String allParentIds = parentCategory.getParent() == null ? "-" : parentCategory.getAllParentIds();
+			allParentIds += parentCategory.getId() + "-";
+			category.setAllParentIds(allParentIds);
+		}
 		return categoryRepo.save(category);
 	}
 	
@@ -122,7 +128,7 @@ public class CategoryService {
 				categoryRepo.saveAll(childCate);
 			} else {
 				cateToUpdate.setEnabled(true);
-				categoryRepo.save(cateToUpdate);
+				this.save(cateToUpdate);
 			}
 		} else {
 			throw new CategoryNotFoundException("No category found with ID: "+id);

@@ -1,10 +1,23 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="ISO-8859-1">
-<title>Welcome to XPLaptop</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head('XPLaptop')"></head>
 <body>
-	<h1>Welcome to XPLaptop Shop</h1>
+	<nav th:replace="navigation :: navBar"></nav>
+	<h1>Browser product by Category</h1>
+	
+	<div class="row">
+		<div class="col m-3" th:each="category : ${listCategories}">
+		<th:block th:if="${category.enabled == true}">
+			<div>
+				<img th:alt="${category.name}" th:src="@{${category.imagePath}}" style="width: 100px">
+			</div>
+			<div>
+				<a th:href="@{'/c/'+${category.alias}}" th:text="${category.name}"></a>
+			</div>
+		</th:block>
+		</div>
+	</div>
+	
+	<div th:replace="navigation :: footer"></div>
 </body>
 </html>

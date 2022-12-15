@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta th:name="_csrf" th:content="${_csrf.token}"/>
+	<meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+	<title>[[${title}]]</title>
+	
+	<script type="text/javascript" th:src="@{/webjars/jquery/dist/jquery.js}" ></script>
+	<script type="text/javascript" th:src="@{/js/logout.js}" ></script>
+	
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/fontawesome.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/solid.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/color.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/main.css}" />	
+	
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.css}" />
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}" ></script>
+	
+</head>
+<body>
+	<!-- breadcrumb -->
+	<div th:fragment="breadcrumb" th:if="${listCategoryParent != null && !listCategoryParent.isEmpty}">
+		<div class="row">
+			<div class="col">
+				<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<th:block th:each="c : ${listCategoryParent}">
+							<li class="breadcrumb-item"><a th:href="@{'/c/'+${c.alias}}">[[${c.name}]]</a></li>
+						</th:block>
+						<th:block th:if="${product != null}">
+							<li class="breadcrumb-item active">[[${product.name}]]</li>
+						</th:block>
+					</ol>
+				</nav>
+			</div>
+		</div>	
+	</div>
+	
+</body>
+</html>

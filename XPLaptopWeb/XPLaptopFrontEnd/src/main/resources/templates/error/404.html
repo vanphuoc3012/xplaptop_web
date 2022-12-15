@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments :: head('Home - XPLaptop')">	
+</head>
+<body>
+	<div class="container-fluid">
+		<nav th:replace="navigation :: navBar"></nav>
+		
+		<div>
+			<h2>Sorry, the requested page could not be found</h2>
+		</div>
+		
+		<div th:replace="navigation :: footer"></div>
+	</div>
+
+</body>
+</html>

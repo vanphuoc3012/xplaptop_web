@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -47,11 +48,15 @@ public class Category {
 	
 	private boolean enabled;
 	
+	@Column(length =  256, nullable = true)
+	private String allParentIds;
+	
 	@OneToOne
 	@JoinColumn(name = "parent_id")
 	private Category parent;
 	
 	@OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
+	@OrderBy("name ASC")
 	private Set<Category> children = new HashSet<>();
 
 	public Category(@NonNull String name, @NonNull String alias, String image, boolean enabled,
