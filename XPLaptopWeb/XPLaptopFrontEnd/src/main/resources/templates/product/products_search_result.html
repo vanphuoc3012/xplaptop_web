@@ -1,38 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments :: head(${category.name})"></head>
+<head th:replace="fragments :: head(${'Search result: '+keyword})"></head>
 <body>
 <div class="container-fluid">
 	<nav th:replace="navigation :: navBar"></nav>
 	
 	<div th:replace="search :: search_nav"></div>
 	
-	<h1>Category: [[${category.name}]]</h1>
-	
-	<div th:replace="fragments :: breadcrumb"></div>
-	
-	<!-- child categories list -->
-	<div class="row">
-		<th:block th:each="c : ${category.children}">
-			<div class="col">
-				<th:block th:if="${c.enabled ==  true}">
-					<a th:href="@{'/c/'+${c.alias}}">
-						<img th:alt="${c.name}" th:src="@{${c.imagePath}}" style="width: 100px">
-						<br>
-						<b th:text="${c.name}"></b>
-					</a>
-				</th:block>			
-			</div>
-			
-
-		</th:block>
+	<div th:if="${message != null}">
+		<h1>[[${message}]]</h1>
+	</div>
+	<div th:if="${message == null}">
+		<h1>Search result for '<span class="fst-italic">[[${keyword}]]</span>'</h1>
 	</div>
 	
-	<!-- products list -->
-	<div th:if="${!productsByCategory.isEmpty}">
+	<div th:if="${!searchResults.isEmpty}">
 		<div class="row">
-			<th:block th:each="product : ${productsByCategory}">
-				<div class="col-auto">
+			<th:block th:each="product : ${searchResults}">
+				<div class="col">
 					<div>
 						<a th:href="@{'/p/'+${product.alias}}">
 							<img alt="" th:src="@{${product.imagePath}}" class="img-thumbnail" style="width: 200px">
@@ -61,11 +46,12 @@
 			</th:block>
 		</div>
 	</div>
-	
-	<div th:replace="navigation :: pageNavigation(${'c/'+category.alias}, 'product')"></div>
-	
-	<div th:replace="navigation :: footer"></div>
-</div>
-	
+</div>	
+
+<div th:replace="navigation :: pageNavigation('search', 'product')"></div>
+
+<div th:replace="navigation :: footer"></div>
+
+<script type="text/javascript" th:src="@{/js/price.js}"></script>
 </body>
 </html>

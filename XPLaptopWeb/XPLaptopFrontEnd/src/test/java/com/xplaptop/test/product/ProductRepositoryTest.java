@@ -35,4 +35,14 @@ public class ProductRepositoryTest {
 		Product p = productRepository.findByAlias(alias);
 		assertThat(p).isNotNull();
 	}
+	
+	@Test
+	public void testSearchFunction() {
+		String keyword = "intel";
+		
+		Pageable pageable = PageRequest.of(0, 10);
+		Page<Product> page = productRepository.search(keyword, pageable);
+		
+		assertThat(page.getContent()).hasSize(7);
+	}
 }

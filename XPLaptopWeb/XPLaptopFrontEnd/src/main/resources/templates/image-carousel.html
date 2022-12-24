@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div id="imageCarouselModal" th:fragment="content" class="modal fade"
+		tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div id="carouselExampleIndicators" class="carousel slide carousel-dark" data-bs-ride="true">
+						<div class="carousel-indicators">
+							<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></button>
+							
+							<th:block th:each="pi, status : ${product.productImages}">
+								<button type="button" data-bs-target="#carouselExampleIndicators" th:data-bs-slide-to="${status.count}"></button>
+							</th:block>
+						</div>
+						
+						<div class="carousel-inner text-center">
+							<div class="carousel-item active">
+								<img th:src="@{${product.imagePath}}" class="d-block w-75 m-auto">
+							</div>
+							<div class="carousel-item" th:each="pi : ${product.productImages}">
+								<img th:src="@{${pi.extraImagePath}}" class="d-block w-75 m-auto">
+							</div>
+						</div>
+						
+						<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+							<span class="visually-hidden">Previous</span>
+						</button>
+						<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+							<span class="carousel-control-next-icon" aria-hidden="true"></span>
+							<span class="visually-hidden">Next</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

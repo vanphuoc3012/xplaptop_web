@@ -50,6 +50,9 @@ public class UserController {
 									@RequestParam String sortDir,
 									@RequestParam(required = false) String keyword,
 									HttpServletRequest request) {
+		
+		model.addAttribute("keyword", keyword);	
+		
 		Sort sort = Sort.by(sortField);
 		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
 		

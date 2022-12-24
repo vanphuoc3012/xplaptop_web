@@ -6,116 +6,111 @@
 </head>
 <body>
 	<div>
-		<nav th:fragment="navBar" class="navbar navbar-expand-lg bg-dark navbar-dark">
-				<div class="container-fluid">
-					<a class="navbar-brand" th:href="@{/}">
-						<img alt="logo" th:src="@{/images/xplaptoplogosmall.png}">
-					</a>
-					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar123">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-					<div class="collapse navbar-collapse" id="topNavbar123">
-						<ul class="nav nav-tabs navbar-nav me-auto my-2 my-lg-0">
-							<li class="nav-item">
-								<a class="nav-link" th:href="@{/careers}">Careers</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" th:href="@{/}">Payment</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" th:href="@{/}">Shipping and Delivery</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" th:href="@{/}">Login</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" th:href="@{/}">Register</a>
-							</li>
-						</ul>
-					</div>
+		<nav th:fragment="navBar"
+			class="navbar navbar-expand-lg bg-dark navbar-dark">
+			<div class="container-fluid">
+				<a class="navbar-brand" th:href="@{/}"> <img alt="logo"
+					th:src="@{${SITE_LOGO}}" width="200px">
+				</a>
+				<button class="navbar-toggler" type="button"
+					data-bs-toggle="collapse" data-bs-target="#topNavbar123, #searchNav">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="topNavbar123">
+					<ul class="nav nav-tabs navbar-nav me-auto my-2 my-lg-0">
+						<li class="nav-item"><a class="nav-link"
+							th:href="@{/careers}">Careers</a></li>
+						<li class="nav-item"><a class="nav-link" th:href="@{/}">Payment</a>
+						</li>
+						<li class="nav-item"><a class="nav-link" th:href="@{/}">Shipping
+								and Delivery</a></li>
+						<li class="nav-item"><a class="nav-link" th:href="@{/}">Login</a>
+						</li>
+						<li class="nav-item"><a class="nav-link" th:href="@{/}">Register</a>
+						</li>
+					</ul>
 				</div>
-				<form th:hidden="true" id="logoutForm" th:action="@{/logout}" method="post">
-					<input type="submit">
-				</form>				
-			</nav>
+			</div>
+			<form th:hidden="true" id="logoutForm" th:action="@{/logout}"
+				method="post">
+				<input type="submit">
+			</form>
+		</nav>
 	</div>
-	
+
 	<!-- 	for page navigation -->
 	<div th:fragment="pageNavigation(entityURL, name)">
-			<div class="d-flex justify-content-center" th:if="${totalElement > 0}">
-				<span>Showing [[${name}]] # [[${startElement}]] to [[${endElement}]] of [[${totalElement}]]</span>
-			</div>
-			<div class="d-flex justify-content-center" th:if="${totalElement == 0}">	
-					<span>No [[${entityURL}]] found</span>
-			</div>
-			
-			<div th:if="${totalPage > 0}">
-				<nav class="col">
-				  <ul class="pagination justify-content-center">
-				    <li class="page-item">
-				      <a class="page-link" th:href="@{'/'+${entityURL}+'/page/'+${pageNumber-1}+'/?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}+${keyword != null ? '&keyword=' + keyword : ''}}" 
-				      th:classappend="${pageNumber < 2 ? 'disabled' : ''}" aria-label="Previous">
-				        <span aria-hidden="true">&laquo;</span>
-				      </a>
-				    </li>
-				    <li class="page-item" th:if="${pageNumber - 5 > 1}">
-			    		<a class="page-link disabled" href="#" aria-label="Next">
-				        	<span aria-hidden="true">&hellip;</span>
-				      	</a>
-				    </li>
-				    <li class="page-item" th:classappend="${i == pageNumber ? 'active' : ''}"
-				    	th:each="i : ${#numbers.sequence(pageNumber - 5 > 1 ? pageNumber - 5 : 1, pageNumber + 5 < totalPage ? pageNumber + 5 : totalPage ,1)}">
-				    	<a class="page-link" th:href="@{'/'+${entityURL}+'/page/'+${i}+'/?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}+${keyword != null ? '&keyword=' + keyword : ''}}" 
-				    	th:text="${i}"></a>
-				    </li>
-				    <li class="page-item" th:if="${pageNumber + 5 < totalPage}">
-			    		<a class="page-link disabled" href="#" aria-label="Next">
-				        	<span aria-hidden="true">&hellip;</span>
-				      	</a>
-				    </li>
-				    <li class="page-item">
-				      <a class="page-link" th:href="@{'/'+${entityURL}+'/page/'+${pageNumber+1}+'/?sortField=' + ${sortField} + '&sortDir='+${sortDir}+${keyword != null ? '&keyword=' + keyword : ''}}" 
-				      th:classappend="${pageNumber > totalPage-1 ? 'disabled' : ''}" aria-label="Next">
-				        <span aria-hidden="true">&raquo;</span>
-				      </a>
-				    </li>
-				    <li class="page-item">
-				      <a class="page-link" th:href="@{'/'+${entityURL}+'/page/'+${totalPage}+'/?sortField=' + ${sortField} + '&sortDir='+${sortDir}+${keyword != null ? '&keyword=' + keyword : ''}}" th:classappend="${pageNumber == totalPage ? 'disabled' : ''}" aria-label="Next">
-				        <span aria-hidden="true">Last</span>
-				      </a>
-				    </li>
-				  </ul>
-				</nav>
-			</div>
+		<div class="d-flex justify-content-center" th:if="${totalElement > 0}">
+			<span>Showing [[${name}]] # [[${startElement}]] to
+				[[${endElement}]] of [[${totalElement}]]</span>
 		</div>
-	
-	<div th:fragment="footer">
-		<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
-				<div class="container-fluid">
-					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#bottomNavbar123">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-					<div class="collapse navbar-collapse" id="bottomNavbar123">
-						<ul class="nav nav-tabs navbar-nav me-auto my-2 my-lg-0">
-							<li class="nav-item">
-								<a class="nav-link" th:href="@{/careers}">About us</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" th:href="@{/}">Privacy</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" th:href="@{/}">Contact</a>
-							</li>
-							
-						</ul>
-					</div>
-				</div>		
+		<div class="d-flex justify-content-center"
+			th:if="${totalElement == 0}">
+			<span>No [[${entityURL}]] found</span>
+		</div>
+
+		<div th:if="${totalPage > 0}">
+			<nav class="col">
+				<ul class="pagination justify-content-center">
+					<li class="page-item"><a class="page-link"
+						th:href="@{'/'+${entityURL}+'/page/'+${pageNumber-1}+'/?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}+${keyword != null ? '&keyword=' + keyword : ''}}"
+						th:classappend="${pageNumber < 2 ? 'disabled' : ''}"
+						aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+					</a></li>
+					<li class="page-item" th:if="${pageNumber - 5 > 1}"><a
+						class="page-link disabled" href="#" aria-label="Next"> <span
+							aria-hidden="true">&hellip;</span>
+					</a></li>
+					<li class="page-item"
+						th:classappend="${i == pageNumber ? 'active' : ''}"
+						th:each="i : ${#numbers.sequence(pageNumber - 5 > 1 ? pageNumber - 5 : 1, pageNumber + 5 < totalPage ? pageNumber + 5 : totalPage ,1)}">
+						<a class="page-link"
+						th:href="@{'/'+${entityURL}+'/page/'+${i}+'/?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}+${keyword != null ? '&keyword=' + keyword : ''}}"
+						th:text="${i}"></a>
+					</li>
+					<li class="page-item" th:if="${pageNumber + 5 < totalPage}"><a
+						class="page-link disabled" href="#" aria-label="Next"> <span
+							aria-hidden="true">&hellip;</span>
+					</a></li>
+					<li class="page-item"><a class="page-link"
+						th:href="@{'/'+${entityURL}+'/page/'+${pageNumber+1}+'/?sortField=' + ${sortField} + '&sortDir='+${sortDir}+${keyword != null ? '&keyword=' + keyword : ''}}"
+						th:classappend="${pageNumber > totalPage-1 ? 'disabled' : ''}"
+						aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+					</a></li>
+					<li class="page-item"><a class="page-link"
+						th:href="@{'/'+${entityURL}+'/page/'+${totalPage}+'/?sortField=' + ${sortField} + '&sortDir='+${sortDir}+${keyword != null ? '&keyword=' + keyword : ''}}"
+						th:classappend="${pageNumber == totalPage ? 'disabled' : ''}"
+						aria-label="Next"> <span aria-hidden="true">Last</span>
+					</a></li>
+				</ul>
 			</nav>
-			
-			<div class="text-center">
-		<p>XPLaptop Control Panel - Copyright &copy; XPLaptop </p>
+		</div>
 	</div>
+
+	<div th:fragment="footer">
+		<div class="text-center">
+			<p>[[${COPYRIGHT}]]</p>
+		</div>
+		<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+			<div class="container-fluid">
+				<button class="navbar-toggler" type="button"
+					data-bs-toggle="collapse" data-bs-target="#bottomNavbar123">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="bottomNavbar123">
+					<ul class="nav nav-tabs navbar-nav me-auto my-2 my-lg-0">
+						<li class="nav-item"><a class="nav-link"
+							th:href="@{/careers}">About us</a></li>
+						<li class="nav-item"><a class="nav-link" th:href="@{/}">Privacy</a>
+						</li>
+						<li class="nav-item"><a class="nav-link" th:href="@{/}">Contact</a>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+		</nav>
 	</div>
-	
+
 </body>
 </html>

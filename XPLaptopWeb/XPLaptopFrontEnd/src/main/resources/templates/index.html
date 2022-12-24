@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments :: head('XPLaptop')"></head>
+<head th:replace="fragments :: head('Home')"></head>
 <body>
 	<nav th:replace="navigation :: navBar"></nav>
+	
+	<div th:replace="search :: search_nav"></div>
+	
 	<h1>Browser product by Category</h1>
 	
 	<div class="row">
-		<div class="col m-3" th:each="category : ${listCategories}">
+		<div class="col-1 m-3" th:each="category : ${listCategories}">
 		<th:block th:if="${category.enabled == true}">
 			<div>
 				<img th:alt="${category.name}" th:src="@{${category.imagePath}}" style="width: 100px">

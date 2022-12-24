@@ -97,5 +97,41 @@ public class ProductsController {
 		return "product/product_detail";
 	}
 	
+	@GetMapping("/search")
+	public String searchProductsFirstPage(
+			Model model,
+			@RequestParam(name = "keyword") String keyword) {
+		
+		return searchProducts(model, keyword, 1);
+	}
+	
+	@GetMapping("/search/page/{pageNumber}")
+	public String searchProducts(
+			Model model,
+			@RequestParam(name = "keyword") String keyword,
+			@PathVariable(name = "pageNumber") Integer pageNumber) {
+		
+		Page<Product> page = productService.findProductsByKeyword(keyword, pageNumber);
+		List<Product> searchResults = page.getContent();
+		
+		if(searchResults == null || searchResults.size() == 0) {
+			model.addAttribute("message", "No products found for keyword: "+keyword);
+		} else {
+			model.addAttribute("searchResults", searchResults);
+			
+			int totalPage = page.getTotalPages();
+			int categoryPerPage = page.getNumberOfElements();
+			long totalElement = page.getTotalElements();
+			int startElement = (pageNumber - 1) * categoryPerPage + 1;
+			int endElement = pageNumber * categoryPerPage;
+			model.addAttribute("pageNumber", pageNumber);
+			model.addAttribute("totalPage", totalPage);
+			model.addAttribute("totalElement", totalElement);
+			model.addAttribute("startElement", startElement);
+			model.addAttribute("endElement", endElement);
+		}
+		model.addAttribute("keyword", keyword);
+		return "product/products_search_result";
+	}
 	
 }

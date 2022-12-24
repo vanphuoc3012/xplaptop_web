@@ -13,6 +13,8 @@ import com.xplaptop.common.entity.product.Product;
 public class ProductService {
 	private static final int PRODUCTS_PER_PAGE = 2;
 	
+	private static final int PRODUCTS_SEARCH_RESULT_PER_PAGE = 2;
+	
 	@Autowired
 	private ProductRepository productRepository;
 	
@@ -34,5 +36,10 @@ public class ProductService {
 			throw new ProductNotFoundException("No such product found with alias: "+alias);
 		}
 		return p;
+	}
+
+	public Page<Product> findProductsByKeyword(String keyword, Integer pageNumber) {
+		Pageable pageable = PageRequest.of(pageNumber - 1, PRODUCTS_SEARCH_RESULT_PER_PAGE);
+		return productRepository.search(keyword, pageable);
 	}
 }

@@ -4,19 +4,24 @@
 <body>
 <div class="container-fluid">
 	<nav th:replace="navigation :: navBar"></nav>
-	<!-- <h1>[[${product.name}]]</h1> -->
+	
+	<div th:replace="search :: search_nav"></div>
 	
 	<div th:replace="fragments :: breadcrumb"></div>
 	
 	<!-- product images, name, short description, add to cart -->
 	<div class="row">
 		<div class="col">
-			<div>
-				<img class="img-fluid " th:src="@{${product.imagePath}}">
+			<div class="text-center">
+				<img id="big-image" class="img-fluid img-thumbnail" th:src="@{${product.imagePath}}" style="max-height: 600px" tabindex="0">
 			</div>
-			<div class="row">
-				<div class="col">
-					<img th:src="@{${product.imagePath}}" style="height: 100px">
+			
+			<div class="row justify-content-center mt-3">
+				<div class="col-auto">
+					<img class="product-images border border-secondary" th:src="@{${product.imagePath}}" style="max-height: 100px" tabindex="0">
+				</div>
+				<div class="col-auto" th:each="pi, status : ${product.productImages}">
+					<img class="product-images border border-secondary" th:src="@{${pi.extraImagePath}}" style="max-height: 100px; width: 150px" th:tabindex="${status.count}">
 				</div>
 			</div>
 		</div>
@@ -30,14 +35,26 @@
 			<div>
 				<div>
 					List Price:
-					<span class="price">[[${product.price}]]</span>
+					<span>
+						<div th:replace="product/price_fragment :: price"></div>
+					</span>
 				</div>
 				<div>
+					Price:
+					<th:block th:if="${product.discountPercent <= 0}">
+						<span class="fs-4 fw-bold">
+							<div th:replace="product/price_fragment :: price"></div>
+						</span>
+					</th:block>
 					<th:block th:if="${product.discountPercent > 0}">
-						Price:
-						<span class="fs-4 text-danger fw-bold price">[[${product.discountPrice}]]</span>
+						<span class="fs-4 text-danger fw-bold">
+							<div th:replace="product/price_fragment :: price"></div>
+						</span>
+						
 						-
-						<span class="text-decoration-line-through price">[[${product.price}]]</span>
+						<span class="text-decoration-line-through price">
+							<div th:replace="product/price_fragment :: price"></div>
+						</span>
 						<span class="fst-italic">([[${product.discountPercent}]]% off)</span>
 					</th:block>
 				</div>
@@ -93,15 +110,24 @@
 		</div>
 	</div>
 	
-	
+	<div th:replace="image-carousel :: content"></div>
 	<div th:replace="navigation :: footer"></div>
 </div>
-	
 	<script type="text/javascript">
-		$(".price").each(function() {
-			console.log(Number($(this).text()).toFixed());
-			$(this).text(Number($(this).text()).toLocaleString()+' vnđ');
-		})
+		$(document).ready(function() {
+			$(".product-images").mouseover(function() {
+				currentImgSrc = $(this).attr("src");
+				imageIndex = $(this).attr("tabindex");
+				$("#big-image").attr("src", currentImgSrc);
+				$("#big-image").attr("tabindex", imageIndex);
+			});
+			
+			$("#big-image").click(function() {
+				imageIndex = parseInt($(this).attr("tabindex"));
+				$("#imageCarouselModal").modal("show");
+				$("#carouselExampleIndicators").carousel(imageIndex);
+			});
+		});
 	</script>
 </body>
 </html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div th:fragment="content" th:remove="tag">
+		<form th:action="@{/setting/save_general}" method="post" enctype="multipart/form-data">
+		
+			<!-- Site name -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Site name: </label>
+				<div class="col-sm">
+					<input class="form-control" type="text" placeholder="your site name" maxlength="128" name="SITE_NAME" th:value="${SITE_NAME}" required/>
+				</div>
+			</div>
+			
+			<!-- Copyright -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Copyright: </label>
+				<div class="col-sm">
+					<input class="form-control" type="text" placeholder="your site name" maxlength="128" name="COPYRIGHT" th:value="${COPYRIGHT}" required/>
+				</div>
+			</div>
+			
+			<!--upload photo -->
+			<div class="form-group m-3 row">
+				<label class="col-sm-3 col-form-label">Logo: </label>
+				<div class="row col-sm">
+					<div class="col-sm-2 row justify-content-center">
+						<img class="img-thumbnail" alt="Preview photo" th:src="@{${SITE_LOGO}}" id="previewImg" />
+					</div>
+					<div class="col-sm">
+						<input class="form-control mb-3" type="file" accept="image/png, image/jpeg" id="fileImg" name="siteLogo"/>
+					</div>	
+				</div>
+			</div>
+			
+			<!--currency select field  -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Currency Type: </label>
+				<div class="col-sm">
+					<select class="form-select" name="CURRENCY_ID" required>
+						<th:block th:each="currency : ${allCurrencies}">
+							<option th:value="${currency.id}" th:text="${currency.toString}" th:selected="${currency.id} == ${CURRENCY_ID}"></option>
+						</th:block>								
+					</select>
+				</div>
+			</div>
+			
+			<!--currency symbol position  -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Currency Symbol Position: </label>
+				<div class="col-sm">
+					<select class="form-select" name="CURRENCY_SYMBOL_POSITION" required>
+						<option value="Before" th:selected="${CURRENCY_SYMBOL_POSITION} == 'Before'">Before</option>
+						<option value="After" th:selected="${CURRENCY_SYMBOL_POSITION} == 'After'">After</option>
+					</select>
+				</div>
+			</div>
+			
+			<!--decimal point type  -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Decimal Point Type: </label>
+				<div class="col-sm">
+					<select class="form-select" name="DECIMAL_POINT_TYPE" required>
+						<option value="POINT" th:selected="${DECIMAL_POINT_TYPE} == 'POINT'">Point(.)</option>
+						<option value="COMMA" th:selected="${DECIMAL_POINT_TYPE} == 'COMMA'">Comma(,)</option>
+					</select>
+				</div>
+			</div>
+			
+			<!--decimal point type  -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Decimal Digits: </label>
+				<div class="col-sm">
+					<select class="form-select" name="CURRENCY_DIGITS" required>
+						<option value="0" th:selected="${CURRENCY_DIGITS} == 0">0</option>
+						<option value="1" th:selected="${CURRENCY_DIGITS} == 1">1</option>
+						<option value="2" th:selected="${CURRENCY_DIGITS} == 2">2</option>
+						<option value="3" th:selected="${CURRENCY_DIGITS} == 3">3</option>
+						<option value="4" th:selected="${CURRENCY_DIGITS} == 4">4</option>
+					</select>
+				</div>
+			</div>
+			
+			<!--thousands point type  -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Thousand Point Type: </label>
+				<div class="col-sm">
+					<select class="form-select" name="THOUSANDS_POINT_TYPE" required>
+						<option value="POINT" th:selected="${THOUSANDS_POINT_TYPE} == 'POINT'">Point(.)</option>
+						<option value="COMMA" th:selected="${THOUSANDS_POINT_TYPE} == 'COMMA'">Comma(,)</option>
+					</select>
+				</div>
+			</div>
+			
+			<!-- save button -->
+					<div class="text-center mb-3">
+						<input type="submit" class="btn btn-primary btn-sm" id="btnSubmit"/>
+					</div>
+		</form>
+	</div>
+	
+	
+</body>
+</html>
