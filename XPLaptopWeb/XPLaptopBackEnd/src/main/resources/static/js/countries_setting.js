@@ -105,7 +105,7 @@ function addCountry() {
 		showToastMessage("The new country has been added");
 	}).fail(function() {
 		showToastMessage("Error: Could not connect to server or server encounter an error");
-	});;
+	});
 }
 
 function selectNewlyAddedCountry(countryId, countryCode, countryName) {
