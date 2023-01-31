@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div th:fragment="content" th:remove="tag">
+		<form th:action="@{/setting/save_mail_tamplates}" method="post">
+			<div class="border border-secondary rounded border-2 m-3">
+				<nav>
+				  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+				    <a class="nav-link active" id="nav-customer-verify-tab" data-bs-toggle="tab" data-bs-target="#nav-customer-verify" type="button" role="tab">Customer Verification</a>
+				    <a class="nav-link" id="nav-order-confirm-tab" data-bs-toggle="tab" data-bs-target="#nav-order-confirm" type="button" role="tab">Order confirmation</a>
+				    </div>
+				</nav>
+				<div class="tab-content" id="nav-tabContent">
+					<div class="tab-pane fade show active" id="nav-customer-verify" role="tabpanel">
+						<div th:replace="settings/mail_templates/customer_verification :: content" />
+					</div>
+					
+					<div class="tab-pane fade p-3" id="nav-order-confirm" role="tabpanel">
+						
+					</div>
+				</div>
+			</div>
+			
+			<!-- save button -->
+			<div class="text-center mb-3">
+				<input type="submit" class="btn btn-primary btn-sm" id="btnSubmit"/>
+			</div>
+		</form>
+	</div>
+	
+</body>
+</html>

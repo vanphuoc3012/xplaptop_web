@@ -58,6 +58,30 @@ public class SettingController {
 		
 		return "redirect:/settings";
 	}
+	
+	@PostMapping("/setting/save_mail_server")
+	public String saveMailServerSetting(
+			HttpServletRequest request,
+			RedirectAttributes redirectAttributes) {
+		List<Setting> mailServerSetting = service.getMailServerSetting();
+		updateSettingValuesFromForm(request, mailServerSetting);
+		
+		redirectAttributes.addFlashAttribute("message", "Mail Server Setting has been saved successfully");
+		return "redirect:/settings#mailserver";
+	}
+	
+	@PostMapping("/setting/save_mail_tamplates")
+	public String saveMailTemplatesSetting(
+			HttpServletRequest request,
+			RedirectAttributes redirectAttributes) {
+		List<Setting> mailTemplatesSetting = service.getMailTemplatesSetting();
+		updateSettingValuesFromForm(request, mailTemplatesSetting);
+		
+		redirectAttributes.addFlashAttribute("message", "Mail Templates Setting has been saved successfully");
+		return "redirect:/settings#mailtemplates";
+	}
+	
+	
 
 	private void saveSiteLogo(MultipartFile multipartFile, GeneralSettingBag generalSettingBag) throws IOException {
 		if(!multipartFile.isEmpty()) {

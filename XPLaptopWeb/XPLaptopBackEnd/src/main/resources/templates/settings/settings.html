@@ -58,23 +58,17 @@
 						</div>
 						
 						<div class="tab-pane fade" id="nav-mailserver" role="tabpanel">
-						
+							<div th:replace="settings/mail_server :: content" />
 						</div>
 						
 						<div class="tab-pane fade" id="nav-mailtemplates" role="tabpanel">
-						
+							<div th:replace="settings/mail_templates/mail_templates :: content" />
 						</div>
 						
 						<div class="tab-pane fade" id="nav-payment" role="tabpanel">
 						
 						</div>
 					</div>
-					
-					<!-- save button and cancel button	 -->
-				<!-- 	<div class="text-center mb-3 mt-3">
-						<input type="submit" value="Save" class="btn btn-primary btn-sm" id="btnSubmit"/>
-						<input type="button" value="Cancel" class="btn btn-secondary btn-sm" id="buttonCancel"/>
-					</div> -->
 					
 			</div>
 		</div>
@@ -106,7 +100,9 @@
 			} else {
 				showImgThumbnail(this);
 			}
-		})		
+		});
+		
+		$("#customerVerificationContent").richText();
 	});
 	
 	function showImgThumbnail(fileInput) {
@@ -121,10 +117,12 @@
 	contextPath = "[[@{/}]]";
 	var csrfHeaderName = "[[${_csrf.headerName}]]";
 	var csrfValue = "[[${_csrf.token}]]";
+	
 	</script>
 	
 	<script th:src="@{/js/countries_setting.js}" type="text/javascript"></script>
 	<script th:src="@{/js/states_setting.js}" type="text/javascript"></script>
+	<script th:src="@{/js/common.js}" type="text/javascript"></script>
 </body>
 	
 </html>
