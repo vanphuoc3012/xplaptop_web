@@ -13,7 +13,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer>{
 	Customer findByVerificationCode(String code);
 	
 	@Modifying
-	@Query("UPDATE Customer c SET c.enabled = true WHERE c.id = ?1")
+	@Query("UPDATE Customer c SET c.enabled = true, c.verificationCode = null WHERE c.id = ?1")
 	void enable(Integer customerId);
 
 	boolean existsByEmail(String email);

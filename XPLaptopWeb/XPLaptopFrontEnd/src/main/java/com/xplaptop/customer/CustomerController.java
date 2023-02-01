@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -47,6 +48,15 @@ public class CustomerController {
         model.put("pageTitle", "Registration Succeed");
 
         return "/register/register_success";
+    }
+
+    @GetMapping("/verify")
+    public String verifyCustomer(@RequestParam(name = "code") String code,
+                                 ModelMap model) {
+        boolean verified = customerService.verifyCustomer(code);
+
+        if(verified) return "register/verified";
+        return "register/verified_fail";
     }
 
     private void sendVerificationEmail(HttpServletRequest request, Customer customer) throws MessagingException, UnsupportedEncodingException {

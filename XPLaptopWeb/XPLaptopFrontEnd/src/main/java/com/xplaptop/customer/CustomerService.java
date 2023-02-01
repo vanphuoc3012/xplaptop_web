@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 
@@ -45,5 +46,16 @@ public class CustomerService {
 	private void encodePassword(Customer customer) {
 		String encodedPassword = passwordEncoder.encode(customer.getPassword());
 		customer.setPassword(encodedPassword);
+	}
+
+	@Transactional
+	public boolean verifyCustomer(String verificationCode) {
+		Customer customer = customerRepo.findByVerificationCode(verificationCode);
+
+		if(customer == null || customer.isEnabled()) return false;
+
+		customerRepo.enable(customer.getId());
+
+		return true;
 	}
 }
