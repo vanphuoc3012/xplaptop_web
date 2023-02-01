@@ -1,6 +1,7 @@
 package com.xplaptop.admin.settting.state;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +23,7 @@ public class StateRestController {
 		List<State> listStates = stateRepo.findByCountryOrderByNameAsc(new Country(countryId));
 		
 		return listStates.stream().map(s -> new StateDTO(s.getId(), s.getName()))
-				.toList();
+				.collect(Collectors.toList());
 	}
 	
 	@PostMapping("/states/save")

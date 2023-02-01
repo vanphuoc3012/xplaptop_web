@@ -12,7 +12,7 @@
 	<name>XPLaptopBackEnd</name>
 	<description>XPLaptop Admin Project</description>
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>11</java.version>
 	</properties>
 
 	<build>

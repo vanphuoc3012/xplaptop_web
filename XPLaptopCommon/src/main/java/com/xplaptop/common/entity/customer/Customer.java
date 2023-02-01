@@ -75,4 +75,8 @@ public class Customer {
 	@Column(name = "created_time")
 	private Date createdTime;
 
+	public String getFullName() {
+		return firstName + " " + lastName;
+	}
+
 }

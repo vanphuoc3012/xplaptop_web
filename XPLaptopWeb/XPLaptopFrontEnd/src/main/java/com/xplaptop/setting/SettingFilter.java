@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import com.xplaptop.common.entity.setting.Setting;
 
 @Component
-public class SttingFilter implements Filter {
+public class SettingFilter implements Filter {
 	
 	@Autowired
 	private SettingService service;
@@ -33,9 +33,7 @@ public class SttingFilter implements Filter {
 		}
 		
 		List<Setting> listSettings = service.getListSettings();
-		listSettings.forEach(s -> {
-				request.setAttribute(s.getKey(), s.getValue());
-		});
+		listSettings.forEach(s -> request.setAttribute(s.getKey(), s.getValue()));
 		
 		chain.doFilter(request, response);
 	}

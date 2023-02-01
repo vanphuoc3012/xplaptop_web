@@ -15,4 +15,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer>{
 	@Modifying
 	@Query("UPDATE Customer c SET c.enabled = true WHERE c.id = ?1")
 	void enable(Integer customerId);
+
+	boolean existsByEmail(String email);
 }
