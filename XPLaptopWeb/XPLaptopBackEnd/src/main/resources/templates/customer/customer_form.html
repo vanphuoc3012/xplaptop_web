@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta th:name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <title>[[${title}]]</title>
+
+    <script type="text/javascript" th:src="@{/webjars/jquery/dist/jquery.js}" ></script>
+    <script type="text/javascript" th:src="@{/js/logout.js}" ></script>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/fontawesome.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/solid.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/css/color.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}" />
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.css}" />
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}" ></script>
+
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{/css/richtext.min.css}">
+    <script th:src="@{/js/jquery.richtext.min.js}"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <nav th:replace="fragments :: navBar"></nav>
+    <div class="mb-5">
+        <h2>Customers Management | [[${title}]]</h2>
+    </div>
+
+    <div>
+        <form th:action="@{'/customers/save?path=' + ${path}}" method="post" th:object="${customer}"
+            style="max-width: 600px; margin: 0 auto" onsubmit="return checkEmail(this)">
+            <input type="hidden" th:field="*{id}" id="customerID">
+            <div class="border border-secondary rounded p-3">
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">First Name:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" th:field="*{firstName}" required maxlength="45" minlength="2">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Last Name:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" th:field="*{lastName}" required maxlength="45" minlength="2">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Email:</label>
+                    <div class="col-sm-8">
+                        <input type="email" class="form-control" th:field="*{email}" required maxlength="45" minlength="2">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Password:</label>
+                    <div class="col-sm-8">
+                        <input type="password" class="form-control" th:field="*{password}" maxlength="64" minlength="8"
+                        placeholder="leave blank if you don't want to change password">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Phone Number:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" th:field="*{phoneNumber}" required maxlength="45" minlength="2">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Address Line 1:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" th:field="*{addressLine1}" required maxlength="64" minlength="2">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Address Line 2:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" th:field="*{addressLine2}" maxlength="64" minlength="2">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">City:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" th:field="*{city}" required maxlength="45" minlength="2">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Country:</label>
+                    <div class="col-sm-8">
+                        <select class="form-select" th:field="*{country}">
+                            <th:block th:each="country : ${listAllCountries}">
+                                <option th:value="${country.getId()}" th:text="${country.getName()}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">State/Province:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" th:field="*{state}" required maxlength="45" minlength="2">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Postal Code:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" th:field="*{postalCode}" required maxlength="10" minlength="2">
+                    </div>
+                </div>
+
+                <div class="text-center mb-3">
+                    <input type="submit" value="Save" class="btn btn-primary btn-sm"/>
+                    <input type="button" value="Cancel" class="btn btn-secondary btn-sm" id="buttonCancel"/>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+    <div th:replace="fragments :: footer"></div>
+
+    <!-- dialog when the email has already existed in database-->
+    <div class="modal fade text-center" id="modalDialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modalTitle">Warning</h4>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <span id="modalBody"></span>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var csrfHeaderName = "[[${_csrf.headerName}]]";
+    var csrfValue = "[[${_csrf.token}]]";
+</script>
+
+<script>
+    $(document).ready(function() {
+
+    });
+
+    function checkEmail(form) {
+        url = "[[@{/check_customer_email}]]";
+        customerEmail = $("#email").val();
+        customerId = $("#customerID").val();
+        csrfValue = $("input[name='_csrf']").val();
+
+        params = {id: customerId, email: customerEmail, _csrf: csrfValue};
+        $.post(url, params, function(respone) {
+            if(respone == "OK") {
+                form.submit();
+            } else if (respone == "Duplicated Email") {
+                showModalDialog("Warning", `Email ${customerEmail} already existed!!`)
+            } else {
+                showModalDialog("Error", `Unknown error from server`);
+            }
+        }).fail(function () {
+            showModalDialog("Error", `Could not connect to the server`);
+        });
+
+        return false;
+    }
+
+    function showModalDialog(title, message) {
+        $("#modalTitle").text(title);
+        $("#modalBody").text(message);
+        $("#modalDialog").modal("show");
+    }
+</script>
+
+<script>
+    moduleURL = "[[@{'/customers?path=' + ${path}}]]";
+    $(document).ready(function() {
+        // cancle button
+        $("#buttonCancel").on("click", function() {
+            window.location = moduleURL;
+        });
+    })
+</script>
+</body>
+</html>

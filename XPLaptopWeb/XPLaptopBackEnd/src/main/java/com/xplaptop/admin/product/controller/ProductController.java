@@ -78,12 +78,12 @@ public class ProductController {
 		int categoryPerPage = page.getNumberOfElements();
 		long totalElement = page.getTotalElements();
 		int startElement = (pageNumber - 1) * categoryPerPage + 1;
-		int endELement = pageNumber * categoryPerPage;
+		int endElement = pageNumber * categoryPerPage;
 		model.addAttribute("pageNumber", pageNumber);
 		model.addAttribute("totalPage", totalPage);
 		model.addAttribute("totalElement", totalElement);
 		model.addAttribute("startElement", startElement);
-		model.addAttribute("endELement", endELement);
+		model.addAttribute("endElement", endElement);
 		
 		List<Product> listProducts = productService.listProductPage(pageNumber, sortDir, sortField, keyword, categoryId);
 		model.addAttribute("listProducts", listProducts);

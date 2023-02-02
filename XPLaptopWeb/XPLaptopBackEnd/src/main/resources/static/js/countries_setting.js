@@ -59,6 +59,7 @@ function deleteCountry() {
 }
 
 function updateCountry() {
+	if(!validateFormCountry()) return;
 	url = contextPath + "countries/save";
 	countryName = fieldCountryName.val();
 	countryCode = fieldCountryCode.val();
@@ -86,6 +87,7 @@ function updateCountry() {
 }
 
 function addCountry() {
+	if(!validateFormCountry()) return;
 	url = contextPath + "countries/save";
 	countryName = fieldCountryName.val();
 	countryCode = fieldCountryCode.val();
@@ -164,3 +166,11 @@ function showToastMessage(message) {
 	$(".toast").toast('show');
 }
 
+function validateFormCountry() {
+	countriesForm = document.getElementById("countriesForm");
+	if(!countriesForm.checkValidity()) {
+		countriesForm.reportValidity();
+		return false;
+	}
+	return true;
+}

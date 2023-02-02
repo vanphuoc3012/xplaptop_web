@@ -19,7 +19,7 @@ import com.xplaptop.common.entity.product.Product;
 @Service
 public class ProductService {
 	
-	public final static Integer PRODUCT_PER_PAGE = 1;
+	public final static Integer PRODUCT_PER_PAGE = 4;
 	
 	@Autowired
 	private ProductRepository productRepository;

@@ -64,6 +64,7 @@ function deleteSelectedState() {
 }
 
 function updateSelectedState() {
+	if(!validateFormStates()) return;
 	url = contextPath + "states/save";
 	selectedState = $("#dropDownStates option:selected");
 	
@@ -101,13 +102,17 @@ function updateSelectedState() {
 }
 
 function addNewState() {
+	if(!validateFormStates()) return;
 	url = contextPath + "states/save";
 	stateName = fieldStateName.val();
 	
 	selectedCountry = $("#dropDownCountriesForState option:selected");
 	countryId = selectedCountry.val();
 	countryName = selectedCountry.text();
-	
+	if(countryId == null) {
+		document.getElementById("dropDownCountriesForState").focus();
+		return;
+	}
 	jsonData = {
 		name: stateName,
 		country: {
@@ -191,4 +196,13 @@ function loadCountries4States() {
 	}).fail(function() {
 		showToastMessage("Error: Could not connect to server or server encounter an error");
 	});
+}
+
+function validateFormStates() {
+	statesForm = document.getElementById("statesForm");
+	if(!statesForm.checkValidity()) {
+		statesForm.reportValidity();
+		return false;
+	}
+	return true;
 }
