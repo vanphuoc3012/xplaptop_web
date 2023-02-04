@@ -6,6 +6,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.xplaptop.admin.paging.PagingAndSortingHelper;
+import com.xplaptop.admin.paging.PagingAndSortingParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -31,56 +33,27 @@ public class CategoryController {
 	CategoryService categoryService;
 	
 	@GetMapping("/categories")
-	public String listAllCategories(@RequestParam(name = "sortDir", defaultValue = "asc") String sortDir,
-									Model model,
-									HttpServletRequest request) {
+	public String listAllCategories() {
 		
-		return listAllByPage(sortDir, model, 1, null, request);
+		return "redirect:/categories/page/1?sortField=name&sortDir=asc";
 	}
 	
-	@GetMapping("/categories/page/{pageNum}")
-	public String listAllByPage(@RequestParam(name = "sortDir", defaultValue = "asc") String sortDir,
+	@GetMapping("/categories/page/{pageNumber}")
+	public String listAllByPage(@PagingAndSortingParam PagingAndSortingHelper helper,
+								@RequestParam(name = "sortDir", required = false) String sortDir,
 								Model model,
-								@PathVariable Integer pageNum,
+								@PathVariable Integer pageNumber,
 								@RequestParam(name = "keyword", required = false) String keyword,
-								HttpServletRequest request) {
-		if(sortDir == null) {
-			sortDir = "asc";
+								@RequestParam(name = "sortField", required = false) String sortField) {
+		if(sortDir == null || sortField == null) {
+			return "redirect:/categories/page/"+pageNumber+"?sortField=name&sortDir=asc";
 		}
-		String reverseSortDir = "asc";
-		if(sortDir.equals("asc")) {
-			reverseSortDir = "desc";
-		}
-		
-		Page<Category> page = categoryService.getPage(pageNum, sortDir, keyword);
-		int totalPage = page.getTotalPages();
-		int categoryPerPage = page.getNumberOfElements();
-		long totalElement = page.getTotalElements();
-		int startElement = (pageNum - 1) * categoryPerPage + 1;
-		int endElement = pageNum * categoryPerPage;
-		model.addAttribute("pageNumber", pageNum);
-		model.addAttribute("totalPage", totalPage);
-		model.addAttribute("totalElement", totalElement);
-		model.addAttribute("startElement", startElement);
-		model.addAttribute("endElement", endElement);
-			
-		String sortField = "name";
-		model.addAttribute("sortField", sortField);
-		
-		
-		List<Category> listCategories = categoryService.pageCatgories(pageNum, sortDir, keyword);		
-		
+
+		Page<Category> page = categoryService.getPage(pageNumber, sortDir, keyword);
+		List<Category> listCategories = page.getContent();
+
+		helper.updateModelPaginationAttributes(pageNumber, page);
 		model.addAttribute("listCategories", listCategories);
-		model.addAttribute("reverseSortDir", reverseSortDir);
-		model.addAttribute("sortDir", sortDir);
-		model.addAttribute("keyword", keyword);
-		
-		String queryString  = request.getQueryString();
-		String path = request.getServletPath();
-		if(request.getQueryString() != null) {
-			path += "?" + queryString.replace("&", ">");
-		}
-		model.addAttribute("path", path);
 		
 		return "category/categories";
 	}
@@ -174,8 +147,7 @@ public class CategoryController {
 		String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 		uploadPath = uploadPath + "/" + category.getId();
 		
-		if(multipartFile.isEmpty()) {		
-		} else {		
+		if(!multipartFile.isEmpty()) {
 			category.setImage(fileName);
 			FileUploadUtils.cleanDir(uploadPath);
 			FileUploadUtils.uploadFile(uploadPath, fileName, multipartFile);

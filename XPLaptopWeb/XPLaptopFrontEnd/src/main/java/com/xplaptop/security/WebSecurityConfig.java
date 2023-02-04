@@ -20,8 +20,13 @@ public class WebSecurityConfig {
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		
-		http.authorizeRequests().anyRequest().permitAll();
+		http.formLogin()
+				.loginPage("/login")
+				.usernameParameter("email")
+				.permitAll();
+		http.logout().permitAll();
+		http.authorizeRequests().anyRequest().authenticated();
+		http.rememberMe().key("xplaptopstore").tokenValiditySeconds(14*24*60*60);
 		
 		return http.build();
 	}

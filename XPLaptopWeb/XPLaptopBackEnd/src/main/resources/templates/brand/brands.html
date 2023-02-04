@@ -7,7 +7,7 @@
 		<nav th:replace="fragments :: navBar"></nav>
 
 		<div>
-			<h2>Category Management</h2>
+			<h2>Brands Management</h2>
 		</div>
 		
 		<div th:if="${message != null}" th:text="${message}" class="alert alert-success text-center"></div>
@@ -24,7 +24,8 @@
 		
 		<!-- search brands -->
 		<div>
-			<form class="row g-3 mb-3" th:action="@{/brands/page/1}">			
+			<form class="row g-3 mb-3" th:action="@{/brands/page/1}">
+				<input type="hidden" name="sortField" th:value="${sortField}">
 				<input type="hidden" name="sortDir" th:value="${sortDir}">
 				<div class="col-auto">
 					<label>Search keyword: </label>					
@@ -41,7 +42,7 @@
 			</form>
 		</div>
 		
-		<!-- 		Less details table -->
+		<!-- 		Fewer details table -->
 		<div class="less-details">
 				<div th:each="brand : ${listBrands}" class="row mb-3">
 					<div class="col-4">						

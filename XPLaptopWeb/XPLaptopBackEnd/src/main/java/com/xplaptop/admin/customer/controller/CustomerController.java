@@ -2,6 +2,8 @@ package com.xplaptop.admin.customer.controller;
 
 import com.xplaptop.admin.customer.CustomerNotFoundException;
 import com.xplaptop.admin.customer.CustomerService;
+import com.xplaptop.admin.paging.PagingAndSortingHelper;
+import com.xplaptop.admin.paging.PagingAndSortingParam;
 import com.xplaptop.admin.settting.country.CountryRepository;
 import com.xplaptop.common.entity.country.Country;
 import com.xplaptop.common.entity.customer.Customer;
@@ -29,54 +31,24 @@ public class CustomerController {
     private CountryRepository countryRepository;
 
     @GetMapping("/customers")
-    public String listAllCustomer(ModelMap model, HttpServletRequest request) {
-        return listPageCustomer(model,
-                request,
-                1,
-                null,
-                null,
-                null);
+    public String listAllCustomer() {
+        return "redirect:/customers/page/1?sortDir=asc&sortField=firstName";
     }
 
     @GetMapping("/customers/page/{pageNumber}")
-    public String listPageCustomer(ModelMap model,
-                                   HttpServletRequest request,
+    public String listPageCustomer(@PagingAndSortingParam PagingAndSortingHelper helper,
+                                   ModelMap model,
                                    @PathVariable(name = "pageNumber") Integer pageNumber,
                                    @RequestParam(name = "sortDir", required = false) String sortDir,
                                    @RequestParam(name = "sortField", required = false) String sortField,
                                    @RequestParam(name = "keyword", required = false) String keyword) {
-        if(sortDir == null) {
-            sortDir = "asc";
+        if(sortDir == null || sortField == null) {
+            return "redirect:/customers/page/"+pageNumber+"?sortField=firstName&sortDir=asc";
         }
-        if(sortField == null) {
-            sortField = "firstName";
-        }
-
-        model.put("sortDir", sortDir);
-        model.put("sortField", sortField);
-        model.put("keyword", keyword);
-        model.put("pageNumber", pageNumber);
-
         Page<Customer> page = customerService.getPage(pageNumber, sortDir, sortField, keyword);
-        int totalPage = page.getTotalPages();
-        int categoryPerPage = page.getNumberOfElements();
-        long totalElement = page.getTotalElements();
-        int startElement = (pageNumber - 1) * categoryPerPage + 1;
-        int endElement = pageNumber * categoryPerPage;
-        model.addAttribute("pageNumber", pageNumber);
-        model.addAttribute("totalPage", totalPage);
-        model.addAttribute("totalElement", totalElement);
-        model.addAttribute("startElement", startElement);
-        model.addAttribute("endElement", endElement);
-
         List<Customer> customerList = page.getContent();
         model.put("customerList", customerList);
-        String queryString  = request.getQueryString();
-        String path = request.getServletPath();
-        if(request.getQueryString() != null) {
-            path += "?" + queryString.replace("&", ">");
-        }
-        model.addAttribute("path", path);
+        helper.updateModelPaginationAttributes(pageNumber, page);
         return "customer/customers";
     }
 

@@ -73,18 +73,20 @@ public class CustomerService {
         Customer customer = customerRepo.findByEmail(email);
         if(customer == null) return "OK";
 
-        if(customer.getId() == id) return "OK";
+        if(customer.getId().equals(id)) return "OK";
 
         return "Duplicated Email";
     }
 
     public Customer updateCustomer(Customer customerInform) {
+        Customer customer = customerRepo.findById(customerInform.getId()).get();
         if(customerInform.getPassword() != null) {
             customerInform.setPassword(encoder.encode(customerInform.getPassword()));
         } else {
-            Customer customer = customerRepo.findById(customerInform.getId()).get();
             customerInform.setPassword(customer.getPassword());
         }
+        customerInform.setEnabled(customer.isEnabled());
+        customerInform.setCreatedTime(customer.getCreatedTime());
         return customerRepo.save(customerInform);
 
     }
@@ -95,12 +97,11 @@ public class CustomerService {
         String password = encoder.encode("password");
         Random random = new Random();
         List<Customer> customerList1 = customerList.stream()
-                .map(customer -> {
+                .peek(customer -> {
                     customer.setCreatedTime(new Date());
                     customer.setPassword(password);
                     customer.setCountry(new Country(random.nextInt(250)));
                     System.out.println(customer.getEmail());
-                    return customer;
                 })
                 .collect(Collectors.toList());
 

@@ -23,9 +23,10 @@
 <!-- 			<a th:href="@{/categories/export/pdf}"><i class="fa-solid fa-file-pdf fa-2x"></i></a> -->
 		</div>
 		
-		<!-- search user -->
+		<!-- search category -->
 		<div>
-			<form class="row g-3 mb-3" th:action="@{/categories/page/1}">			
+			<form class="row g-3 mb-3" th:action="@{/categories/page/1}">
+				<input type="hidden" name="sortField" th:value="${sortField}">
 				<input type="hidden" name="sortDir" th:value="${sortDir}">
 				<div class="col-auto">
 					<label>Search keyword: </label>					

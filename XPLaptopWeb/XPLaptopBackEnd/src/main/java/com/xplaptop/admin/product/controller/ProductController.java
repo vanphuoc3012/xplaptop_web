@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.xplaptop.admin.paging.PagingAndSortingHelper;
+import com.xplaptop.admin.paging.PagingAndSortingParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -44,60 +46,29 @@ public class ProductController {
 	private CategoryService categoryService;
 	
 	@GetMapping("/products")
-	public String listAllProducts(Model model,
-									HttpServletRequest request
-									) {
+	public String listAllProducts() {
 		
-		return listPageProducts(model, request, 1, "asc", "name", null, 0);
+		return "redirect:/products/page/1?sortDir=asc&sortField=name";
 	}
 	
 	@GetMapping("/products/page/{pageNumber}")
-	public String listPageProducts(Model model,
-									HttpServletRequest request,
-									@PathVariable(name = "pageNumber") Integer pageNumber,
-									@RequestParam(name = "sortDir", required = false) String sortDir,
-									@RequestParam(name = "sortField", required = false) String sortField,
-									@RequestParam(name = "keyword", required = false) String keyword,
-									@RequestParam(name = "categoryId", required = false) Integer categoryId) {
-		if(sortDir == null) {
-			sortDir = "asc";
+	public String listPageProducts(@PagingAndSortingParam PagingAndSortingHelper helper,
+								   Model model,
+								   @PathVariable(name = "pageNumber") Integer pageNumber,
+								   @RequestParam(name = "sortDir", required = false) String sortDir,
+								   @RequestParam(name = "sortField", required = false) String sortField,
+								   @RequestParam(name = "keyword", required = false) String keyword,
+								   @RequestParam(name = "categoryId", required = false) Integer categoryId) {
+		if(sortDir == null || sortField == null) {
+			return "redirect:/products/page/"+pageNumber+"?sortField=name&sortDir=asc";
 		}
-		if(sortField == null) {
-			sortField = "name";
-		}
-		
-		String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
-		model.addAttribute("sortDir", sortDir);
-		model.addAttribute("reverseSortDir", reverseSortDir);
-		model.addAttribute("sortField", sortField);
-		model.addAttribute("keyword", keyword);
 		model.addAttribute("categoryId", categoryId);
-		
 		Page<Product> page = productService.pageProductPage(pageNumber, sortDir, sortField, keyword, categoryId);
-		int totalPage = page.getTotalPages();
-		int categoryPerPage = page.getNumberOfElements();
-		long totalElement = page.getTotalElements();
-		int startElement = (pageNumber - 1) * categoryPerPage + 1;
-		int endElement = pageNumber * categoryPerPage;
-		model.addAttribute("pageNumber", pageNumber);
-		model.addAttribute("totalPage", totalPage);
-		model.addAttribute("totalElement", totalElement);
-		model.addAttribute("startElement", startElement);
-		model.addAttribute("endElement", endElement);
-		
-		List<Product> listProducts = productService.listProductPage(pageNumber, sortDir, sortField, keyword, categoryId);
+		List<Product> listProducts = page.getContent();
 		model.addAttribute("listProducts", listProducts);
-		
 		List<Category> listCategories = categoryService.categoriesUsedInForm("asc");
 		model.addAttribute("listCategories", listCategories);
-		
-		String queryString  = request.getQueryString();
-		String path = request.getServletPath();
-		if(request.getQueryString() != null) {
-			path += "?" + queryString.replace("&", ">");
-		}
-		model.addAttribute("path", path);
-		
+		helper.updateModelPaginationAttributes(pageNumber, page);
 		return "product/products";
 	}
 	
@@ -142,8 +113,7 @@ public class ProductController {
 		/*
 		 * handle main image
 		 */
-		if(multipartFile.isEmpty()) {		
-		} else {		
+		if(!multipartFile.isEmpty()) {
 			product.setMainImage(fileName);
 			FileUploadUtils.cleanDir(uploadPath);
 			FileUploadUtils.uploadFile(uploadPath, fileName, multipartFile);
@@ -194,15 +164,15 @@ public class ProductController {
 	private void saveExistingProductImage(String[] existingImages, Product product, String uploadPath) {
 		if(existingImages == null || existingImages.length == 0) return;
 		Set<ProductImage> newProductImages = new HashSet<>();
-		for(int i = 0; i < existingImages.length; i++) {
-			ProductImage pi = product.getProductImageByName(existingImages[i]);
-			if(pi == null) {
-				newProductImages.add(new ProductImage(existingImages[i], product));
+		for (String existingImage : existingImages) {
+			ProductImage pi = product.getProductImageByName(existingImage);
+			if (pi == null) {
+				newProductImages.add(new ProductImage(existingImage, product));
 			} else {
 				newProductImages.add(pi);
 			}
 		}
-		List<String> listFileName = newProductImages.stream().map(p -> p.getName()).collect(Collectors.toList());
+		List<String> listFileName = newProductImages.stream().map(ProductImage::getName).collect(Collectors.toList());
 		FileUploadUtils.deleteIfNotExist(listFileName, uploadPath);
 		product.getProductImages().clear();
 		product.getProductImages().addAll(newProductImages);
@@ -218,7 +188,6 @@ public class ProductController {
 
 	@GetMapping("/products/enable/{id}")
 	public String enableProduct(@PathVariable Integer id,
-								Model model,
 								@RequestParam(name = "path") String path,
 								RedirectAttributes ra) {
 		try {

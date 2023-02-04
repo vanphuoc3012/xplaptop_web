@@ -1,13 +1,15 @@
 package com.xplaptop.admin.user.controller;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.xplaptop.admin.FileUploadUtils;
+import com.xplaptop.admin.exporter.UserCSVExporter;
+import com.xplaptop.admin.exporter.UserExcelExporter;
+import com.xplaptop.admin.exporter.UserPDFExporter;
+import com.xplaptop.admin.paging.PagingAndSortingHelper;
+import com.xplaptop.admin.paging.PagingAndSortingParam;
+import com.xplaptop.admin.user.UserNotFoundException;
+import com.xplaptop.admin.user.UserService;
+import com.xplaptop.common.entity.Role;
+import com.xplaptop.common.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -21,14 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.xplaptop.admin.FileUploadUtils;
-import com.xplaptop.admin.exporter.UserCSVExporter;
-import com.xplaptop.admin.exporter.UserExcelExporter;
-import com.xplaptop.admin.exporter.UserPDFExporter;
-import com.xplaptop.admin.user.UserNotFoundException;
-import com.xplaptop.admin.user.UserService;
-import com.xplaptop.common.entity.Role;
-import com.xplaptop.common.entity.User;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -38,61 +36,31 @@ public class UserController {
 	
 	
 	@GetMapping("/users")
-	public String listAllUsers(Model model,
-								HttpServletRequest request) {
-		return listUserByPage(1, model, "firstName", "asc", null, request);
+	public String listAllUsers() {
+		return "redirect:/users/page/1?sortDir=asc&sortField=firstName";
 	}
 	
 	@GetMapping("users/page/{pageNumber}")
-	public String listUserByPage(@PathVariable Integer pageNumber,
-									Model model,
-									@RequestParam String sortField,
-									@RequestParam String sortDir,
-									@RequestParam(required = false) String keyword,
-									HttpServletRequest request) {
-		
-		model.addAttribute("keyword", keyword);	
-		
+	public String listUserByPage(@PagingAndSortingParam PagingAndSortingHelper helper,
+								 @PathVariable Integer pageNumber,
+								 Model model,
+								 @RequestParam(required = false) String sortField,
+								 @RequestParam(required = false) String sortDir,
+								 @RequestParam(required = false) String keyword,
+								 HttpServletRequest request) {
+		if(sortDir == null || sortField == null) {
+			return "redirect:/users/page/"+pageNumber+"?sortField=firstName&sortDir=asc";
+		}
+
+		model.addAttribute("keyword", keyword);
+
 		Sort sort = Sort.by(sortField);
 		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
-		
+
 		Page<User> page = service.listByPage(pageNumber, sort, keyword);
 		List<User> listUsers = page.getContent();
-		
-		int totalPage = page.getTotalPages();
-		int userPerPage = page.getNumberOfElements();
-		long totalElement = page.getTotalElements();
-		int startElement = (pageNumber - 1) * userPerPage + 1;
-		int endElement = pageNumber * userPerPage;
-		
-		if(totalPage > 0) {
-			List<Integer> listPages = IntStream.rangeClosed(1, totalPage)
-					.boxed()
-					.collect(Collectors.toList());
-			model.addAttribute("listPages", listPages);
-		}
-		model.addAttribute("pageNumber", pageNumber);
-		model.addAttribute("startElement", startElement);
-		model.addAttribute("endElement", endElement);
-		model.addAttribute("totalElement", totalElement);
-		model.addAttribute("totalPage", totalPage);
-		model.addAttribute("sortField", sortField);
-		model.addAttribute("sortDir", sortDir);
-		
-		if(keyword != null) {
-			if(!keyword.isEmpty()) {
-				keyword = null;
-			}
-			model.addAttribute("keyword", keyword);
-		}	
 		model.addAttribute("listUsers", listUsers);
-		 
-		String queryString  = request.getQueryString();
-		String path = request.getServletPath();
-		if(request.getQueryString() != null) {
-			path += "?" + queryString.replace("&", ">");
-		}
-		model.addAttribute("path", path);
+		helper.updateModelPaginationAttributes(pageNumber, page);
 		return "users";
 	}
 	

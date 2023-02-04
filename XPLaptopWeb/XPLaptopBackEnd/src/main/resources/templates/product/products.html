@@ -24,7 +24,8 @@
 		
 		<!-- search products -->
 		<div>
-			<form class="row g-3 mb-3" th:action="@{/products/page/1}" id="searchForm">			
+			<form class="row g-3 mb-3" th:action="@{/products/page/1}" id="searchForm">
+				<input type="hidden" name="sortField" th:value="${sortField}">
 				<input type="hidden" name="sortDir" th:value="${sortDir}">
 					<div class="col-auto">
 						<label>Category: </label>					

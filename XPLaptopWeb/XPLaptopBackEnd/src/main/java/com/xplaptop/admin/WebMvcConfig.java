@@ -2,8 +2,11 @@ package com.xplaptop.admin;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
+import com.xplaptop.admin.paging.PagingAndSortingResolver;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -27,5 +30,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		
 		registry.addResourceHandler("/"+folderName.replace("../", "")+"/**")
 				.addResourceLocations("file:/"+absPath+"/");
+	}
+
+	/**
+	 * @param resolvers initially an empty list
+	 */
+	@Override
+	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+		resolvers.add(new PagingAndSortingResolver());
 	}
 }

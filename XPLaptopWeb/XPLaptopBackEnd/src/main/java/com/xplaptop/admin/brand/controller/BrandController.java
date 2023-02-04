@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.xplaptop.admin.paging.PagingAndSortingHelper;
+import com.xplaptop.admin.paging.PagingAndSortingParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -34,45 +36,24 @@ public class BrandController {
 	private CategoryService categoryService;
 	
 	@GetMapping("/brands")
-	public String listAllBrands(Model model, HttpServletRequest request) {		
+	public String listAllBrands() {
 		
-		return listAllBrandsPage(1, "asc", null ,model, request);
+		return "redirect:/brands/page/1?sortDir=asc&sortField=name";
 	}
 	
 	@GetMapping("/brands/page/{pageNumber}")
-	public String listAllBrandsPage(@PathVariable(name = "pageNumber") Integer pageNumber,
+	public String listAllBrandsPage(@PagingAndSortingParam PagingAndSortingHelper helper,
+									@PathVariable(name = "pageNumber") Integer pageNumber,
 									@RequestParam(name = "sortDir", defaultValue = "asc") String sortDir,
 									@RequestParam(name = "keyword", required = false) String keyword,
-									Model model,
-									HttpServletRequest request) {
-		model.addAttribute("keyword", keyword);
-		
-		String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
-		model.addAttribute("sortDir", sortDir);
-		model.addAttribute("reverseSortDir", reverseSortDir);
-		model.addAttribute("sortField", "name");
-		
+									Model model) {
+		if(sortDir == null) {
+			return "redirect:/brands/page/"+pageNumber+"?sortField=name&sortDir=asc";
+		}
 		Page<Brand> page = brandService.pageBrands(pageNumber, sortDir, keyword);
 		List<Brand> listBrands = brandService.listBrandPage(pageNumber, sortDir, keyword);
 		model.addAttribute("listBrands", listBrands);
-		
-		int totalPage = page.getTotalPages();
-		int categoryPerPage = page.getNumberOfElements();
-		long totalElement = page.getTotalElements();
-		int startElement = (pageNumber - 1) * categoryPerPage + 1;
-		int endElement = pageNumber * categoryPerPage;
-		model.addAttribute("pageNumber", pageNumber);
-		model.addAttribute("totalPage", totalPage);
-		model.addAttribute("totalElement", totalElement);
-		model.addAttribute("startElement", startElement);
-		model.addAttribute("endElement", endElement);
-		
-		String queryString  = request.getQueryString();
-		String path = request.getServletPath();
-		if(request.getQueryString() != null) {
-			path += "?" + queryString.replace("&", ">");
-		}
-		model.addAttribute("path", path);
+		helper.updateModelPaginationAttributes(pageNumber, page);
 		return "brand/brands";
 	}
 	
@@ -126,8 +107,7 @@ public class BrandController {
 		String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 		uploadPath += "/"+brand.getId();
 		
-		if(multipartFile.isEmpty()) {		
-		} else {		
+		if(!multipartFile.isEmpty()) {
 			brand.setLogo(fileName);
 			FileUploadUtils.cleanDir(uploadPath);
 			FileUploadUtils.uploadFile(uploadPath, fileName, multipartFile);

@@ -24,15 +24,7 @@ public class BrandService {
 	
 	@Autowired
 	private CategoryService categoryService;
-	
-	public List<Brand> findAllBrands() {
-		List<Brand> list = (List<Brand>) brandRepository.findAll();
-		for(Brand b : list) {
-			b.setCategories(categoryService.sortSubCategory(b.getCategories(), "asc"));
-		}
-		return list;
-	}
-	
+
 	public List<Brand> listAllBrandsForProductForm() {
 		return brandRepository.listAll();
 	}
@@ -62,8 +54,8 @@ public class BrandService {
 		}
 		
 		Pageable pageable = PageRequest.of(pageNumber-1, BRAND_PER_PAGE, sort);
-		
-		return brandRepository.findAll(pageable);
+		if(keyword == null) return brandRepository.findAll(pageable);
+		return brandRepository.findAll(pageable, keyword);
 	}
 	
 	public Brand save(Brand brand) {
