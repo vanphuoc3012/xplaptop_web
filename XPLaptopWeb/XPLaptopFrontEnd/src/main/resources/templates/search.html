@@ -2,18 +2,32 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 	<div th:fragment="search_nav">
-		<nav class="navbar navbar-expand-lg bg-light navbar-dark">
+		<nav class="navbar navbar-expand-lg bg-light">
 			<div class="collapse navbar-collapse" id="searchNav">
-				<form class="row" th:action="@{/search}" method="get">
-					<div class="col-auto">
-						<input type="search" class="form-control" placeholder="keyword"
-							name="keyword" th:value="${keyword}">
-					</div>
-					<div class="col-auto">
-						<button type="submit" class="btn btn-primary">Search</button>
-					</div>
-				</form>
+				<div class="me-3">
+					<form class="row" th:action="@{/search}" method="get">
+						<div class="col-auto">
+							<input type="search" class="form-control" placeholder="keyword"
+								   name="keyword" th:value="${keyword}">
+						</div>
+						<div class="col-auto">
+							<button type="submit" class="btn btn-primary">Search</button>
+						</div>
+					</form>
+				</div>
+
+				<ul sec:authorize="isAuthenticated()" class="nav nav-tabs navbar-nav me-auto my-2 my-lg-0">
+					<li class="nav-item"><a class="nav-link" th:href="@{/customer}" sec:authentication="principal.fullName"></a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{/}">Addresses</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{/}">Questions</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{/}">Reviews</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{/}">Orders</a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{/}">Cart</a></li>
+					<li class="nav-item"><a class="nav-link" href="" id=logoutLink>Logout</a></li>
+				</ul>
+
 			</div>
+
 		</nav>
 	</div>
 </body>

@@ -8,6 +8,8 @@ import com.xplaptop.setting.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,15 +46,24 @@ public class CustomerController {
                                  HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
         customerService.registerCustomer(customer);
         sendVerificationEmail(request, customer);
-
         model.put("pageTitle", "Registration Succeed");
 
         return "/register/register_success";
     }
 
+    @GetMapping("/customer")
+    public String editCustomerInformation(ModelMap model, Authentication authentication) {
+//        SecurityContext context = SecurityContextHolder.getContext();
+//        String username = context.getAuthentication().getName();
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken) return "redirect:/";
+        String username = authentication.getName();
+        Customer customer = customerService.findCustomerByEmail(username);
+        model.put("customer", customer);
+        return "register/register_form";
+    }
+
     @GetMapping("/verify")
-    public String verifyCustomer(@RequestParam(name = "code") String code,
-                                 ModelMap model) {
+    public String verifyCustomer(@RequestParam(name = "code") String code) {
         boolean verified = customerService.verifyCustomer(code);
 
         if(verified) return "register/verified";

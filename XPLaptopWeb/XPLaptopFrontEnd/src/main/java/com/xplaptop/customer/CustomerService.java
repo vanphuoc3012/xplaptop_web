@@ -28,6 +28,12 @@ public class CustomerService {
 		return countryRepo.findAllByOrderByNameAsc();
 	}
 
+	public Customer findCustomerByEmail(String email) {
+		Customer customer = customerRepo.findByEmail(email);
+		if(customer == null) throw new CustomerNotFoundException("Can't find any customer with email: "+email);
+		return customer;
+	}
+
 	public boolean isEmailAlreadyUsed(String email) {
 		return customerRepo.existsByEmail(email);
 
