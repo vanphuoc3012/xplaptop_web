@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.xplaptop.common.entity.AuthenticationType;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -101,5 +103,13 @@ public class CustomerRepositoryTests {
 		
 		assertThat(findByEmail).isNotNull();
 		assertThat(findByEmail.getId()).isGreaterThan(0);
+	}
+
+	@Test
+	public void updateAuthenticationType() {
+		int id = 3;
+		customerRepository.updateAuthenticationType(id, AuthenticationType.DATABASE);
+
+		Assertions.assertThat(customerRepository.findById(id).get().getAuthenticationType()).isEqualTo(AuthenticationType.DATABASE);
 	}
 }

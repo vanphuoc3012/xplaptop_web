@@ -2,15 +2,9 @@ package com.xplaptop.common.entity.customer;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import com.xplaptop.common.entity.AuthenticationType;
 import com.xplaptop.common.entity.country.Country;
 
 import lombok.AllArgsConstructor;
@@ -74,6 +68,9 @@ public class Customer {
 	
 	@Column(name = "created_time")
 	private Date createdTime;
+
+	@Enumerated(EnumType.STRING)
+	private AuthenticationType authenticationType;
 
 	public String getFullName() {
 		return firstName + " " + lastName;

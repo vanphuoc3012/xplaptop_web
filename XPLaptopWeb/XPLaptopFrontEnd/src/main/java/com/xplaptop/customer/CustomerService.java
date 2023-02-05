@@ -1,5 +1,6 @@
 package com.xplaptop.customer;
 
+import com.xplaptop.common.entity.AuthenticationType;
 import com.xplaptop.common.entity.country.Country;
 import com.xplaptop.common.entity.customer.Customer;
 import com.xplaptop.setting.CountryRepository;
@@ -16,22 +17,17 @@ import java.util.List;
 public class CustomerService {
 	@Autowired
 	private CustomerRepository customerRepo;
-	
 	@Autowired
 	private CountryRepository countryRepo;
-
 	@Autowired
-	PasswordEncoder passwordEncoder;
-
+	private PasswordEncoder passwordEncoder;
 
 	public List<Country> listAllCountries() {
 		return countryRepo.findAllByOrderByNameAsc();
 	}
 
 	public Customer findCustomerByEmail(String email) {
-		Customer customer = customerRepo.findByEmail(email);
-		if(customer == null) throw new CustomerNotFoundException("Can't find any customer with email: "+email);
-		return customer;
+		return customerRepo.findByEmail(email);
 	}
 
 	public boolean isEmailAlreadyUsed(String email) {
@@ -43,9 +39,9 @@ public class CustomerService {
 		encodePassword(customer);
 		customer.setEnabled(false);
 		customer.setCreatedTime(new Date());
-
 		String randomCode = RandomString.make(64);
 		customer.setVerificationCode(randomCode);
+		customer.setAuthenticationType(AuthenticationType.DATABASE);
 		customerRepo.save(customer);
 	}
 
@@ -57,11 +53,45 @@ public class CustomerService {
 	@Transactional
 	public boolean verifyCustomer(String verificationCode) {
 		Customer customer = customerRepo.findByVerificationCode(verificationCode);
-
 		if(customer == null || customer.isEnabled()) return false;
-
 		customerRepo.enable(customer.getId());
-
 		return true;
+	}
+
+	public void updateAuthentication(Customer customer, AuthenticationType type) {
+		if(!customer.getAuthenticationType().equals(type)) {
+			customerRepo.updateAuthenticationType(customer.getId(), type);
+		}
+	}
+
+	public void addNewCustomerUponOAuthLogin(String name, String email, String countryCode) {
+		Customer customer = new Customer();
+
+		setName(name, customer);
+
+		customer.setEmail(email);
+		customer.setEnabled(true);
+		customer.setCreatedTime(new Date());
+		customer.setAuthenticationType(AuthenticationType.GOOGLE);
+		customer.setPassword("");
+		customer.setAddressLine1("");
+		customer.setPhoneNumber("");
+		customer.setPostalCode("");
+		customer.setCity("");
+		customer.setState("");
+		customer.setCountry(countryRepo.findByCode(countryCode));
+
+		customerRepo.save(customer);
+	}
+
+	private void setName(String name, Customer customer) {
+		String[] split = name.split(" ");
+		if(split.length < 2) {
+			customer.setFirstName(name);
+			customer.setLastName("");
+		} else {
+			customer.setFirstName(split[0]);
+			customer.setLastName(name.replace(split[0] + " ",""));
+		}
 	}
 }
