@@ -16,7 +16,7 @@ public class PagingAndSortingResolver implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer model, NativeWebRequest request, WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer model, NativeWebRequest request, WebDataBinderFactory binderFactory) {
         // keyword sortDir sortField
         String keyword = request.getParameter("keyword");
         String sortDir = request.getParameter("sortDir");

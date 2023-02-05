@@ -41,11 +41,11 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(length = 255, nullable = false, unique = true)
+	@Column(nullable = false, unique = true)
 	@NonNull
 	private String name;
 	
-	@Column(length = 255, nullable = false, unique = true)
+	@Column(nullable = false, unique = true)
 	@NonNull
 	private String alias;
 	

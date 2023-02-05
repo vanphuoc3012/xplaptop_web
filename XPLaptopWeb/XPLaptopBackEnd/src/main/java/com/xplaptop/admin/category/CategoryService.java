@@ -176,8 +176,8 @@ public class CategoryService {
 	
 	private List<Category> listChildAndUpdateAllEnableStatus(Category category, List<Category> list, boolean status) {		
 		for(Category c : category.getChildren()) {	
-			c.setEnabled(status);;
-			list.add(c);
+			c.setEnabled(status);
+            list.add(c);
 			listChildAndUpdateAllEnableStatus(c, list, status);
 		}
 		return list;

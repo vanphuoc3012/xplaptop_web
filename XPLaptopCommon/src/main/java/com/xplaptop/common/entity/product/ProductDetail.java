@@ -29,7 +29,7 @@ public class ProductDetail {
 	@Id
 	private Integer id;
 	
-	@Column(length = 255, nullable = false)
+	@Column(nullable = false)
 	@NonNull
 	private String name;
 	

@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 public class CustomerUserDetailsImpl implements UserDetails {
-    private Customer customer;
+    private final Customer customer;
 
     public CustomerUserDetailsImpl(Customer customer) {
         this.customer = customer;

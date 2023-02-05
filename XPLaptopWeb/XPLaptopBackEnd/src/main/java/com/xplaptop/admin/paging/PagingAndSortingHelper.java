@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class PagingAndSortingHelper {
-    private ModelAndViewContainer model;
+    private final ModelAndViewContainer model;
 
     public PagingAndSortingHelper(ModelAndViewContainer model) {
         this.model = model;

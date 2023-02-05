@@ -13,10 +13,10 @@ import com.xplaptop.common.entity.User;
 
 public class XPLaptopUserDetails implements UserDetails{
 	
-	private User user;
-	private String userName;
-	private String password;
-	private List<GrantedAuthority> lGrantedAuthorities;
+	private final User user;
+	private final String userName;
+	private final String password;
+	private final List<GrantedAuthority> lGrantedAuthorities;
 	
 	public XPLaptopUserDetails(User user) {
 		this.user = user;

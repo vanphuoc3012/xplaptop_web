@@ -96,7 +96,8 @@ public class CustomerService {
         List<Customer> customerList = customerRepo.findAll();
         String password = encoder.encode("password");
         Random random = new Random();
-        List<Customer> customerList1 = customerList.stream()
+
+        return customerList.stream()
                 .peek(customer -> {
                     customer.setCreatedTime(new Date());
                     customer.setPassword(password);
@@ -104,7 +105,5 @@ public class CustomerService {
                     System.out.println(customer.getEmail());
                 })
                 .collect(Collectors.toList());
-
-        return customerList1;
     }
 }

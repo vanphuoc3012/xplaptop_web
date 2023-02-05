@@ -48,7 +48,7 @@ public class Category {
 	
 	private boolean enabled;
 	
-	@Column(length =  256, nullable = true)
+	@Column(length =  256)
 	private String allParentIds;
 	
 	@OneToOne

@@ -18,10 +18,4 @@ public class CustomerRestController {
         return customerService.checkCustomerEmail(id, email);
     }
 
-//    @GetMapping("/update_all_customer")
-//    public ResponseEntity<?> updateAllCustomer() {
-//
-//        return new ResponseEntity<>(customerService.updateAllCustomer(), HttpStatus.OK);
-//    }
-
 }

@@ -53,8 +53,6 @@ public class CustomerController {
 
     @GetMapping("/customer")
     public String editCustomerInformation(ModelMap model, Authentication authentication) {
-//        SecurityContext context = SecurityContextHolder.getContext();
-//        String username = context.getAuthentication().getName();
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken) return "redirect:/";
         String username = authentication.getName();
         Customer customer = customerService.findCustomerByEmail(username);

@@ -3,8 +3,6 @@ package com.xplaptop.admin.brand.controller;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.xplaptop.admin.paging.PagingAndSortingHelper;
 import com.xplaptop.admin.paging.PagingAndSortingParam;
 import org.springframework.beans.factory.annotation.Autowired;
