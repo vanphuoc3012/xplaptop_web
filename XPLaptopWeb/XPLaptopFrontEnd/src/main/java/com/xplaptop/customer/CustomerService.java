@@ -2,8 +2,10 @@ package com.xplaptop.customer;
 
 import com.xplaptop.common.entity.AuthenticationType;
 import com.xplaptop.common.entity.country.Country;
+import com.xplaptop.common.entity.country.State;
 import com.xplaptop.common.entity.customer.Customer;
 import com.xplaptop.setting.CountryRepository;
+import com.xplaptop.setting.StateRepository;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerService {
@@ -21,6 +24,8 @@ public class CustomerService {
 	private CountryRepository countryRepo;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private StateRepository stateRepository;
 
 	public List<Country> listAllCountries() {
 		return countryRepo.findAllByOrderByNameAsc();
@@ -28,6 +33,10 @@ public class CustomerService {
 
 	public Customer findCustomerByEmail(String email) {
 		return customerRepo.findByEmail(email);
+	}
+
+	public List<State> findAllStatesByCountryId(Integer countryId) {
+		return stateRepository.findAllByCountry_Id(countryId);
 	}
 
 	public boolean isEmailAlreadyUsed(String email) {
@@ -58,6 +67,7 @@ public class CustomerService {
 		return true;
 	}
 
+	@Transactional
 	public void updateAuthentication(Customer customer, AuthenticationType type) {
 		if(!customer.getAuthenticationType().equals(type)) {
 			customerRepo.updateAuthenticationType(customer.getId(), type);
@@ -66,9 +76,7 @@ public class CustomerService {
 
 	public void addNewCustomerUponOAuthLogin(String name, String email, String countryCode, AuthenticationType authenticationType) {
 		Customer customer = new Customer();
-
 		setName(name, customer);
-
 		customer.setEmail(email);
 		customer.setEnabled(true);
 		customer.setCreatedTime(new Date());
@@ -80,7 +88,6 @@ public class CustomerService {
 		customer.setCity("");
 		customer.setState("");
 		customer.setCountry(countryRepo.findByCode(countryCode));
-
 		customerRepo.save(customer);
 	}
 
@@ -94,4 +101,24 @@ public class CustomerService {
 			customer.setLastName(name.replace(split[0] + " ",""));
 		}
 	}
+
+	public void updateCustomerInfo(Customer customerInForm) {
+		Customer customerInDB = customerRepo.findById(customerInForm.getId())
+				.orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+		if(customerInForm.getAuthenticationType().equals(customerInDB.getAuthenticationType())) {
+			if(customerInForm.getPassword() == null || customerInForm.getPassword().isEmpty()) {
+				customerInForm.setPassword(customerInDB.getPassword());
+			} else {
+				encodePassword(customerInForm);
+			}
+		} else {
+			customerInForm.setPassword(customerInDB.getPassword());
+		}
+		customerInForm.setCreatedTime(customerInDB.getCreatedTime());
+		customerInForm.setVerificationCode(customerInDB.getVerificationCode());
+		customerInForm.setAuthenticationType(customerInDB.getAuthenticationType());
+
+		customerRepo.save(customerInForm);
+	}
+
 }

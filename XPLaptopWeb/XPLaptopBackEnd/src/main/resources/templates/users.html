@@ -96,7 +96,7 @@
 						<td th:replace="fragments :: enableStatusColumn(${user}, 'users')"></td>
 						<td class="text-center">
 							<a th:replace="fragments :: editButton(${user}, 'users')"></a>
-							<a class="fa-solid fa-delete-left color-gray fa-1x link-delete" th:href="@{'/users/delete/'+${user.id}}" 
+							<a class="fa-solid fa-delete-left color-gray fa-2x link-delete" th:href="@{'/users/delete/'+${user.id}}"
 							style="margin-left: 5px" title="Delete this user" 
 							th:userId="${user.id}" th:email="${user.email}"></a>
 <!-- 							th:userId and th:email are used as attribute to show confirm dialog -->

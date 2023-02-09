@@ -12,6 +12,7 @@ import java.util.Map;
 @Getter
 public class CustomerOauth2User implements OAuth2User {
     private OAuth2User oAuth2User;
+    private String fullName;
     private String clientName;
 
     /**
@@ -39,10 +40,14 @@ public class CustomerOauth2User implements OAuth2User {
     }
 
     public String getFullName() {
-        return oAuth2User.getAttribute("name");
+        return fullName == null ? getName() : fullName;
     }
 
     public String getEmail() {
         return oAuth2User.getAttribute("email");
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 }

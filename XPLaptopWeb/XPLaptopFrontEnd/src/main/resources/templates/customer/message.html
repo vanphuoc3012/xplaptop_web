@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head(${pageTitle})"></head>
+<body>
+<div class="container-fluid">
+    <nav th:replace="navigation :: navBar"></nav>
+    <div th:replace="search :: search_nav"></div>
+    <div class="text-center">
+        <h2 th:classappend="${error ? 'text-danger' : 'text-success'}" th:text="${message}"></h2>
+        <p>Continue shopping <a th:href="@{/}">here</a></p>
+    </div>
+
+
+    <div th:replace="navigation :: footer"></div>
+</div>
+
+</body>
+</html>

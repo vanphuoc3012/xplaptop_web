@@ -100,9 +100,7 @@
 				</form>
 			</div>
 		</div>
-		
-		
-			
+
 		<!-- dialog when the email has already existed in database-->
 		<div class="modal fade text-center" id="modalDialog">
 			<div class="modal-dialog">
@@ -132,9 +130,8 @@
 			$("#buttonCancel").on("click", function() {
 				window.location = "[[@{/users}]]";
 			});
-			
+
 			// preview photo
-			
 			$("#fileImg").change(function() {
 				fileSize = this.files[0].size;
 				sizeInMb = fileSize/1048576
@@ -196,10 +193,7 @@
 				$("#confirmPassword").get(0).setCustomValidity('');
 			}
 		}
-		
-		
 	</script>
-
 </body>
 	
 </html>

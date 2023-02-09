@@ -1,54 +1,62 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments :: head(${pageTitle})"></head>
+<head th:replace="fragments :: head('Your account details')"></head>
 <body>
 <div class="container-fluid">
     <nav th:replace="navigation :: navBar"></nav>
+    <div th:replace="search :: search_nav"></div>
     <div class="text-center">
-        <h2>Customer Registration Form</h2>
+        <h2>Your account details</h2>
     </div>
 
+
     <div>
-        <form th:action="@{/create_customer}" method="post" th:object="${customer}"
-            style="max-width: 600px; margin: 0 auto" onsubmit="return checkEmail(this)">
-
+        <form th:action="@{/update_account}" method="post" th:object="${customer}" style="max-width: 600px; margin: 0 auto">
+            <input type="hidden" th:field="*{id}">
+            <input type="hidden" th:field="*{authenticationType}">
+            <input type="hidden" th:field="*{email}">
+            <input type="hidden" th:field="*{enabled}">
             <div class="border border-secondary rounded p-3">
-
+                <!--Email-->
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Email:</label>
+                    <div class="col-sm-8">
+                        <input type="email" class="form-control" th:field="*{email}" disabled >
+                    </div>
+                </div>
+                <!--First Name-->
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">First Name:</label>
                     <div class="col-sm-8">
                         <input type="text" class="form-control" th:field="*{firstName}" required maxlength="45" minlength="2">
                     </div>
                 </div>
-
+                <!--Last Name-->
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Last Name:</label>
                     <div class="col-sm-8">
                         <input type="text" class="form-control" th:field="*{lastName}" required maxlength="45" minlength="2">
                     </div>
                 </div>
-
-                <div class="row mb-3">
-                    <label class="col-sm-4 col-form-label">Email:</label>
-                    <div class="col-sm-8">
-                        <input type="email" class="form-control" th:field="*{email}" required maxlength="45" minlength="2">
-                    </div>
-                </div>
-
+                <!--Password. Show if AuthenType = Database, Otherwise hidden-->
+                <th:block th:if="${customer.authenticationType.toString() == 'DATABASE'}">
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Password:</label>
                     <div class="col-sm-8">
-                        <input type="password" class="form-control" th:field="*{password}" id="password" required maxlength="64" minlength="8">
+                        <input type="password" class="form-control" maxlength="64" minlength="8" id="password"
+                            placeholder="Leave blank if you don't want to change">
                     </div>
                 </div>
-
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Confirm Password:</label>
                     <div class="col-sm-8">
-                        <input type="password" class="form-control" required maxlength="64" minlength="8" id="confirmPassword">
+                        <input type="password" class="form-control" maxlength="64" minlength="8" id="confirmPassword"
+                               placeholder="Leave blank if you don't want to change">
                     </div>
                 </div>
+                </th:block>
 
+                <!--Phone number-->
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Phone Number:</label>
                     <div class="col-sm-8">
@@ -56,6 +64,7 @@
                     </div>
                 </div>
 
+                <!--Address-->
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Address Line 1:</label>
                     <div class="col-sm-8">
@@ -91,7 +100,11 @@
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">State/Province:</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" th:field="*{state}" required maxlength="45" minlength="2">
+                        <select class="form-select" th:field="*{state}">
+                            <th:block th:each="state : ${stateList}">
+                                <option th:value="${state.name}" th:text="${state.name}" id="state"></option>
+                            </th:block>
+                        </select>
                     </div>
                 </div>
 
@@ -103,7 +116,7 @@
                 </div>
 
                 <div class="text-center mb-3">
-                    <input type="submit" value="Create Account" class="btn btn-primary btn-sm"/>
+                    <input type="submit" value="Update" class="btn btn-primary btn-sm"/>
                 </div>
             </div>
         </form>
@@ -112,26 +125,6 @@
 
     <div th:replace="navigation :: footer"></div>
 
-    <!-- dialog when the email has already existed in database-->
-    <div class="modal fade text-center" id="modalDialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h4 class="modal-title" id="modalTitle">Warning</h4>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body">
-                    <span id="modalBody"></span>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script>
@@ -140,28 +133,7 @@
 </script>
 <script type="text/javascript" th:src="@{/js/form_common.js}"></script>
 <script>
-    $(document).ready(function() {
-        $("#confirmPassword").change(checkPasswordMatch);
-    });
-    function checkEmail(form) {
-        url = "[[@{/check_customer_email}]]";
-        customerEmail = $("#email").val();
-        csrfValue = $("input[name='_csrf']").val();
 
-        params = {email: customerEmail, _csrf: csrfValue};
-        $.post(url, params, function(respone) {
-            if(respone == "OK") {
-                form.submit();
-            } else if (respone == "Duplicated Email") {
-                showModalDialog("Warning", `Email ${customerEmail} already existed!!`)
-            } else {
-                showModalDialog("Error", `Unknown error from server`);
-            }
-        }).fail(function () {
-            showModalDialog("Error", `Could not connect to the server`);
-        });
-        return false;
-    }
 </script>
 </body>
 </html>

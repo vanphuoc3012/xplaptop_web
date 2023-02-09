@@ -30,7 +30,7 @@ public class WebSecurityConfig {
 				.logout().permitAll();
 
 		http.authorizeRequests()
-				.mvcMatchers("/customer").authenticated()
+				.mvcMatchers("/account_details").authenticated()
 				.anyRequest().permitAll();
 
 		http.oauth2Login()

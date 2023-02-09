@@ -17,7 +17,7 @@
 				</div>
 
 				<ul sec:authorize="isAuthenticated()" class="nav nav-tabs navbar-nav me-auto my-2 my-lg-0">
-					<li class="nav-item"><a class="nav-link" th:href="@{/customer}" sec:authentication="principal.fullName"></a></li>
+					<li class="nav-item"><a class="nav-link" th:href="@{/account_details}" sec:authentication="principal.fullName"></a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{/}">Addresses</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{/}">Questions</a></li>
 					<li class="nav-item"><a class="nav-link" th:href="@{/}">Reviews</a></li>

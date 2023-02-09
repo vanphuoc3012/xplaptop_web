@@ -40,6 +40,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
         if(customer == null) {
             customerService.addNewCustomerUponOAuthLogin(name, email, countryCode, authenticationType);
         } else {
+            oAuth2User.setFullName(customer.getFullName());
             customerService.updateAuthentication(customer, authenticationType);
         }
         super.onAuthenticationSuccess(request, response, authentication);
