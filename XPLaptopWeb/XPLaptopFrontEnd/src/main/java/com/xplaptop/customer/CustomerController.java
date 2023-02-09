@@ -84,13 +84,18 @@ public class CustomerController {
     public String saveUpdateAccountInformation(Customer customer,
                                                HttpServletRequest request,
                                                ModelMap model) {
-        customerService.updateCustomerInfo(customer);
-        updateNameForAuthenticatedCustomer(customer, request);
-
         boolean error = false;
+        try {
+            customerService.updateCustomerInfo(customer);
+            updateNameForAuthenticatedCustomer(customer, request);
+            model.put("message", "Your account information has been update");
+            model.put("pageTitle", "Successfully update account information");
+        } catch (CustomerNotFoundException e) {
+            error = true;
+            model.put("message", e.getMessage());
+            model.put("pageTitle", "Failed to update account information");
+        }
         model.put("error", error);
-        model.put("message", "Your account information has been update");
-        model.put("pageTitle", "Successfully update account information");
         return "customer/message";
     }
 

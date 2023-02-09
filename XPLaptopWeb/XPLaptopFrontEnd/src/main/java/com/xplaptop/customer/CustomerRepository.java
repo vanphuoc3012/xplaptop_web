@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.xplaptop.common.entity.customer.Customer;
 
+import java.util.Optional;
+
 public interface CustomerRepository extends JpaRepository<Customer, Integer>{
 	
 	Customer findByEmail(String email);
@@ -22,4 +24,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer>{
 	@Query("UPDATE Customer c SET c.authenticationType = ?2 WHERE c.id = ?1")
 	@Modifying
 	void updateAuthenticationType(Integer customerId, AuthenticationType authenticationType);
+
+	Optional<Customer> findByResetPasswordToken(String token);
 }

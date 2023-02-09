@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CustomerService {
@@ -33,6 +32,12 @@ public class CustomerService {
 
 	public Customer findCustomerByEmail(String email) {
 		return customerRepo.findByEmail(email);
+	}
+
+	public Customer findCustomerByResetPasswordToken(String token) throws CustomerNotFoundException {
+		return customerRepo.findByResetPasswordToken(token).orElseThrow(
+				() -> new CustomerNotFoundException("Invalid token")
+		);
 	}
 
 	public List<State> findAllStatesByCountryId(Integer countryId) {
@@ -102,7 +107,7 @@ public class CustomerService {
 		}
 	}
 
-	public void updateCustomerInfo(Customer customerInForm) {
+	public void updateCustomerInfo(Customer customerInForm) throws CustomerNotFoundException {
 		Customer customerInDB = customerRepo.findById(customerInForm.getId())
 				.orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
 		if(customerInForm.getAuthenticationType().equals(customerInDB.getAuthenticationType())) {
@@ -121,4 +126,22 @@ public class CustomerService {
 		customerRepo.save(customerInForm);
 	}
 
+	public String updateResetPasswordToken(String email) throws CustomerNotFoundException {
+		Customer customer = findCustomerByEmail(email);
+		if(customer == null) throw new CustomerNotFoundException("Can not found any user with email: "+email);
+		String token = RandomString.make(32);
+		customer.setResetPasswordToken(token);
+		customerRepo.save(customer);
+
+		return token;
+	}
+
+	public void updateNewPassword(String token, String password) throws CustomerNotFoundException {
+		Customer customer = customerRepo.findByResetPasswordToken(token).orElseThrow(
+				() -> new CustomerNotFoundException("Invalid token")
+		);
+		customer.setPassword(passwordEncoder.encode(password));
+		customer.setResetPasswordToken(null);
+		customerRepo.save(customer);
+	}
 }
