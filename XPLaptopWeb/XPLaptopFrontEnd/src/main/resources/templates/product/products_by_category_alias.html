@@ -43,17 +43,17 @@
 					<div>
 						<th:block th:if="${product.discountPercent <= 0}">
 							<span class="fs-4 fw-bold">
-								<div th:replace="product/price_fragment :: price"></div>
+								<div th:replace="product/price_fragment :: price(${product.price})"></div>
 							</span>
 						</th:block>
 						<th:block th:if="${product.discountPercent > 0}">
 							<span class="fs-4 text-danger fw-bold">
-								<div th:replace="product/price_fragment :: price"></div>
+								<div th:replace="product/price_fragment :: price(${product.discountPrice()})"></div>
 							</span>
 							
 							-
 							<span class="text-decoration-line-through price">
-								<div th:replace="product/price_fragment :: price"></div>
+								<div th:replace="product/price_fragment :: price(${product.price})"></div>
 							</span>
 						</th:block>
 					</div>

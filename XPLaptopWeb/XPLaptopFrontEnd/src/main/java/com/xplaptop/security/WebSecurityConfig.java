@@ -31,6 +31,7 @@ public class WebSecurityConfig {
 
 		http.authorizeRequests()
 				.mvcMatchers("/account_details").authenticated()
+				.mvcMatchers("/cart").authenticated()
 				.anyRequest().permitAll();
 
 		http.oauth2Login()

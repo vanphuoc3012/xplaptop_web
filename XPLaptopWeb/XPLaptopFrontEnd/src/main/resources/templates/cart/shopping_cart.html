@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head('Your shopping cart')"></head>
+<body>
+<div class="container-fluid">
+    <nav th:replace="navigation :: navBar"></nav>
+
+    <div th:replace="search :: search_nav"></div>
+
+    <div class="text-center">
+        <h2>Your shopping cart</h2>
+    </div>
+
+    <div class="row" m-1>
+        <div class="col-sm-8">
+            <th:block th:each="item, status : ${cartItems}" th:with="product = ${item.getProduct()}">
+                <div class="row border rounded p-1">
+                    <!--cart item number-->
+                    <div class="col-1">
+                        <div th:text="${status.count}"></div>
+                        <div>
+                            <a href="#"><i class="fa-solid fa-trash-can"></i></a>
+                        </div>
+                    </div>
+
+                    <!--Product information-->
+                    <div class="col-3">
+                        <img th:src="@{${product.imagePath()}}" class="img-fluid img-thumbnail"/>
+                    </div>
+
+                    <div class="col-8">
+                        <!--product name-->
+                        <div>
+                            <a th:href="@{'/p/'+${product.alias}}" th:title="${product.name}"><b th:text="${product.shortName}"></b></a>
+                        </div>
+
+                        <!--quantity control-->
+                        <div class="p-2 mb-2">
+                            <div th:replace="cart/quantity_control :: quantity_control(${item.quantity}, ${product.id})">
+
+                            </div>
+                        </div>
+
+                        <!--Product price-->
+                        <div class="mb-3">
+                            Price:
+                            <th:block th:if="${product.discountPercent <= 0}">
+                                <span class="fw-bold">
+                                    <div th:replace="product/price_fragment :: price(${product.price})"></div>
+                                </span>
+                            </th:block>
+                            <th:block th:if="${product.discountPercent > 0}">
+                                <span class="text-danger fw-bold">
+                                    <div th:replace="product/price_fragment :: price(${product.discountPrice()})"></div>
+                                </span>
+                                -
+                                <span class="text-decoration-line-through price">
+                                    <div th:replace="product/price_fragment :: price(${product.price})"></div>
+                                </span>
+                                <span class="fst-italic">([[${product.discountPercent}]]% off)</span>
+                            </th:block>
+                        </div>
+
+                        <!--Total price-->
+                        <div>
+                            Total:
+                            <span class="fw-bold">
+                                 <div th:replace="product/price_fragment :: price(${item.getSubtotal()})"></div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+
+        <!--total price-->
+        <div class="col-sm-4" th:unless="${#lists.isEmpty(cartItems)}">
+            <div>
+                <span class="h3">Estimated Total:</span>
+            </div>
+
+            <!--Estimated price-->
+            <div class="p-3">
+                <span class="text-danger h3">
+                    <div th:replace="product/price_fragment :: price(${estimatedTotal})"></div>
+                </span>
+            </div>
+
+            <!--Button check out-->
+            <div class="p-3">
+                <button type="button" class="btn btn-danger p-3">Check Out</button>
+            </div>
+        </div>
+
+        <div class="row m-1 text-center" th:if="${#lists.isEmpty(cartItems)}">
+            <h3>Your cart is empty now</h3>
+        </div>
+    </div>
+
+</div>
+
+
+<div th:replace="navigation :: footer"></div>
+</body>
+</html>

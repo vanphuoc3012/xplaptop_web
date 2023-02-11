@@ -28,4 +28,8 @@ public class CartItem {
     private Product product;
 
     private int quantity;
+
+    public Double getSubtotal() {
+        return product.discountPrice() * quantity;
+    }
 }

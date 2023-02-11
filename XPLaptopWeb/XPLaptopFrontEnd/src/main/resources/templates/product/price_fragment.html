@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-	<div th:fragment="price" th:remove="tag">
+	<div th:fragment="price(value)" th:remove="tag">
 		<span th:if="${CURRENCY_SYMBOL_POSITION == 'Before'}">[[${CURRENCY_SYMBOL}]]</span>
-		[[${#numbers.formatDecimal(product.price, 1, THOUSANDS_POINT_TYPE, CURRENCY_DIGITS, DECIMAL_POINT_TYPE)}]]
+		[[${#numbers.formatDecimal(value, 1, THOUSANDS_POINT_TYPE, CURRENCY_DIGITS, DECIMAL_POINT_TYPE)}]]
 		<span th:if="${CURRENCY_SYMBOL_POSITION == 'After'}">[[${CURRENCY_SYMBOL}]]</span>
 	</div>
 </body>
