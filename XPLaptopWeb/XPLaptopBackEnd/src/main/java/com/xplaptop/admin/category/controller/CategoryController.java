@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.xplaptop.admin.FileUploadUtils;
-import com.xplaptop.admin.category.CategoryNotFoundException;
+import com.xplaptop.common.exception.CategoryNotFoundException;
 import com.xplaptop.admin.category.CategoryService;
 import com.xplaptop.admin.exporter.CategoryCSVExporter;
 import com.xplaptop.common.entity.Category;
@@ -93,7 +93,7 @@ public class CategoryController {
 			model.addAttribute("path", path);
 			
 		} catch (CategoryNotFoundException e) {
-			ra.addFlashAttribute("", e.getMessage());
+			ra.addFlashAttribute("message", e.getMessage());
 		}
 		return "category/categories_form"; 
 	}

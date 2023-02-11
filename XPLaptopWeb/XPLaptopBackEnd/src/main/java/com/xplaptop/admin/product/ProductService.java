@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import com.xplaptop.common.exception.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.xplaptop.admin.brand.BrandNotFoundException;
+import com.xplaptop.common.exception.BrandNotFoundException;
 import com.xplaptop.admin.brand.BrandService;
 import com.xplaptop.common.entity.Category;
 import com.xplaptop.common.entity.product.Product;

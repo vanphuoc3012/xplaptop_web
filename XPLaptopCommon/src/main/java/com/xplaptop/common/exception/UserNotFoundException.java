@@ -1,4 +1,4 @@
-package com.xplaptop.admin.user;
+package com.xplaptop.common.exception;
 
 import java.util.NoSuchElementException;
 

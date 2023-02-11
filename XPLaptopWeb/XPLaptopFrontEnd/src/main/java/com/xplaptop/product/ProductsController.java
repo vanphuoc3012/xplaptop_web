@@ -2,6 +2,8 @@ package com.xplaptop.product;
 
 import java.util.List;
 
+import com.xplaptop.common.exception.CategoryNotFoundException;
+import com.xplaptop.common.exception.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -10,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.xplaptop.category.CategoryNotFoundException;
 import com.xplaptop.category.CategoryService;
 import com.xplaptop.common.entity.Category;
 import com.xplaptop.common.entity.product.Product;

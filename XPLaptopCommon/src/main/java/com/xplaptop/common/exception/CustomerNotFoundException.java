@@ -1,4 +1,4 @@
-package com.xplaptop.admin.customer;
+package com.xplaptop.common.exception;
 
 public class CustomerNotFoundException extends Throwable {
     public CustomerNotFoundException(String s) {

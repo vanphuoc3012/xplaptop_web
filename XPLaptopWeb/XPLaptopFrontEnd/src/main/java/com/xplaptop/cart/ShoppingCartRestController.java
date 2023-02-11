@@ -2,7 +2,8 @@ package com.xplaptop.cart;
 
 import com.xplaptop.Utitlity;
 import com.xplaptop.common.entity.customer.Customer;
-import com.xplaptop.customer.CustomerNotFoundException;
+import com.xplaptop.common.exception.CustomerNotFoundException;
+import com.xplaptop.common.exception.ShoppingCartException;
 import com.xplaptop.customer.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

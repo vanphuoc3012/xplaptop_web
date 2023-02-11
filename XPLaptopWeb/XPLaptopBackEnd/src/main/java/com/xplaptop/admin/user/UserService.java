@@ -3,6 +3,7 @@ package com.xplaptop.admin.user;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import com.xplaptop.common.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

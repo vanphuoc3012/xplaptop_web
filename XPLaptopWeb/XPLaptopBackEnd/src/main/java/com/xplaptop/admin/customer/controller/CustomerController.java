@@ -1,6 +1,6 @@
 package com.xplaptop.admin.customer.controller;
 
-import com.xplaptop.admin.customer.CustomerNotFoundException;
+import com.xplaptop.common.exception.CustomerNotFoundException;
 import com.xplaptop.admin.customer.CustomerService;
 import com.xplaptop.admin.paging.PagingAndSortingHelper;
 import com.xplaptop.admin.paging.PagingAndSortingParam;

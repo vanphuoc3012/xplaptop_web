@@ -3,6 +3,7 @@ package com.xplaptop.category;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.xplaptop.common.exception.CategoryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

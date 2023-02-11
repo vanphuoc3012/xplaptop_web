@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.xplaptop.common.exception.CategoryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,9 +47,9 @@ public class CategoryService {
 		return categoriesToShow;
 	}
 	
-	public List<Category> pageCatgories(Integer pageNume, String sortDir, String keyword) {		
+	public List<Category> pageCategories(Integer pageNum, String sortDir, String keyword) {
 		
-		Page<Category> pageRootCategories = getPage(pageNume, sortDir, keyword);
+		Page<Category> pageRootCategories = getPage(pageNum, sortDir, keyword);
 		
 		if(keyword == null || keyword.isEmpty()) {
 			List<Category> categoriesInForm = new ArrayList<>();
@@ -65,14 +66,14 @@ public class CategoryService {
 		
 	}
 	
-	public Page<Category> getPage(Integer pageNume, String sortDir, String keyword) {		
+	public Page<Category> getPage(Integer pageNum, String sortDir, String keyword) {
 		Sort sort = Sort.by("name");
 		if(sortDir.equals("asc")) {
 			sort = sort.ascending();
 		} else {
 			sort = sort.descending();
 		}
-		Pageable pageable = PageRequest.of(pageNume-1, ROOT_CATEGORY_PER_PAGE, sort);
+		Pageable pageable = PageRequest.of(pageNum-1, ROOT_CATEGORY_PER_PAGE, sort);
 		
 		if(keyword == null || keyword.isEmpty()) {
 			return categoryRepo.findRootCategoriesPage(pageable);
@@ -83,13 +84,11 @@ public class CategoryService {
 		
 	}
 	
-	public Category findById(Integer id) throws CategoryNotFoundException {		
-		Category category = categoryRepo.findById(id).get();
-		if(category != null) {
-			return category;
-		} else {
-			throw new CategoryNotFoundException("No category found with ID: "+id);
-		}
+	public Category findById(Integer id) throws CategoryNotFoundException {
+		return categoryRepo.findById(id).orElseThrow(
+				() -> new CategoryNotFoundException("No category found with ID: "+id)
+		);
+
 	}
 	
 	public Category save(Category category) {	

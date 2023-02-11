@@ -23,7 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.xplaptop.admin.FileUploadUtils;
 import com.xplaptop.admin.brand.BrandService;
 import com.xplaptop.admin.category.CategoryService;
-import com.xplaptop.admin.product.ProductNotFoundException;
+import com.xplaptop.common.exception.ProductNotFoundException;
 import com.xplaptop.admin.product.ProductService;
 import com.xplaptop.common.entity.Brand;
 import com.xplaptop.common.entity.Category;

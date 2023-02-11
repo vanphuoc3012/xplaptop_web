@@ -17,7 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.xplaptop.admin.FileUploadUtils;
 import com.xplaptop.admin.security.XPLaptopUserDetails;
-import com.xplaptop.admin.user.UserNotFoundException;
+import com.xplaptop.common.exception.UserNotFoundException;
 import com.xplaptop.admin.user.UserService;
 import com.xplaptop.common.entity.Role;
 import com.xplaptop.common.entity.User;

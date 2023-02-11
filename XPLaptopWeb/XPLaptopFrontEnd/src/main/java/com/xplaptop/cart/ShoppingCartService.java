@@ -3,6 +3,7 @@ package com.xplaptop.cart;
 import com.xplaptop.common.entity.CartItem;
 import com.xplaptop.common.entity.customer.Customer;
 import com.xplaptop.common.entity.product.Product;
+import com.xplaptop.common.exception.ShoppingCartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

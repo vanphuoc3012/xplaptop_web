@@ -6,7 +6,7 @@ import com.xplaptop.admin.exporter.UserExcelExporter;
 import com.xplaptop.admin.exporter.UserPDFExporter;
 import com.xplaptop.admin.paging.PagingAndSortingHelper;
 import com.xplaptop.admin.paging.PagingAndSortingParam;
-import com.xplaptop.admin.user.UserNotFoundException;
+import com.xplaptop.common.exception.UserNotFoundException;
 import com.xplaptop.admin.user.UserService;
 import com.xplaptop.common.entity.Role;
 import com.xplaptop.common.entity.User;
