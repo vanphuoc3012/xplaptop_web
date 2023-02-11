@@ -78,7 +78,7 @@
 
 			</div>
 			<div>
-				<button type="button" class="btn btn-primary m-3">Add to cart</button>
+				<button type="button" class="btn btn-primary m-3" th:disabled="${!product.inStock}" id="addToCart">Add to cart</button>
 			</div>
 		</div>
 	</div>
@@ -112,8 +112,33 @@
 	
 	<div th:replace="image-carousel :: content"></div>
 	<div th:replace="navigation :: footer"></div>
+
+	<!-- modal dialog-->
+	<div class="modal fade text-center" id="modalDialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h4 class="modal-title" id="modalTitle">Warning</h4>
+					<button class="btn-close" type="button" data-bs-dismiss="modal"></button>
+				</div>
+
+				<div class="modal-body">
+					<span id="modalBody"></span>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 	<script type="text/javascript">
+		let contextPath = "[[@{/}]]";
+		let productId = "[[${product.id}]]";
+		let csrfHeaderName = "[[${_csrf.headerName}]]";
+		let csrfValue = "[[${_csrf.token}]]";
 		$(document).ready(function() {
 			$(".product-images").mouseover(function() {
 				currentImgSrc = $(this).attr("src");
@@ -129,6 +154,9 @@
 			});
 		});
 	</script>
+
 	<script type="text/javascript" th:src="@{/js/quantity_control.js}"></script>
+	<script type="text/javascript" th:src="@{/js/add_to_cart.js}"></script>
+	<script type="text/javascript" th:src="@{/js/common_modal.js}"></script>
 </body>
 </html>

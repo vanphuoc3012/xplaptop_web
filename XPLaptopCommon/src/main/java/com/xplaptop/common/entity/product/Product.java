@@ -100,7 +100,11 @@ public class Product {
 		this.id = id;
 		this.name = name;
 	}
-	
+
+	public Product(Integer productId) {
+		this.id = productId;
+	}
+
 	public void addExtrasImage(String imageName) {
 		this.productImages.add(new ProductImage(imageName, this));
 	}

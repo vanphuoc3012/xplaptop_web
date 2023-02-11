@@ -15,7 +15,6 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.RememberMeAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -68,9 +67,8 @@ public class CustomerController {
 
     @GetMapping("/account_details")
     public String editCustomerInformation(ModelMap model,
-                                          Authentication authentication,
                                           HttpServletRequest request) {
-        String email = getEmailOfAuthenticatedCustomer(request);
+        String email = Utitlity.getEmailOfAuthenticatedCustomer(request);
         Customer customer = customerService.findCustomerByEmail(email);
         List<Country> listAllCountries = customerService.listAllCountries();
         List<State> stateList = customerService.findAllStatesByCountryId(customer.getCountry().getId());
@@ -114,19 +112,6 @@ public class CustomerController {
         }
     }
 
-    private String getEmailOfAuthenticatedCustomer(HttpServletRequest request) {
-        Principal userPrincipal = request.getUserPrincipal();
-        String customerEmail = "";
-        if(userPrincipal instanceof UsernamePasswordAuthenticationToken ||
-        userPrincipal instanceof RememberMeAuthenticationToken) {
-            customerEmail = userPrincipal.getName();
-        } else if (userPrincipal instanceof OAuth2AuthenticationToken) {
-            OAuth2AuthenticationToken oAuth2Token = (OAuth2AuthenticationToken) userPrincipal;
-            CustomerOauth2User oAuth2User = (CustomerOauth2User) oAuth2Token.getPrincipal();
-            customerEmail = oAuth2User.getEmail();
-        }
-        return customerEmail;
-    }
 
     private void sendVerificationEmail(HttpServletRequest request, Customer customer) throws MessagingException, UnsupportedEncodingException {
         EmailSettingBag emailSettingBag = settingService.getEmailSettingBag();
