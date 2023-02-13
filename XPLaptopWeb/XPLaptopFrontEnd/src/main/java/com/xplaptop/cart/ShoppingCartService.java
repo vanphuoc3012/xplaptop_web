@@ -3,16 +3,23 @@ package com.xplaptop.cart;
 import com.xplaptop.common.entity.CartItem;
 import com.xplaptop.common.entity.customer.Customer;
 import com.xplaptop.common.entity.product.Product;
+import com.xplaptop.common.exception.ProductNotFoundException;
 import com.xplaptop.common.exception.ShoppingCartException;
+import com.xplaptop.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class ShoppingCartService {
     @Autowired
     private CartItemRepository cartItemRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     public Integer addProduct(Integer productId, Integer quantity, Customer customer) throws ShoppingCartException {
         Integer updatedQuantity = quantity;
@@ -37,6 +44,15 @@ public class ShoppingCartService {
 
     public List<CartItem> listCartItems(Customer customer) {
         return cartItemRepository.findAllByCustomer_Id(customer.getId());
+    }
+
+    public double updateQuantity(Integer productId, Integer quantity, Customer customer) throws ProductNotFoundException {
+        cartItemRepository.updateQuantity(quantity, customer.getId(), productId);
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new ProductNotFoundException("Product not found, productId: " + productId)
+        );
+        double subtotal = product.discountPrice() * quantity;
+        return subtotal;
     }
 
 }

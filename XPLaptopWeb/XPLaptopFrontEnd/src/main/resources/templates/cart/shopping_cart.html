@@ -61,12 +61,14 @@
                             </th:block>
                         </div>
 
-                        <!--Total price-->
+                        <!--Total product price-->
                         <div>
                             Total:
-                            <span class="fw-bold">
-                                 <div th:replace="product/price_fragment :: price(${item.getSubtotal()})"></div>
-                            </span>
+                            <span class="fw-bold" th:if="${CURRENCY_SYMBOL_POSITION == 'Before'}">[[${CURRENCY_SYMBOL}]]</span>
+                                <span th:id="${'subtotal'+product.id}" th:subTotalValue="${item.getSubtotal()}" class="fw-bold subtotal">
+                                    [[${#numbers.formatDecimal(item.getSubtotal(), 1, THOUSANDS_POINT_TYPE, CURRENCY_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
+                            <span class="fw-bold" th:if="${CURRENCY_SYMBOL_POSITION == 'After'}">[[${CURRENCY_SYMBOL}]]</span>
+
                         </div>
                     </div>
                 </div>
@@ -82,7 +84,10 @@
             <!--Estimated price-->
             <div class="p-3">
                 <span class="text-danger h3">
-                    <div th:replace="product/price_fragment :: price(${estimatedTotal})"></div>
+                    <span class="fw-bold" th:if="${CURRENCY_SYMBOL_POSITION == 'Before'}">[[${CURRENCY_SYMBOL}]]</span>
+                        <span id="estimatedTotal" class="fw-bold">
+                                    [[${#numbers.formatDecimal(estimatedTotal, 1, THOUSANDS_POINT_TYPE, CURRENCY_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
+                    <span class="fw-bold" th:if="${CURRENCY_SYMBOL_POSITION == 'After'}">[[${CURRENCY_SYMBOL}]]</span>
                 </span>
             </div>
 
@@ -99,7 +104,39 @@
 
 </div>
 
+<!-- modal dialog-->
+<div class="modal fade text-center" id="modalDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalTitle">Warning</h4>
+                <button class="btn-close" type="button" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <span id="modalBody"></span>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div th:replace="navigation :: footer"></div>
+<script type="text/javascript" th:src="@{/js/shopping_cart.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.number.min.js}"></script>
+<script>
+    let contextPath = "[[@{/}]]";
+    let csrfHeaderName = "[[${_csrf.headerName}]]";
+    let csrfValue = "[[${_csrf.token}]]";
+
+    let thousandPointType = "[[${THOUSANDS_POINT_TYPE}]]" == "COMMA" ? "," : ".";
+    let currencyDigits = "[[${CURRENCY_DIGITS}]]";
+    let decimalPointType = "[[${DECIMAL_POINT_TYPE}]]" == "COMMA" ? "," : ".";
+</script>
 </body>
 </html>
