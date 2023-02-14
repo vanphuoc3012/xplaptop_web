@@ -7,6 +7,7 @@ import com.xplaptop.common.exception.ProductNotFoundException;
 import com.xplaptop.common.exception.ShoppingCartException;
 import com.xplaptop.customer.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,12 +52,23 @@ public class ShoppingCartRestController {
         try {
             Customer customer = getAuthenticatedCustomer(request);
             double subtotal = cartService.updateQuantity(productId, quantity, customer);
-
             return String.valueOf(subtotal);
         } catch (CustomerNotFoundException e) {
             return "You must login to change quantity of this product";
         } catch (ProductNotFoundException e) {
             return "Product not found";
+        }
+    }
+
+    @DeleteMapping("/cart/remove/{productId}")
+    public String removeProduct(@PathVariable(name = "productId") Integer productId,
+                                HttpServletRequest request) {
+        try {
+            Customer customer = getAuthenticatedCustomer(request);
+            cartService.removeProduct(customer, productId);
+            return "The product has been remove from your shopping cart.";
+        } catch (CustomerNotFoundException e) {
+            return "You must login to remove product/";
         }
     }
 }

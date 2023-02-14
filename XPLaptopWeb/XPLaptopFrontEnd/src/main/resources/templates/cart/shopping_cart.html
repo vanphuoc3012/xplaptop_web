@@ -14,12 +14,12 @@
     <div class="row" m-1>
         <div class="col-sm-8">
             <th:block th:each="item, status : ${cartItems}" th:with="product = ${item.getProduct()}">
-                <div class="row border rounded p-1">
+                <div class="row border rounded p-1" th:id="'row' + ${status.count}">
                     <!--cart item number-->
                     <div class="col-1">
-                        <div th:text="${status.count}"></div>
+                        <div class="divCount" th:text="${status.count}"></div>
                         <div>
-                            <a href="#"><i class="fa-solid fa-trash-can"></i></a>
+                            <a href="#" class="link-remove" th:href="@{'/cart/remove/' + ${product.id}}" th:rowNumber="${status.count}"><i class="fa-solid fa-trash-can color-gray"></i></a>
                         </div>
                     </div>
 
@@ -76,28 +76,28 @@
         </div>
 
         <!--total price-->
-        <div class="col-sm-4" th:unless="${#lists.isEmpty(cartItems)}">
+        <div id="sectionTotal" class="col-sm-4" th:unless="${#lists.isEmpty(cartItems)}">
             <div>
                 <span class="h3">Estimated Total:</span>
             </div>
 
             <!--Estimated price-->
-            <div class="p-3">
+            <div class="p-3" >
                 <span class="text-danger h3">
                     <span class="fw-bold" th:if="${CURRENCY_SYMBOL_POSITION == 'Before'}">[[${CURRENCY_SYMBOL}]]</span>
                         <span id="estimatedTotal" class="fw-bold">
                                     [[${#numbers.formatDecimal(estimatedTotal, 1, THOUSANDS_POINT_TYPE, CURRENCY_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
                     <span class="fw-bold" th:if="${CURRENCY_SYMBOL_POSITION == 'After'}">[[${CURRENCY_SYMBOL}]]</span>
                 </span>
-            </div>
 
-            <!--Button check out-->
-            <div class="p-3">
-                <button type="button" class="btn btn-danger p-3">Check Out</button>
+                <!--Button check out-->
+                <div class="p-3">
+                    <button type="button" class="btn btn-danger p-3">Check Out</button>
+                </div>
             </div>
         </div>
 
-        <div class="row m-1 text-center" th:if="${#lists.isEmpty(cartItems)}">
+        <div id="emptyCartMessage" class="row m-1 text-center" th:classappend="${#lists.isEmpty(cartItems)} ? '' : ' d-none'">
             <h3>Your cart is empty now</h3>
         </div>
     </div>
@@ -129,6 +129,7 @@
 <div th:replace="navigation :: footer"></div>
 <script type="text/javascript" th:src="@{/js/shopping_cart.js}"></script>
 <script type="text/javascript" th:src="@{/js/jquery.number.min.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/color.css}"/>
 <script>
     let contextPath = "[[@{/}]]";
     let csrfHeaderName = "[[${_csrf.headerName}]]";
