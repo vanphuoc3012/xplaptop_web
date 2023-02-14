@@ -33,12 +33,12 @@ public class WebSecurityConfig {
 			.mvcMatchers("/categories/**", "/brands/**","/articles/**", "/menus/**").hasAnyAuthority("Admin", "Editor")
 			
 			.mvcMatchers("/products", "/products/page/**", "/products/detail/**").hasAnyAuthority("Admin", "Salesperson", "Editor", "Shipper")
-			.mvcMatchers("/products/new", "/product/delete/**").hasAnyAuthority("Admin", "Editor")
+			.mvcMatchers("/products/new", "/products/delete/**").hasAnyAuthority("Admin", "Editor")
 			.mvcMatchers("products/edit/**", "/products/save", "/products/check_unique").hasAnyAuthority("Admin", "Salesperson", "Editor")
 			.mvcMatchers("/products/**").hasAnyAuthority("Admin", "Editor")
 			
 			.mvcMatchers("/questions/**", "/reviews/**").hasAnyAuthority("Admin", "Assistant")
-			.mvcMatchers("/customers/**", "/shipping/**", "/orders/**", "/reports/**").hasAnyAuthority("Admin")
+			.mvcMatchers("/customers/**", "/shipping_rates/**", "/orders/**", "/reports/**").hasAnyAuthority("Admin")
 			.anyRequest().authenticated()
 			.and()
 			.formLogin()

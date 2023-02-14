@@ -1,8 +1,6 @@
 package com.xplaptop.common.exception;
 
-import java.util.NoSuchElementException;
-
-public class CategoryNotFoundException extends NoSuchElementException {
+public class CategoryNotFoundException extends Exception {
 	
 	public CategoryNotFoundException(String message) {
 		super(message);

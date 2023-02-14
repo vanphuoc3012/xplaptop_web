@@ -47,8 +47,6 @@ public class PagingAndSortingResolver implements HandlerMethodArgumentResolver {
             path += "?" + queryString.replace("&", ">");
         }
         model.addAttribute("path", path);
-
-        System.out.println("resolving arg.....");
         return new PagingAndSortingHelper(model);
     }
 }

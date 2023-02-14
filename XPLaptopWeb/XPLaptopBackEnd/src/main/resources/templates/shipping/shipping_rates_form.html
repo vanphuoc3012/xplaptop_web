@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head('Shipping Rate - XPLaptop Control Panel')"></head>
+<body>
+<div class="container-fluid">
+    <nav th:replace="fragments :: navBar"></nav>
+
+    <div class="row justify-content-center">
+        <div class="mb-5">
+            <h2>Shipping Rate Management | [[${title}]]</h2>
+        </div>
+
+        <div class="border border-secondary rounded border-2 mb-3" style="width: 800px">
+            <form th:action="@{'/shipping_rates/save?path='+${path}}" th:object="${shippingRate}" method="post"
+                  id="shippingRateForm">
+                <input type="hidden" th:field="*{id}">
+
+                <!--Country-->
+                <div class=" m-3 row">
+                    <label class="col-sm-5 col-form-label">Destination Country: </label>
+                    <div class="col-sm">
+                        <select class="form-select" th:field="*{country}" id="country">
+                            <th:block th:each="country : ${countryList}">
+                                <option th:text="${country.name}" th:value="${country.id}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                </div>
+
+                <!--State-->
+                <div class=" m-3 row">
+                    <label class="col-sm-5 col-form-label">Destination State/Province: </label>
+                    <div class="col-sm">
+                        <select class="form-select" th:field="*{state}" id="state">
+                            <th:block th:each="state : ${stateList}">
+                                <option th:text="${state.name}" th:value="${state.name}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                </div>
+
+                <!--Shipping rate-->
+                <div class=" m-3 row">
+                    <label class="col-sm-5 col-form-label">Shipping Rate (per DIM weight): </label>
+                    <div class="col-sm">
+                        <input class="form-control" type="number" required th:field="*{rate}" min="0" step="0.01">
+                    </div>
+                </div>
+
+                <!--Day to delivery-->
+                <div class=" m-3 row">
+                    <label class="col-sm-5 col-form-label">Days to delivery: </label>
+                    <div class="col-sm">
+                        <input class="form-control" type="number" required th:field="*{days}">
+                    </div>
+                </div>
+
+                <!--Cash on delivery-->
+                <div class=" m-3 row">
+                    <label class="col-sm-5 col-form-label">Cash on delivery: </label>
+                    <div class="col-sm">
+                        <input class="form-check-input" type="checkbox" th:field="*{codSupported}">
+                    </div>
+                </div>
+
+                <!--save button and cancel button	 -->
+                <div class="text-center mb-3">
+                    <input type="submit" value="Save" class="btn btn-primary btn-sm" id="btnSubmit"/>
+                    <input type="button" value="Cancel" class="btn btn-secondary btn-sm" id="buttonCancel"/>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div th:replace="fragments :: footer"></div>
+</div>
+
+<!-- modal dialog-->
+<div class="modal fade text-center" id="modalDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalTitle">Warning</h4>
+                <button class="btn-close" type="button" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <span id="modalBody"></span>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    let contextPath = "[[@{/}]]"
+
+    $(document).ready(function() {
+        // cancle button
+        $("#buttonCancel").on("click", function() {
+            window.location = "[[@{/brands}]]";
+        });
+    });
+
+    function showModalDialog(title, message) {
+        $("#modalTitle").text(title);
+        $("#modalBody").text(message);
+        $("#modalDialog").modal("show");
+    }
+</script>
+<script type="text/javascript" th:src="@{/js/load_states_form.js}"></script>
+</body>
+
+</html>

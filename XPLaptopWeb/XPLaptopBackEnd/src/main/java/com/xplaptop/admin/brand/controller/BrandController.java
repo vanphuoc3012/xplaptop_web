@@ -84,8 +84,6 @@ public class BrandController {
 		} catch (BrandNotFoundException e) {
 			model.addAttribute("mess", e.getMessage());
 		}
-		
-		
 		return "/brand/brands_form";
 	}
 	
@@ -125,7 +123,6 @@ public class BrandController {
 		} catch (BrandNotFoundException e) {
 			ra.addFlashAttribute("message", e.getMessage());
 		}
-		
-		return "redirect:"+path.replace(">", "&");
+		return "redirect:" + path.replace(">", "&");
 	}
 }

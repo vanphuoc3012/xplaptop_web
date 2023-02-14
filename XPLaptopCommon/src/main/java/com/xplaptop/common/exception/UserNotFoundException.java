@@ -1,8 +1,6 @@
 package com.xplaptop.common.exception;
 
-import java.util.NoSuchElementException;
-
-public class UserNotFoundException extends NoSuchElementException {
+public class UserNotFoundException extends Exception {
 
 	public UserNotFoundException(String message) {
 		super(message);
