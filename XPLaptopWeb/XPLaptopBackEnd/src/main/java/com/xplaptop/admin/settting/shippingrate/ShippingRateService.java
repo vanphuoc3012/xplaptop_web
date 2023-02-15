@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service
 public class ShippingRateService {
-    private final static int SHIPPING_RATE_PER_PAGE = 5;
+    private final static int SHIPPING_RATE_PER_PAGE = 10;
 
     @Autowired
     private ShippingRateRepository shippingRateRepository;

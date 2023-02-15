@@ -21,7 +21,7 @@
     <!-- 			<a th:href="@{/products/export/pdf}"><i class="fa-solid fa-file-pdf fa-2x"></i></a> -->
   </div>
 
-  <!-- search customer -->
+  <!-- search -->
   <div>
     <form class="row g-3 mb-3" th:action="@{/shipping_rates/page/1}" id="searchForm">
       <input type="hidden" name="sortField" th:value="${sortField}">
@@ -42,35 +42,34 @@
   </div>
 
   <!-- 		Fewer details table -->
-  <!--<div class="less-details">
-    <div th:each="customer : ${customerList}" class="row mb-3">
-      <div class="row-auto col-4">
-        <a class="link-details" th:href="@{'/customers/detail/'+${customer.id}+'?path='+${path == null ? '' : path}}" th:text="${customer.getFullName()}" title="View details"></a>
-      </div>
+  <div class="less-details">
+    <div th:each="shippingRate : ${shippingRates}" class="row mb-3 border">
+
       <div class="col-8">
-        <div class="row">
-          <div class="col-2">
-            <a th:if="${customer.enabled == true}" class="fa-solid fa-circle-check color-green fa-2x" th:href="@{'/customers/enable/'+${customer.id}+'?path='+${path}}"></a>
-            <a th:if="${customer.enabled == false}" class="fa-solid fa-circle-check color-gray fa-2x" th:href="@{'/customers/enable/'+${customer.id}+'?path='+${path}}"></a>
+        <p><b>Country:</b> [[${shippingRate.country.name}]]</p>
+        <p><b>State:</b> [[${shippingRate.state}]]</p>
+        <p><b>Rate:</b> [[${shippingRate.rate}]]</p>
+        <p><b>Days:</b> [[${shippingRate.days}]]</p>
+      </div>
+
+      <div class="col-4 justify-content-center">
+          <div class="p-2">
+            <a th:if="${shippingRate.codSupported == true}" class="fa-solid fa-money-bill color-green fa-2x" th:href="@{'/shipping_rates/cod_supported/'+${shippingRate.id}+'?path='+${path}}"></a>
+            <a th:if="${shippingRate.codSupported == false}" class="fa-solid fa-money-bill color-gray fa-2x" th:href="@{'/shipping_rates/cod_supported/'+${shippingRate.id}+'?path='+${path}}"></a>
           </div>
-          <div class="col-2">
-            <a class="link-details col" th:href="@{'/customers/detail/'+${customer.id}+'?path='+${path == null ? '' : path}}"
-               style="margin: 0px 5px" title="Details"><i class="fa-solid fa-circle-info fa-2x" ></i></a>
+          <div class="p-2">
+            <a class="fa-solid fa-pen-to-square color-green fa-2x" th:href="@{'/shipping_rates/edit/'+${shippingRate.id}+'?path='+${path}}" title="Edit"></a>
           </div>
-          <div class="col-2">
-            <a class="fa-solid fa-pen-to-square color-green fa-2x" th:href="@{'/customers/edit/'+${customer.id}+'?path='+${path}}" title="Edit"></a>
-          </div>
-          <div class="col-2">
+          <div class="p-2">
             <a class="fa-solid fa-delete-left color-gray fa-2x link-delete col"
-               th:href="@{'/customers/delete/'+${customer.id}+'?path='+${path == null ? '' : path}}"
-               style="margin-left: 5px" title="Delete this"
-               th:catName="${customer.getFullName()}"></a>
+               th:href="@{'/shipping_rates/delete/'+${shippingRate.id}+'?path='+${path == null ? '' : path}}"
+               title="Delete this"
+               th:catName="${shippingRate.country.name}"></a>
           </div>
-        </div>
       </div>
 
     </div>
-  </div>-->
+  </div>
   <!--	Full Table -->
   <div class="full-details">
     <table class="table table-responsive-xl table-striped table-hover table-bordered">
