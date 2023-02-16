@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments :: head('Your account details')"></head>
+<head th:replace="fragments :: head(${pageTitle})"></head>
 <body>
 <div class="container-fluid">
     <nav th:replace="navigation :: navBar"></nav>
     <div th:replace="search :: search_nav"></div>
     <div class="text-center">
-        <h2>Your account details</h2>
+        <h2 th:text="${pageTitle}"></h2>
     </div>
 
 
@@ -128,12 +128,11 @@
 </div>
 
 <script>
-    var csrfHeaderName = "[[${_csrf.headerName}]]";
-    var csrfValue = "[[${_csrf.token}]]";
+    let csrfHeaderName = "[[${_csrf.headerName}]]";
+    let csrfValue = "[[${_csrf.token}]]";
+    let contextPath = "[[@{/}]]";
 </script>
 <script type="text/javascript" th:src="@{/js/form_common.js}"></script>
-<script>
-
-</script>
+<script type="text/javascript" th:src="@{/js/load_states_form.js}"></script>
 </body>
 </html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head('Your shopping cart')"></head>
+<body>
+<div class="container-fluid">
+  <nav th:replace="navigation :: navBar"></nav>
+
+  <div th:replace="search :: search_nav"></div>
+
+  <div class="row justify-content-center">
+    <div class="col-10">
+      <h2 class="text-center">Your address book</h2>
+      <p class="text-center alert alert-success" th:if="${message} != null" th:text="${message}"></p>
+      <p class="text-center alert alert-danger" th:if="${error} != null" th:text="${error}"></p>
+      <div class="border border-secondary rounded-2">
+          <a class="text-center mt-1" th:href="@{/address_book/new}"><h4>Add new address</h4></a>
+        <div class="row m-3 justify-content-evenly">
+          <th:block th:each="address, status : ${addressList}">
+            <div class="col-sm-4 card m-2" th:classappend="${address.defaultAddress ? 'border-primary' : ''}">
+              <div class="card-header row">
+                <h4 class="col-auto" th:text="'Address #' + ${status.count}"></h4>
+                <a class="col-auto" th:classappend="${address.defaultAddress} ? 'link-primary' : 'link-warning'" th:href="@{${address.defaultAddress} ? '' : '/address_book/setdefault/' + ${address.id}}">
+                  <p th:text="${address.defaultAddress ? 'Default address' : 'Set as default address'}"></p></a>
+
+                <!--edit and delete icon-->
+                <div class="col">
+                  <div class="position-absolute end-0 me-2">
+                    <a th:href="@{'/address_book/edit/' + ${address.id}}"><i class="fa-solid fa-pen-to-square color-gray"></i></a>
+                    <a class="link-delete" th:href="@{'/address_book/delete/' + ${address.id}}"><i class="fa-solid fa-trash-can color-gray"></i></a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-body">
+                <ul>
+                  <li th:text="${address.fullName}"></li>
+                  <li th:text="${address.phoneNumber}"></li>
+                  <li th:text="${address.fullAddress}"></li>
+                </ul>
+              </div>
+            </div>
+          </th:block>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:replace="navigation :: footer"></div>
+
+  <!-- 		show confirm delete dialog -->
+  <div class="modal fade text-center" id="modalDelete">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h4 class="modal-title" id="modalTitle">Warning</h4>
+          <button class="btn-close" type="button" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <span id="modalBody"></span>
+        </div>
+
+        <div class="modal-footer">
+          <a class="btn btn-primary" id="yesBtn" href="">Yes</a>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<link rel="stylesheet" type="text/css" th:href="@{/css/color.css}"/>
+<script>
+  let contextPath = "[[@{/}]]";
+  let csrfHeaderName = "[[${_csrf.headerName}]]";
+  let csrfValue = "[[${_csrf.token}]]";
+
+  $(document).ready(function() {
+    $(".link-delete").on("click", function(e) {
+      e.preventDefault();
+
+      let link = $(this);
+      $("#yesBtn").attr("href", link.attr("href"));
+      $("#modalBody").text("Are you sure to delete this address?");
+      $("#modalDelete").modal("show");
+
+    });
+  });
+</script>
+</body>
+</html>

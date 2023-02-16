@@ -11,3 +11,5 @@ function checkPasswordMatch() {
         $("#confirmPassword").get(0).setCustomValidity('');
     }
 }
+
+
