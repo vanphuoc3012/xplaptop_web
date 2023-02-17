@@ -88,7 +88,7 @@
             <tbody>
             <tr th:each="order : ${orderList}">
                 <td th:text="${order.id}"></td>
-                <td th:text="${order.customer.fullName}"></td>
+                <td><a class="link-details" th:text="${order.customer.fullName}" th:href="@{'/customers/detail/'+${order.customer.id}+'?path='+${path == null ? '' : path}}"></a></td>
                 <td th:text="${order.total}"></td>
                 <td th:text="${order.orderTime}"></td>
                 <td th:text="${order.destination}"></td>
@@ -146,8 +146,6 @@
     <!-- 		footer -->
     <div th:replace="fragments :: footer"></div>
 </div>
-
-
 <script type="text/javascript">
     $(document).ready(function() {
         $(".link-delete").on("click", function(e) {
@@ -165,19 +163,11 @@
             linkDetailsURL = $(this).attr("href");
             $("#modalDetails").modal("show").find(".modal-content").load(linkDetailsURL);
         });
-
-        $("#selectCategory").on("change", function() {
-            $("#searchForm").submit();
-        })
     })
 
     function clearFilter() {
         window.location = "[[@{/orders}]]";
     }
-
 </script>
-
-
-
 </body>
 </html>

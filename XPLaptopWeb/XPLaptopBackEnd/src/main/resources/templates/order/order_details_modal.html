@@ -1,0 +1,120 @@
+<div class="modal-header">
+  <h1 class="modal-title fs-5" id="exampleModalLabel">Order Details</h1>
+  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+  <nav>
+    <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+      <button class="nav-link active" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-general" type="button" role="tab">Overview</button>
+      <button class="nav-link" id="nav-description-tab" data-bs-toggle="tab" data-bs-target="#nav-address" type="button" role="tab">Description</button>
+    </div>
+  </nav>
+  <div class="tab-content" id="nav-tabContent">
+    <!-- General Tab -->
+    <div class="tab-pane fade show active" id="nav-general" role="tabpanel" tabindex="0">
+      <!-- customer id -->
+      <div class=" m-3 row">
+        <label class="col-sm-3 col-form-label">Customer ID: </label>
+        <div class="col-sm">
+          <input class="form-control" type="text" th:field="${customer.id}" readonly/>
+        </div>
+      </div>
+      <!-- customer full name -->
+      <div class=" m-3 row">
+        <label class="col-sm-3 col-form-label">Full name: </label>
+        <div class="col-sm">
+          <input class="form-control" type="text" th:value="${customer.getFullName()}" readonly/>
+        </div>
+      </div>
+      <!--customer email  -->
+      <div class=" m-3 row">
+        <label class="col-sm-3 col-form-label">Email: </label>
+        <div class="col-sm">
+          <input class="form-control" type="text" th:field="${customer.email}" readonly/>
+        </div>
+      </div>
+      <!-- customer phonenumber  -->
+      <div class=" m-3 row" id="categorySelection">
+        <label class="col-sm-3 col-form-label">Phone number: </label>
+        <div class="col-sm">
+          <input class="form-control" type="text" th:field="${customer.phoneNumber}" readonly/>
+        </div>
+      </div>
+
+      <!-- enable field -->
+      <div class=" m-3 row">
+        <label class="col-sm-3 col-form-label">Enabled: </label>
+        <div class="col-sm">
+          <input class="form-check-input" type="checkbox" th:field="${customer.enabled}" onclick="return false"/>
+        </div>
+      </div>
+
+      <!-- Created filed-->
+      <div class=" m-3 row">
+        <label class="col-sm-3 col-form-label">Created time: </label>
+        <div class="col-sm">
+          <input class="form-control" type="text" th:field="${customer.createdTime}"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Address Tab -->
+    <div class="tab-pane fade" id="nav-address" role="tabpanel" tabindex="0">
+      <!-- Address line 1-->
+      <div class=" m-3 row">
+        <label class="col-sm-3 col-form-label">Address Line 1: </label>
+        <div class="col-sm">
+          <input class="form-control" type="text" th:field="${customer.addressLine1}" readonly/>
+        </div>
+      </div>
+
+      <!-- Address line 2-->
+      <div class=" m-3 row">
+        <label class="col-sm-3 col-form-label">Address Line 2: </label>
+        <div class="col-sm">
+          <input class="form-control" type="text" th:field="${customer.addressLine2}" readonly/>
+        </div>
+      </div>
+
+      <!-- City-->
+      <div class=" m-3 row">
+        <label class="col-sm-3 col-form-label">City: </label>
+        <div class="col-sm">
+          <input class="form-control" type="text" th:field="${customer.city}" readonly/>
+        </div>
+      </div>
+
+      <!-- City-->
+      <div class=" m-3 row">
+        <label class="col-sm-3 col-form-label">State/Province: </label>
+        <div class="col-sm">
+          <input class="form-control" type="text" th:field="${customer.state}" readonly/>
+        </div>
+      </div>
+
+      <!-- Country-->
+      <div class=" m-3 row">
+        <label class="col-sm-3 col-form-label">Country: </label>
+        <div class="col-sm">
+          <input class="form-control" type="text" th:value="${customer.country.getName()}" readonly/>
+        </div>
+      </div>
+
+      <!-- Postal Code-->
+      <div class=" m-3 row">
+        <label class="col-sm-3 col-form-label">Country: </label>
+        <div class="col-sm">
+          <input class="form-control" type="text" th:field="${customer.postalCode}" readonly/>
+        </div>
+      </div>
+
+    </div>
+
+
+
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+</div>
