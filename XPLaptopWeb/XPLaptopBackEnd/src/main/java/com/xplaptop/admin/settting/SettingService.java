@@ -27,6 +27,10 @@ public class SettingService {
 	public List<Currency> getAllCurrencies() {
 		return currencyRepository.findAllByOrderByNameAsc();
 	}
+
+	public List<Setting> getCurrencySettings() {
+		return settingRepository.findByCategory(SettingCategory.CURRENCY);
+	}
 	
 	public GeneralSettingBag getGeneralSettingBag() {
 		List<Setting> settings = new ArrayList<>();

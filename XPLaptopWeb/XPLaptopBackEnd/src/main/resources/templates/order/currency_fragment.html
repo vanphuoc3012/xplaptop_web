@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="price(value)" th:remove="tag">
+  <span th:if="${CURRENCY_SYMBOL_POSITION == 'Before'}">[[${CURRENCY_SYMBOL}]]</span>
+  [[${#numbers.formatDecimal(value, 1, THOUSANDS_POINT_TYPE, CURRENCY_DIGITS, DECIMAL_POINT_TYPE)}]]
+  <span th:if="${CURRENCY_SYMBOL_POSITION == 'After'}">[[${CURRENCY_SYMBOL}]]</span>
+</div>
+
+<div th:fragment="price_input(value)" th:remove="tag">
+  <th:block th:with="value_formatted = ${#numbers.formatDecimal(value, 1, THOUSANDS_POINT_TYPE, CURRENCY_DIGITS, DECIMAL_POINT_TYPE)}">
+    <th:block th:if="${CURRENCY_SYMBOL_POSITION == 'Before'}">
+      <input class="form-control" type="text" th:value="${CURRENCY_SYMBOL} + ' ' + ${value_formatted}" />
+    </th:block>
+    <th:block th:if="${CURRENCY_SYMBOL_POSITION == 'After'}">
+      <input class="form-control" type="text" th:value="${value_formatted} + ' ' + ${CURRENCY_SYMBOL}" />
+    </th:block>
+  </th:block>
+
+
+</div>
+</body>
+</html>

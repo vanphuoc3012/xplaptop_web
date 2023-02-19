@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="time(time)" th:remove="tag">
+    <p th:text="${#dates.format(time, 'dd/MM/yyyy HH:mm:ss')}">
+
+    </p>
+</div>
+</body>
+</html>

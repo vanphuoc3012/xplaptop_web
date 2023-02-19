@@ -3,11 +3,14 @@ package com.xplaptop.admin.order.controller;
 import com.xplaptop.admin.order.OrderService;
 import com.xplaptop.admin.paging.PagingAndSortingHelper;
 import com.xplaptop.admin.paging.PagingAndSortingParam;
+import com.xplaptop.admin.settting.SettingService;
 import com.xplaptop.common.entity.order.Order;
+import com.xplaptop.common.entity.setting.Setting;
 import com.xplaptop.common.exception.OrderNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,12 +18,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
 public class OrderController {
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private SettingService settingService;
 
     @GetMapping("/orders")
     public String viewOrdersFirstPage() {
@@ -40,7 +46,7 @@ public class OrderController {
         Page<Order> page = orderService.findOrders(pageNumber, sortDir, sortField, keyword);
         List<Order> orderList = page.getContent();
         helper.updateModelPaginationAttributes(pageNumber, page);
-
+        loadCurrencySettings(model);
         model.put("orderList", orderList);
         return "order/orders";
     }
@@ -65,12 +71,18 @@ public class OrderController {
                                   RedirectAttributesModelMap ra) {
         try {
             Order order = orderService.findOrderById(id);
+            loadCurrencySettings(model);
             model.put("order", order);
             model.put("path", path);
+            return "order/order_details_modal";
         } catch (OrderNotFoundException e) {
             ra.addFlashAttribute("message", e.getMessage());
             return "redirect:"+path.replace(">", "&");
         }
-        return "order/order_details_modal";
+    }
+
+    private void loadCurrencySettings(ModelMap model) {
+        List<Setting> currencySettings = settingService.getCurrencySettings();
+        currencySettings.forEach(c -> model.put(c.getKey(), c.getValue()));
     }
 }

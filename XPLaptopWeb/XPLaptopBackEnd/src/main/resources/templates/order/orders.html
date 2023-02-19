@@ -81,7 +81,7 @@
                 <td th:replace="fragments :: column_link('orders', 'orderTime', 'Order Time')"></td>
                 <td th:replace="fragments :: column_link('orders', 'country', 'Destination')"></td>
                 <td th:replace="fragments :: column_link('orders', 'paymentMethod', 'Payment Method')"></td>
-                <td th:replace="fragments :: column_link('orders', 'status', 'Status')"></td>
+                <td th:replace="fragments :: column_link('orders', 'orderStatus', 'Status')"></td>
                 <td class="text-center">Details / Edit / Delete</td>
             </tr>
             </thead>
@@ -89,8 +89,16 @@
             <tr th:each="order : ${orderList}">
                 <td th:text="${order.id}"></td>
                 <td><a class="link-details" th:text="${order.customer.fullName}" th:href="@{'/customers/detail/'+${order.customer.id}+'?path='+${path == null ? '' : path}}"></a></td>
-                <td th:text="${order.total}"></td>
-                <td th:text="${order.orderTime}"></td>
+                <td>
+                    <div th:replace="order/currency_fragment :: price(${order.total})">
+
+                    </div>
+                </td>
+                <td>
+                    <div th:replace="order/time_fragment :: time(${order.orderTime})">
+
+                    </div>
+                </td>
                 <td th:text="${order.destination}"></td>
                 <td th:text="${order.paymentMethod.toString()}"></td>
                 <td th:text="${order.orderStatus.toString()}"></td>
