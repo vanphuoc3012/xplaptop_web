@@ -1,10 +1,15 @@
 package com.xplaptop.cart;
 
 import com.xplaptop.Utitlity;
+import com.xplaptop.address.AddressService;
 import com.xplaptop.common.entity.CartItem;
+import com.xplaptop.common.entity.customer.Address;
 import com.xplaptop.common.entity.customer.Customer;
+import com.xplaptop.common.entity.setting.ShippingRate;
+import com.xplaptop.common.exception.AddressNotFoundException;
 import com.xplaptop.common.exception.CustomerNotFoundException;
 import com.xplaptop.customer.CustomerService;
+import com.xplaptop.shipping.ShippingRateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -17,22 +22,24 @@ import java.util.List;
 public class ShoppingCartItemController {
     @Autowired
     private CustomerService customerService;
-
     @Autowired
     private ShoppingCartService cartService;
+    @Autowired
+    private AddressService addressService;
+    @Autowired
+    private ShippingRateService shippingRateService;
 
     @GetMapping("/cart")
     public String viewCart(ModelMap model,
                            HttpServletRequest request) {
-
             Customer customer = getAuthenticatedCustomer(request);
             List<CartItem> cartItems = cartService.listCartItems(customer);
         double estimatedTotal = cartItems.stream()
                 .mapToDouble(c -> c.getSubtotal())
                 .sum();
+
         model.put("cartItems", cartItems);
         model.put("estimatedTotal", estimatedTotal);
-
         return "cart/shopping_cart";
     }
 

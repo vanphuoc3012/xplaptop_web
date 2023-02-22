@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -38,8 +39,6 @@ public class AddressService {
     }
 
     public Address save(Address address) {
-        List<Address> addressList = getAllCustomerAddress(address.getCustomer().getId());
-        if(addressList.isEmpty()) address.setDefaultAddress(true);
         return addressRepository.save(address);
     }
 
@@ -50,16 +49,35 @@ public class AddressService {
     }
 
     public void deleteAddressByIdAndCustomer(Integer addressId, Customer customer) {
+        getAddressByIdAndCustomer(addressId, customer);
         addressRepository.deleteByIdAndCustomer_Id(addressId, customer.getId());
     }
 
 
     public void changeDefaultAddress(Integer addressIdToDefault, Customer customer) {
+        if(addressIdToDefault == 0) {
+            setDefaultAddressToFalseForAll(customer);
+            return;
+        }
         Address address = getAddressByIdAndCustomer(addressIdToDefault, customer);
+        setDefaultAddressToFalseForAll(customer);
+        address.setDefaultAddress(true);
+        addressRepository.save(address);
+    }
+
+    public void setDefaultAddressToFalseForAll(Customer customer) {
         List<Address> allCustomerAddress = getAllCustomerAddress(customer.getId());
         allCustomerAddress.forEach(a -> a.setDefaultAddress(false));
-        address.setDefaultAddress(true);
         addressRepository.saveAll(allCustomerAddress);
-        addressRepository.save(address);
+    }
+
+    public Address getDefaultAddress(Customer customer) {
+        return addressRepository.findByDefaultAddressAndCustomer_Id(customer.getId()).orElseThrow(
+                () -> new AddressNotFoundException("Address not found")
+        );
+    }
+
+    public boolean usePrimaryAsDefaultAddress(Customer customer) {
+        return addressRepository.findByDefaultAddressAndCustomer_Id(customer.getId()).isEmpty();
     }
 }

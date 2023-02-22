@@ -15,12 +15,32 @@
       <div class="border border-secondary rounded-2">
           <a class="text-center mt-1" th:href="@{/address_book/new}"><h4>Add new address</h4></a>
         <div class="row m-3 justify-content-evenly">
+          <!--primary address-->
+          <div class="col-sm-4 card m-2">
+            <div class="card-header row">
+              <h4 class="col-auto">Your primary address</h4>
+              <a class="col-auto" th:classappend="${usePrimaryAddressAsDefault} ? 'link-primary' : 'link-warning'"
+                 th:href="@{${usePrimaryAddressAsDefault} ? '' : '/address_book/setdefault/0'}">
+                <p th:text="${usePrimaryAddressAsDefault ? 'Default address' : 'Set as default'}"></p></a>
+            </div>
+
+            <div class="card-body">
+              <ul>
+                <li th:text="${customer.fullName}"></li>
+                <li th:text="${customer.phoneNumber}"></li>
+                <li th:text="${customer.fullAddress}"></li>
+              </ul>
+            </div>
+          </div>
+
           <th:block th:each="address, status : ${addressList}">
             <div class="col-sm-4 card m-2" th:classappend="${address.defaultAddress ? 'border-primary' : ''}">
+              <!--Card header-->
               <div class="card-header row">
-                <h4 class="col-auto" th:text="'Address #' + ${status.count}"></h4>
-                <a class="col-auto" th:classappend="${address.defaultAddress} ? 'link-primary' : 'link-warning'" th:href="@{${address.defaultAddress} ? '' : '/address_book/setdefault/' + ${address.id}}">
-                  <p th:text="${address.defaultAddress ? 'Default address' : 'Set as default address'}"></p></a>
+                <h4 class="col-auto" th:text="'Address #' + ${status.count + 1}"></h4>
+                <a class="col-auto" th:classappend="${address.defaultAddress} ? 'link-primary' : 'link-warning'"
+                   th:href="@{${address.defaultAddress} ? '' : '/address_book/setdefault/' + ${address.id}}">
+                  <p th:text="${address.defaultAddress ? 'Default address' : 'Set as default'}"></p></a>
 
                 <!--edit and delete icon-->
                 <div class="col">
@@ -31,6 +51,7 @@
                 </div>
               </div>
 
+              <!--Card body-->
               <div class="card-body">
                 <ul>
                   <li th:text="${address.fullName}"></li>

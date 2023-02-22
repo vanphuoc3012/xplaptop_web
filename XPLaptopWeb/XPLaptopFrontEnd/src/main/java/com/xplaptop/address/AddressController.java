@@ -32,7 +32,10 @@ public class AddressController {
                                   HttpServletRequest request) {
         Customer customer = getAuthenticatedCustomer(request);
         List<Address> addressList = addressService.getAllCustomerAddress(customer.getId());
+        boolean usePrimaryAddressAsDefault = addressService.usePrimaryAsDefaultAddress(customer);
         model.put("addressList", addressList);
+        model.put("customer", customer);
+        model.put("usePrimaryAddressAsDefault", usePrimaryAddressAsDefault);
         return "address/address_book";
     }
 
@@ -94,9 +97,10 @@ public class AddressController {
                                     HttpServletRequest request,
                                     RedirectAttributes ra) {
         Customer customer = getAuthenticatedCustomer(request);
-
+        String redirect = request.getParameter("redirect");
         try {
             addressService.changeDefaultAddress(addressId, customer);
+            if("cart".equals(redirect)) return "redirect:/cart";
         } catch (AddressNotFoundException e) {
             ra.addFlashAttribute("error", e.getMessage());
         }

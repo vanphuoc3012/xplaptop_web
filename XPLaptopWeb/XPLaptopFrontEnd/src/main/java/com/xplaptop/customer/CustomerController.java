@@ -83,11 +83,14 @@ public class CustomerController {
                                                HttpServletRequest request,
                                                ModelMap model) {
         boolean error = false;
+        String redirectOption = request.getParameter("redirect");
         try {
             customerService.updateCustomerInfo(customer);
             updateNameForAuthenticatedCustomer(customer, request);
             model.put("message", "Your account information has been update");
             model.put("pageTitle", "Successfully update account information");
+
+            if("cart".equals(redirectOption)) return "redirect:/cart";
         } catch (CustomerNotFoundException e) {
             error = true;
             model.put("message", e.getMessage());

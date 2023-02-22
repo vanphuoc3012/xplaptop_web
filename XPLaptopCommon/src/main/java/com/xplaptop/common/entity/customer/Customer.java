@@ -79,4 +79,8 @@ public class Customer {
 		return firstName + " " + lastName;
 	}
 
+	public String getFullAddress() {
+		return addressLine1 + " " + city + " " + state + " " + country.getName();
+	}
+
 }
