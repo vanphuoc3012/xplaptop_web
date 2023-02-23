@@ -18,11 +18,9 @@ import javax.persistence.*;
 public class OrderDetail extends IdBaseEntity {
 
     private int quantity;
-
     private double productCost;
     private double shippingCost;
     private double unitPrice;
-
     private double subtotal;
 
     @ManyToOne

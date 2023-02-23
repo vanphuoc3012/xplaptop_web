@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -57,5 +56,9 @@ public class ShoppingCartService {
 
     public void removeProduct(Customer customer, Integer productId) {
         cartItemRepository.deleteByCustomer_IdAndProduct_Id(customer.getId(), productId);
+    }
+
+    public void deleteByCustomer(Customer customer) {
+        cartItemRepository.deleteByCustomer(customer.getId());
     }
 }

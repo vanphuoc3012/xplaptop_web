@@ -5,6 +5,7 @@ import com.xplaptop.security.oauth2.OAuth2LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -32,8 +33,9 @@ public class WebSecurityConfig {
 
 		http.authorizeRequests()
 				.mvcMatchers("/account_details").authenticated()
-				.mvcMatchers("/cart/**").authenticated()
+				.mvcMatchers(HttpMethod.GET,"/cart/**").authenticated()
 				.mvcMatchers("/address_book/**").authenticated()
+				.mvcMatchers("/checkout", "/place_order").authenticated()
 				.anyRequest().permitAll();
 
 		http.oauth2Login()

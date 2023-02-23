@@ -1,12 +1,11 @@
 package com.xplaptop.setting;
 
-import java.util.List;
-
+import com.xplaptop.common.entity.setting.Setting;
+import com.xplaptop.common.entity.setting.SettingCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.xplaptop.common.entity.setting.Setting;
-import com.xplaptop.common.entity.setting.SettingCategory;
+import java.util.List;
 
 @Service
 public class SettingService {
@@ -24,5 +23,11 @@ public class SettingService {
 		settings.addAll(settingRepository.findByCategory(SettingCategory.MAIL_TEMPLATES));
 
 		return new EmailSettingBag(settings);
+	}
+
+	public CurrencySettingBag getCurrencySettingBag() {
+		List<Setting> settings = settingRepository.findByCategory(SettingCategory.CURRENCY);
+
+		return new CurrencySettingBag(settings);
 	}
 }

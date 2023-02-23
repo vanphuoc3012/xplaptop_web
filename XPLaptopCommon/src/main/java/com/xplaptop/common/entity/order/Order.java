@@ -1,6 +1,7 @@
 package com.xplaptop.common.entity.order;
 
 import com.xplaptop.common.entity.AbstractAddress;
+import com.xplaptop.common.entity.customer.Address;
 import com.xplaptop.common.entity.customer.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,7 +44,7 @@ public class Order extends AbstractAddress {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private Set<OrderDetail> orderDetails = new HashSet<>();
 
     public String getDestination() {
@@ -52,6 +53,20 @@ public class Order extends AbstractAddress {
         if(!state.isEmpty()) sb.append(state + ", ");
         sb.append(country);
         return sb.toString();
+    }
+
+    public String getShippingAddress() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(addressLine1 + ", ");
+        if(checkNotNullAndNotEmpty(addressLine2)) sb.append(addressLine2+ ", ");
+        if(checkNotNullAndNotEmpty(city)) sb.append(city + ", ");
+        if(checkNotNullAndNotEmpty(state)) sb.append(state + ", ");
+        sb.append(country);
+        return sb.toString();
+    }
+
+    private boolean checkNotNullAndNotEmpty(String s) {
+        return s != null && !s.isEmpty();
     }
 
     public void copyAddressFromCustomer() {
@@ -64,5 +79,21 @@ public class Order extends AbstractAddress {
         setCountry(customer.getCountry().getName());
         setPostalCode(customer.getPostalCode());
         setState(customer.getState());
+    }
+
+    public void copyShippingAddressFromAddressEntity(Address address) {
+        setFirstName(address.getFirstName());
+        setLastName(address.getLastName());
+        setPhoneNumber(address.getPhoneNumber());
+        setAddressLine1(address.getAddressLine1());
+        setAddressLine2(address.getAddressLine2());
+        setCity(address.getCity());
+        setCountry(address.getCountry().getName());
+        setPostalCode(address.getPostalCode());
+        setState(address.getState());
+    }
+
+    public void addOrderDetail(OrderDetail orderDetail) {
+        orderDetails.add(orderDetail);
     }
 }

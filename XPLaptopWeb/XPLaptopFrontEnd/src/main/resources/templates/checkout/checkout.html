@@ -42,10 +42,13 @@
 
                 <div class="card-body">
                     <div class="m-2" th:if="${checkOutInfo.isCodSupported()}">
-                        <p>
-                            <input type="radio"/>Cash on deliver
-                            <button class="btn btn-success ms-1">Place order with COD</button>
-                        </p>
+                        <form th:action="@{/place_order}" method="post">
+                            <p>
+                                <input type="checkbox" name="paymentMethod" id="checkboxCOD" value="COD"/> Cash on deliver
+                                <button class="btn btn-success ms-1 d-none" id="buttonCOD">Place order with COD</button>
+                            </p>
+                        </form>
+
                     </div>
                 </div>
             </div>
@@ -107,6 +110,16 @@
     let thousandPointType = "[[${THOUSANDS_POINT_TYPE}]]" == "COMMA" ? "," : ".";
     let currencyDigits = "[[${CURRENCY_DIGITS}]]";
     let decimalPointType = "[[${DECIMAL_POINT_TYPE}]]" == "COMMA" ? "," : ".";
+
+    $(document).ready(function() {
+        $("#checkboxCOD").on("click", function () {
+            if($("#checkboxCOD").prop('checked')) {
+                $("#buttonCOD").removeClass('d-none');
+            } else {
+                $("#buttonCOD").addClass('d-none');
+            }
+        });
+    });
 </script>
 </body>
 </html>

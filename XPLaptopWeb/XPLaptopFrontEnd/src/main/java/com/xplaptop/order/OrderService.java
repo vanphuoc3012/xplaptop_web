@@ -5,8 +5,10 @@ import com.xplaptop.common.entity.CartItem;
 import com.xplaptop.common.entity.customer.Address;
 import com.xplaptop.common.entity.customer.Customer;
 import com.xplaptop.common.entity.order.Order;
+import com.xplaptop.common.entity.order.OrderDetail;
 import com.xplaptop.common.entity.order.OrderStatus;
 import com.xplaptop.common.entity.order.PaymentMethod;
+import com.xplaptop.common.entity.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,8 +40,23 @@ public class OrderService {
 
         if(address == null) {
             newOrder.copyAddressFromCustomer();
+        } else {
+            newOrder.copyShippingAddressFromAddressEntity(address);
         }
+        for(CartItem cartItem : cartItemList) {
+            Product product = cartItem.getProduct();
 
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrder(newOrder);
+            orderDetail.setProduct(product);
+            orderDetail.setQuantity(cartItem.getQuantity());
+            orderDetail.setUnitPrice(product.discountPrice());
+            orderDetail.setProductCost(product.getCost());
+            orderDetail.setSubtotal(cartItem.getSubtotal());
+            orderDetail.setShippingCost(cartItem.getShippingCost());
+
+            newOrder.addOrderDetail(orderDetail);
+        }
         return orderRepository.save(newOrder);
     }
 }
