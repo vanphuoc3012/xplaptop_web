@@ -6,12 +6,14 @@ import com.xplaptop.common.entity.setting.ShippingRate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ShippingRateService {
     @Autowired
     private ShippingRateRepository shippingRateRepository;
 
-    public ShippingRate getShippingRateForCustomer(Customer customer) {
+    public Optional<ShippingRate> getShippingRateForCustomer(Customer customer) {
         String state = customer.getState();
         if(state == null || state.isEmpty()) {
             state = customer.getCity();
@@ -19,7 +21,7 @@ public class ShippingRateService {
         return shippingRateRepository.findByCountry_IdAndState(customer.getCountry().getId(), state);
     }
 
-    public ShippingRate getShippingRateForAddress(Address address) {
+    public Optional<ShippingRate> getShippingRateForAddress(Address address) {
         String state = address.getState();
         if(state == null || state.isEmpty()) {
             state = address.getCity();

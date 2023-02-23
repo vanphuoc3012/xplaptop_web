@@ -99,7 +99,8 @@
                     <div th:unless="${shippingSupported}">
                         <p class="h5 text-warning">No shipping available for your location</p>
                         <div th:if="${usePrimaryAddressAsDefault}">
-                            <a th:href="@{/account_details(redirect=cart)}">Update your address</a>
+                            <p><a th:href="@{/account_details(redirect=cart)}">Update your address</a></p>
+                            <p><a th:href="@{/address_book(redirect=cart)}">Choose another shipping address</a></p>
                         </div>
                         <div th:unless="${usePrimaryAddressAsDefault}">
                             <a th:href="@{/address_book(redirect=cart)}">Choose another shipping address</a>

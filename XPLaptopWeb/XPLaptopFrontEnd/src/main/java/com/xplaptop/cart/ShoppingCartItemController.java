@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class ShoppingCartItemController {
@@ -32,12 +33,22 @@ public class ShoppingCartItemController {
     @GetMapping("/cart")
     public String viewCart(ModelMap model,
                            HttpServletRequest request) {
-            Customer customer = getAuthenticatedCustomer(request);
-            List<CartItem> cartItems = cartService.listCartItems(customer);
+        Customer customer = getAuthenticatedCustomer(request);
+        List<CartItem> cartItems = cartService.listCartItems(customer);
         double estimatedTotal = cartItems.stream()
                 .mapToDouble(c -> c.getSubtotal())
                 .sum();
+        boolean usePrimaryAddressAsDefault = addressService.usePrimaryAsDefaultAddress(customer);
+        Optional<ShippingRate> optShippingRate;
+        if(usePrimaryAddressAsDefault) {
+            optShippingRate = shippingRateService.getShippingRateForCustomer(customer);
+        } else {
+            Address defaultAddress = addressService.getDefaultAddress(customer);
+            optShippingRate = shippingRateService.getShippingRateForAddress(defaultAddress);
+        }
 
+        model.put("shippingSupported", optShippingRate.isPresent());
+        model.put("usePrimaryAddressAsDefault", usePrimaryAddressAsDefault);
         model.put("cartItems", cartItems);
         model.put("estimatedTotal", estimatedTotal);
         return "cart/shopping_cart";
