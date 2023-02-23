@@ -101,6 +101,7 @@ public class AddressController {
         try {
             addressService.changeDefaultAddress(addressId, customer);
             if("cart".equals(redirect)) return "redirect:/cart";
+            if("checkout".equals(redirect)) return "redirect:/checkout";
         } catch (AddressNotFoundException e) {
             ra.addFlashAttribute("error", e.getMessage());
         }

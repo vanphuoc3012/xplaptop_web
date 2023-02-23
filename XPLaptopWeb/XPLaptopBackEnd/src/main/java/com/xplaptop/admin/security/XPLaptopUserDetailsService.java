@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.xplaptop.admin.user.UserRepository;
-import com.xplaptop.common.entity.User;
+import com.xplaptop.common.entity.user.User;
 
 @Service
 public class XPLaptopUserDetailsService implements UserDetailsService {

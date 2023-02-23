@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div th:fragment="content" th:remove="tag">
+		<form th:action="@{/setting/save_payment}" method="post">
+			<!-- PayPal API Base URL: -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Paypal API Base URL: </label>
+				<div class="col-sm">
+					<input class="form-control" type="text" placeholder="PayPal API" maxlength="128" name="PAYPAL_API_BASE_URL"
+						   th:value="${PAYPAL_API_BASE_URL}" required/>
+				</div>
+			</div>
+
+			<!-- PayPal Client ID: -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Paypal Client ID: </label>
+				<div class="col-sm">
+					<input class="form-control" type="text" placeholder="PayPal Client ID"
+						   maxlength="128" name="PAYPAL_API_CLIENT_ID" th:value="${PAYPAL_API_CLIENT_ID}" required/>
+				</div>
+			</div>
+
+			<!-- PayPal Client Secret: -->
+			<div class=" m-3 row">
+				<label class="col-sm-3 col-form-label">Paypal Client ID: </label>
+				<div class="col-sm">
+					<input class="form-control" type="text" placeholder="PayPal Client Secret"
+						   maxlength="128" name="PAYPAL_API_CLIENT_SECRET" th:value="${PAYPAL_API_CLIENT_SECRET}" required/>
+				</div>
+			</div>
+
+			<!-- save button -->
+			<div class="text-center mb-3">
+				<input type="submit" class="btn btn-primary btn-sm" id="btnSubmit"/>
+			</div>
+		</form>
+		
+	</div>
+	
+	
+</body>
+</html>

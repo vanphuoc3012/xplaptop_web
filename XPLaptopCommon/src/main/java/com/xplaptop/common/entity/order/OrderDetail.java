@@ -1,5 +1,6 @@
 package com.xplaptop.common.entity.order;
 
+import com.xplaptop.common.entity.IdBaseEntity;
 import com.xplaptop.common.entity.product.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,11 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "order_details")
-public class OrderDetail {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class OrderDetail extends IdBaseEntity {
 
     private int quantity;
 

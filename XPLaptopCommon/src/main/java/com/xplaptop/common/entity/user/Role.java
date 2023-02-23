@@ -1,32 +1,22 @@
-package com.xplaptop.common.entity;
+package com.xplaptop.common.entity.user;
 
-import java.util.Objects;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import lombok.AllArgsConstructor;
+import com.xplaptop.common.entity.IdBaseEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.Objects;
+
 @Entity
 @Table(name = "roles")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @RequiredArgsConstructor
-public class Role {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	
+public class Role extends IdBaseEntity {
 	@Column(length = 50, nullable = false, unique = true)
 	@NonNull
 	private String name;

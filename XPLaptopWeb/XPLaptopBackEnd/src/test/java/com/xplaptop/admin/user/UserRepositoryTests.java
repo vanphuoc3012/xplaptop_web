@@ -1,7 +1,7 @@
 package com.xplaptop.admin.user;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.xplaptop.common.entity.user.Role;
+import com.xplaptop.common.entity.user.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -13,8 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
 
-import com.xplaptop.common.entity.Role;
-import com.xplaptop.common.entity.User;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Rollback(false)
@@ -54,7 +53,7 @@ public class UserRepositoryTests {
 	@Test
 	public void testListAllUsers() {
 		Iterable<User> listUsers = repo.findAll();
-		listUsers.forEach(user -> System.out.println(user));
+		listUsers.forEach(System.out::println);
 		
 	}
 	

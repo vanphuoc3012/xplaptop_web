@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div th:fragment="content" th:remove="tag">
+		
+		
+			<!-- Email Subject -->
+			<div class=" m-3 row">
+				<label class="col-sm-2 col-form-label">Email Subject: </label>
+				<div class="col-sm">
+					<input class="form-control" type="text" placeholder="email subject" maxlength="128" 
+					name="ORDER_CONFIRM_SUBJECT" th:value="${ORDER_CONFIRM_SUBJECT}" required/>
+				</div>
+			</div>
+			
+			<!-- Email Subject -->
+			<div class=" m-3 row">
+				<label class="col-sm-2 col-form-label">Email Content: </label>
+				<div class="col-sm">
+					<textarea rows="5" cols="" name="ORDER_CONFIRM_CONTENT" id="orderConfirmContent" >[[${ORDER_CONFIRM_CONTENT}]]</textarea>
+				</div>
+			</div>
+			
+		
+	</div>
+	
+	
+</body>
+</html>

@@ -9,7 +9,7 @@ import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
 
-import com.xplaptop.common.entity.User;
+import com.xplaptop.common.entity.user.User;
 
 public class UserCSVExporter extends AbstractExporter {
 

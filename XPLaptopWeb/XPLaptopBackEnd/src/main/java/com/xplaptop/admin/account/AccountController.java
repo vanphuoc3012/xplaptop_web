@@ -19,8 +19,8 @@ import com.xplaptop.admin.FileUploadUtils;
 import com.xplaptop.admin.security.XPLaptopUserDetails;
 import com.xplaptop.common.exception.UserNotFoundException;
 import com.xplaptop.admin.user.UserService;
-import com.xplaptop.common.entity.Role;
-import com.xplaptop.common.entity.User;
+import com.xplaptop.common.entity.user.Role;
+import com.xplaptop.common.entity.user.User;
 
 @Controller
 public class AccountController {

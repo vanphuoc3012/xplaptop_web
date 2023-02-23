@@ -1,32 +1,15 @@
 package com.xplaptop.common.entity.product;
 
+import com.xplaptop.common.entity.Brand;
+import com.xplaptop.common.entity.Category;
+import com.xplaptop.common.entity.IdBaseEntity;
+import lombok.*;
+import org.springframework.data.annotation.Transient;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-
-import org.springframework.data.annotation.Transient;
-
-import com.xplaptop.common.entity.Brand;
-import com.xplaptop.common.entity.Category;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
@@ -35,12 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Table(name = "products")
-public class Product {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	
+public class Product extends IdBaseEntity {
 	@Column(nullable = false, unique = true)
 	@NonNull
 	private String name;

@@ -1,26 +1,10 @@
 package com.xplaptop.common.entity;
 
+import lombok.*;
+
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
@@ -29,11 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Table(name = "categories")
-public class Category {
-	
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Id
-	private Integer id;
+public class Category extends IdBaseEntity {
 	
 	@Column(length = 128, nullable = false, unique = true)
 	@NonNull

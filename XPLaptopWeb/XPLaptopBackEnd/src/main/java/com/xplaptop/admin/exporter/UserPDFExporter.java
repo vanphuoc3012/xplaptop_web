@@ -15,7 +15,7 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import com.xplaptop.common.entity.User;
+import com.xplaptop.common.entity.user.User;
 
 public class UserPDFExporter extends AbstractExporter{
 	

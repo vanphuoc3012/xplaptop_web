@@ -1,6 +1,6 @@
 package com.xplaptop.customer;
 
-import com.xplaptop.common.entity.AuthenticationType;
+import com.xplaptop.common.entity.user.AuthenticationType;
 import com.xplaptop.common.entity.country.Country;
 import com.xplaptop.common.entity.country.State;
 import com.xplaptop.common.entity.customer.Customer;

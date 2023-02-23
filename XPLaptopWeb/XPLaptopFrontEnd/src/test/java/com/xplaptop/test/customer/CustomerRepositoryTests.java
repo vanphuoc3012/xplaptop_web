@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import com.xplaptop.common.entity.AuthenticationType;
+import com.xplaptop.common.entity.user.AuthenticationType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

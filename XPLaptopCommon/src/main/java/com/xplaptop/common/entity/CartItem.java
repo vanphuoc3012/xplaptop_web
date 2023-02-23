@@ -13,11 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CartItem {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class CartItem extends IdBaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -29,7 +25,19 @@ public class CartItem {
 
     private int quantity;
 
+    @Transient
+    private double shippingCost;
     public Double getSubtotal() {
         return product.discountPrice() * quantity;
+    }
+
+    @Transient
+    public double getShippingCost() {
+        return shippingCost;
+    }
+
+    @Transient
+    public void setShippingCost(double shippingCost) {
+        this.shippingCost = shippingCost;
     }
 }

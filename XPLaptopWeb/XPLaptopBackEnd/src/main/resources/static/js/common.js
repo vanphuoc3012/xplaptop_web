@@ -5,7 +5,7 @@ $(document).ready(function() {
 function customizeTabs() {
 	var url = document.location.toString();
 	if(url.match('#')) {
-		$(".nav-tabs a[href='#" + url.split('#')[1] + "']").tab('show');
+		$("a[href='#" + url.split('#')[1] + "']").tab('show');
 		console.log(url);
 	}
 	

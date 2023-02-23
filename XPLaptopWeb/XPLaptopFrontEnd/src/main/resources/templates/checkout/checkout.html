@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head('Checkout')"></head>
+<body>
+<div class="container-fluid">
+    <nav th:replace="navigation :: navBar"></nav>
+
+    <div th:replace="search :: search_nav"></div>
+
+    <div class="text-center">
+        <h2>Checkout</h2>
+    </div>
+
+    <div class="row m-1">
+        <!--Shipping information-->
+        <div class="col-sm-8">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="text-center">Shipping information</h5>
+                </div>
+
+                <div class="card-body">
+                    <p>
+                        <b>Ship to: </b><span th:text="${shippingAddress}"></span>
+                        <a th:href="@{/address_book(redirect=checkout)}">Change address</a>
+                    </p>
+
+                    <p>
+                        <b>Days to deliver: </b><span th:text="${checkOutInfo.deliverDays} + ' days'"></span>
+                    </p>
+
+                    <p>
+                        <b>Expected deliver date: </b><span th:text="${#dates.format(checkOutInfo.getDeliverDate(), 'E, dd MMM yyyy')}"></span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="text-center">Payment method</h5>
+                </div>
+
+                <div class="card-body">
+                    <div class="m-2" th:if="${checkOutInfo.isCodSupported()}">
+                        <p>
+                            <input type="radio"/>Cash on deliver
+                            <button class="btn btn-success ms-1">Place order with COD</button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Order summary</h5>
+                </div>
+
+                <div class="card-body">
+                    <div>
+                        <table class="table table-sm">
+                            <th:block th:each="item : ${cartItems}">
+                                <tr th:with="product = ${item.product}">
+                                    <td th:text="${item.quantity}"></td>
+                                    <td width="70%" >
+                                        <a th:text="${product.name}" th:href="@{'/p/' + ${product.alias}}" target="_blank"></a>
+                                        <small>Ship: <div th:replace="fragments :: price(${item.shippingCost})"></div></small>
+                                    </td>
+                                    <td>
+                                        <div th:replace="fragments :: price(${item.subtotal})"></div>
+                                    </td>
+                                </tr>
+                            </th:block>
+                        </table>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-sm-auto"> Product Total: </div>
+                        <div class="col-sm-auto"><div th:replace="fragments :: price(${checkOutInfo.productTotal})"></div></div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-sm-auto"> Shipping Total: </div>
+                        <div class="col-sm-auto"><div th:replace="fragments :: price(${checkOutInfo.shippingCostTotal})"></div></div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-sm-auto"> Payment Total: </div>
+                        <div class="col-sm-auto"><b><div th:replace="fragments :: price(${checkOutInfo.paymentTotal})"></div></b></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<div th:replace="navigation :: footer"></div>
+
+<script type="text/javascript" th:src="@{/js/jquery.number.min.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/color.css}"/>
+<script>
+    let contextPath = "[[@{/}]]";
+    let csrfHeaderName = "[[${_csrf.headerName}]]";
+    let csrfValue = "[[${_csrf.token}]]";
+
+    let thousandPointType = "[[${THOUSANDS_POINT_TYPE}]]" == "COMMA" ? "," : ".";
+    let currencyDigits = "[[${CURRENCY_DIGITS}]]";
+    let decimalPointType = "[[${DECIMAL_POINT_TYPE}]]" == "COMMA" ? "," : ".";
+</script>
+</body>
+</html>

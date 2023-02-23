@@ -1,25 +1,12 @@
-package com.xplaptop.common.entity;
+package com.xplaptop.common.entity.user;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
+import com.xplaptop.common.entity.IdBaseEntity;
+import lombok.*;
 import org.springframework.data.annotation.Transient;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -27,11 +14,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Table(name = "users")
-public class User {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+public class User extends IdBaseEntity {
 	
 	@Column(length = 128, nullable = false, unique = true)
 	@NonNull

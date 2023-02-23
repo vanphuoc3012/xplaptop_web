@@ -25,18 +25,18 @@ import com.xplaptop.common.entity.setting.Setting;
 public class SettingController {
 	
 	@Autowired
-	private SettingService service;
+	private SettingService settingService;
 	
 	@Autowired CurrencyRepository currencyRepository;
 	
 	@GetMapping("/settings")
 	public String settingsPage(Model model) {
-		List<Setting> allSettings = service.getAllSettings();
+		List<Setting> allSettings = settingService.getAllSettings();
 		for(Setting setting : allSettings) {
 			model.addAttribute(setting.getKey(), setting.getValue());
 		}
 		
-		List<Currency> allCurrencies = service.getAllCurrencies();
+		List<Currency> allCurrencies = settingService.getAllCurrencies();
 		model.addAttribute("allCurrencies", allCurrencies);
 		
 		model.addAttribute("title", "Setting");
@@ -48,7 +48,7 @@ public class SettingController {
 			@RequestParam(name = "siteLogo") MultipartFile multipartFile,
 			HttpServletRequest request,
 			RedirectAttributes redirectAttributes) throws IOException {
-		GeneralSettingBag generalSettingBag = service.getGeneralSettingBag();
+		GeneralSettingBag generalSettingBag = settingService.getGeneralSettingBag();
 		
 		saveSiteLogo(multipartFile, generalSettingBag);
 		saveCurrencySymbol(request, generalSettingBag);
@@ -63,25 +63,32 @@ public class SettingController {
 	public String saveMailServerSetting(
 			HttpServletRequest request,
 			RedirectAttributes redirectAttributes) {
-		List<Setting> mailServerSetting = service.getMailServerSetting();
+		List<Setting> mailServerSetting = settingService.getMailServerSetting();
 		updateSettingValuesFromForm(request, mailServerSetting);
 		
 		redirectAttributes.addFlashAttribute("message", "Mail Server Setting has been saved successfully");
 		return "redirect:/settings#mailserver";
 	}
 	
-	@PostMapping("/setting/save_mail_tamplates")
+	@PostMapping("/setting/save_templates")
 	public String saveMailTemplatesSetting(
 			HttpServletRequest request,
 			RedirectAttributes redirectAttributes) {
-		List<Setting> mailTemplatesSetting = service.getMailTemplatesSetting();
+		List<Setting> mailTemplatesSetting = settingService.getMailTemplatesSetting();
 		updateSettingValuesFromForm(request, mailTemplatesSetting);
 		
 		redirectAttributes.addFlashAttribute("message", "Mail Templates Setting has been saved successfully");
 		return "redirect:/settings#mailtemplates";
 	}
-	
-	
+
+	@PostMapping("/setting/save_payment")
+	public String savePaymentSetting(HttpServletRequest request,
+									 RedirectAttributes ra) {
+		List<Setting> paymentSetting = settingService.getPaymentSetting();
+		updateSettingValuesFromForm(request, paymentSetting);
+		ra.addFlashAttribute("message", "Payment Setting has been saved successfully");
+		return "redirect:/settings#payment";
+	}
 
 	private void saveSiteLogo(MultipartFile multipartFile, GeneralSettingBag generalSettingBag) throws IOException {
 		if(!multipartFile.isEmpty()) {
@@ -114,6 +121,6 @@ public class SettingController {
 				setting.setValue(value);
 			}
 		}
-		service.saveAll(listSettings);
+		settingService.saveAll(listSettings);
 	}
 }

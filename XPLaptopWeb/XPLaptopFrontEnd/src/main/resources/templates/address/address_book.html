@@ -17,12 +17,19 @@
         <div class="row m-3 justify-content-evenly">
           <!--primary address-->
           <div class="col-sm-4 card m-2">
-            <div class="card-header row">
+            <div th:with="redirect = ${param.redirect}" class="card-header row">
               <h4 class="col-auto">Your primary address</h4>
-              <a class="col-auto" th:classappend="${usePrimaryAddressAsDefault} ? 'link-primary' : 'link-warning'"
-                 th:with="redirect = ${param.redirect}"
-                 th:href="@{'/address_book/setdefault/0' + ${redirect != null ? '?redirect=' + redirect : ''}}">
-                <p th:text="${usePrimaryAddressAsDefault ? 'Default address' : 'Set as default'}"></p></a>
+              <th:block th:if="${redirect == null}">
+                <a class="col-auto" th:classappend="${usePrimaryAddressAsDefault} ? 'link-primary' : 'link-success'"
+                   th:href="@{'/address_book/setdefault/0'}">
+                  <p th:text="${usePrimaryAddressAsDefault ? '[Default address]' : '[Set as default]'}"></p></a>
+              </th:block>
+
+              <th:block th:unless="${redirect == null}">
+                <a class="col-auto" th:classappend="${usePrimaryAddressAsDefault} ? 'link-primary' : 'link-success'"
+                   th:href="@{'/address_book/setdefault/0?redirect=' + ${redirect}}">
+                  <p th:text="${usePrimaryAddressAsDefault ? '[Currently selected]' : '[Choose]'}"></p></a>
+              </th:block>
             </div>
 
             <div class="card-body">
@@ -37,12 +44,20 @@
           <th:block th:each="address, status : ${addressList}">
             <div class="col-sm-4 card m-2" th:classappend="${address.defaultAddress ? 'border-primary' : ''}">
               <!--Card header-->
-              <div class="card-header row">
+              <div th:with="redirect = ${param.redirect}" class="card-header row">
                 <h4 class="col-auto" th:text="'Address #' + ${status.count + 1}"></h4>
-                <a class="col-auto" th:classappend="${address.defaultAddress} ? 'link-primary' : 'link-warning'"
-                   th:with="redirect = ${param.redirect}"
-                   th:href="@{'/address_book/setdefault/' + ${address.id} + ${redirect != null ? '?redirect=' + redirect : ''}}">
-                  <p th:text="${address.defaultAddress ? 'Default address' : 'Set as default'}"></p></a>
+
+                <th:block th:if="${redirect == null}">
+                  <a class="col-auto" th:classappend="${address.defaultAddress} ? 'link-primary' : 'link-success'"
+                     th:href="@{'/address_book/setdefault/0'}">
+                    <p th:text="${usePrimaryAddressAsDefault ? '[Default address]' : '[Set as default]'}"></p></a>
+                </th:block>
+
+                <th:block th:unless="${redirect == null}">
+                  <a class="col-auto" th:classappend="${address.defaultAddress} ? 'link-primary' : 'link-success'"
+                     th:href="@{'/address_book/setdefault/' + ${address.id} + '?redirect=' + ${redirect}}">
+                    <p th:text="${address.defaultAddress ? '[Currently selected]' : '[Choose]'}"></p></a>
+                </th:block>
 
                 <!--edit and delete icon-->
                 <div class="col">

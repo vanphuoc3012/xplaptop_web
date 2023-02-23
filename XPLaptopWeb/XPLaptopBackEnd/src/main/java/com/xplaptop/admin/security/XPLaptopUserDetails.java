@@ -8,8 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.xplaptop.common.entity.Role;
-import com.xplaptop.common.entity.User;
+import com.xplaptop.common.entity.user.Role;
+import com.xplaptop.common.entity.user.User;
 
 public class XPLaptopUserDetails implements UserDetails{
 	

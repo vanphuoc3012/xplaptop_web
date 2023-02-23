@@ -1,6 +1,6 @@
 package com.xplaptop.security.oauth2;
 
-import com.xplaptop.common.entity.AuthenticationType;
+import com.xplaptop.common.entity.user.AuthenticationType;
 import com.xplaptop.common.entity.customer.Customer;
 import com.xplaptop.customer.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
