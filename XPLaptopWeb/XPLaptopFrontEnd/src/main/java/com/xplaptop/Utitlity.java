@@ -47,12 +47,31 @@ public class Utitlity {
         sb.append("###,###");
         if(currencyDigits > 0) {
             sb.append(".");
-            for (int count = 1; count <= currencyDigits; count++) {
-                sb.append("#");
-            }
+            sb.append("#".repeat(currencyDigits));
         }
         sb.append("After".equals(position) ? " " + symbol : "");
 
+        char decimalPointSeparator = "POINT".equals(decimalPointType) ? '.' : ',';
+        char thousandsPointSeparator = "POINT".equals(thousandsPointType) ? '.' : ',';
+        DecimalFormatSymbols decimalFormatSymbols = DecimalFormatSymbols.getInstance();
+        decimalFormatSymbols.setDecimalSeparator(decimalPointSeparator);
+        decimalFormatSymbols.setGroupingSeparator(thousandsPointSeparator);
+
+        DecimalFormat formatter = new DecimalFormat(sb.toString(), decimalFormatSymbols);
+        return formatter.format(amount);
+    }
+
+    public static String formatCurrencyForPayPal(double amount, CurrencySettingBag currencySettingBag) {
+        String decimalPointType = currencySettingBag.getDecimalPointType();
+        String thousandsPointType = currencySettingBag.getThousandsPointType();
+        int currencyDigits = currencySettingBag.getCurrencyDigits();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("###,###");
+        if(currencyDigits > 0) {
+            sb.append(".");
+            sb.append("#".repeat(currencyDigits));
+        }
         char decimalPointSeparator = "POINT".equals(decimalPointType) ? '.' : ',';
         char thousandsPointSeparator = "POINT".equals(thousandsPointType) ? '.' : ',';
         DecimalFormatSymbols decimalFormatSymbols = DecimalFormatSymbols.getInstance();

@@ -27,7 +27,11 @@ public class OrderService {
                              CheckOutInfo checkOutInfo) {
         Order newOrder = new Order();
         newOrder.setOrderTime(new Date());
-        newOrder.setOrderStatus(OrderStatus.NEW);
+        if(paymentMethod.equals(PaymentMethod.PAYPAL)) {
+            newOrder.setOrderStatus(OrderStatus.PAID);
+        } else {
+            newOrder.setOrderStatus(OrderStatus.NEW);
+        }
         newOrder.setCustomer(customer);
         newOrder.setProductCost(checkOutInfo.getProductCost());
         newOrder.setSubtotal(checkOutInfo.getProductTotal());

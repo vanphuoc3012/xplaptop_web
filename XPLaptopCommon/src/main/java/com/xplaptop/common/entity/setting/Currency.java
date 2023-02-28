@@ -1,31 +1,17 @@
 package com.xplaptop.common.entity.setting;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.xplaptop.common.entity.IdBaseEntity;
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Table(name = "currencies")
-public class Currency {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+public class Currency extends IdBaseEntity {
 	
 	@Column(length = 64, nullable = false)
 	@NonNull

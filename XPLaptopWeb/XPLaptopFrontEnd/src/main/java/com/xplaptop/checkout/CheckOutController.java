@@ -3,16 +3,19 @@ package com.xplaptop.checkout;
 import com.xplaptop.Utitlity;
 import com.xplaptop.address.AddressService;
 import com.xplaptop.cart.ShoppingCartService;
+import com.xplaptop.checkout.paypal.PayPalService;
 import com.xplaptop.common.entity.CartItem;
 import com.xplaptop.common.entity.customer.Address;
 import com.xplaptop.common.entity.customer.Customer;
 import com.xplaptop.common.entity.order.Order;
 import com.xplaptop.common.entity.order.PaymentMethod;
 import com.xplaptop.common.entity.setting.ShippingRate;
+import com.xplaptop.common.exception.PayPalApiException;
 import com.xplaptop.customer.CustomerService;
 import com.xplaptop.order.OrderService;
 import com.xplaptop.setting.CurrencySettingBag;
 import com.xplaptop.setting.EmailSettingBag;
+import com.xplaptop.setting.PaymentSettingBag;
 import com.xplaptop.setting.SettingService;
 import com.xplaptop.shipping.ShippingRateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -49,12 +53,15 @@ public class CheckOutController {
     private OrderService orderService;
     @Autowired
     private SettingService settingService;
+    @Autowired
+    private PayPalService payPalService;
 
     @GetMapping("/checkout")
     public String showCheckOutPage(ModelMap model,
                                    HttpServletRequest request) {
         Customer customer = getAuthenticatedCustomer(request);
         List<CartItem> cartItems = cartService.listCartItems(customer);
+        CurrencySettingBag currencySettingBag = settingService.getCurrencySettingBag();
 
         boolean usePrimaryAddressAsDefault = addressService.usePrimaryAsDefaultAddress(customer);
         Optional<ShippingRate> optShippingRate;
@@ -70,9 +77,16 @@ public class CheckOutController {
             return "redirect:/cart";
         }
         CheckOutInfo checkOutInfo = checkOutService.prepareCheckOut(cartItems, optShippingRate.get());
+        String currencyCode = settingService.getCurrencyCode();
+        PaymentSettingBag paymentSettingBag = settingService.getPaymentSettingBag();
+        String paypalClientID = paymentSettingBag.getClientID();
 
+        model.put("paypalClientID", paypalClientID);
+        model.put("customer", customer);
+        model.put("currencyCode", currencyCode);
         model.put("checkOutInfo", checkOutInfo);
         model.put("cartItems", cartItems);
+        model.put("paymentTotal", Utitlity.formatCurrencyForPayPal(checkOutInfo.getPaymentTotal(), currencySettingBag));
         return "checkout/checkout";
     }
 
@@ -108,6 +122,26 @@ public class CheckOutController {
         model.put("pageTitle", "Checkout result");
         model.put("error", false);
         model.put("message", "Your Order has been completed!");
+        return "checkout/checkout_completed";
+    }
+
+    @PostMapping("/process_paypal_order")
+    public String processPayPalOrder(HttpServletRequest request, ModelMap model) {
+        String orderId = request.getParameter("orderId");
+        String pageTitle = "Checkout result";
+        String message;
+        try {
+            if(payPalService.validateOrder(orderId)) {
+                return placeOrder(request, model);
+            } else {
+                message = "ERROR: Transaction could not be completed because order information is invalid";
+            }
+        } catch (PayPalApiException | HttpClientErrorException e) {
+            message = "Transaction failed due to error: " + e.getMessage();
+        }
+        model.put("error", true);
+        model.put("pageTitle", pageTitle);
+        model.put("message", message);
         return "checkout/checkout_completed";
     }
 
