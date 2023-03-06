@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -46,6 +44,10 @@ public class Order extends AbstractAddress {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private Set<OrderDetail> orderDetails = new HashSet<>();
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    // use list here to maintain the order of orderTracks
+    private List<OrderTrack> orderTracks = new ArrayList<>();
 
     public String getDestination() {
         StringBuilder sb = new StringBuilder();
@@ -95,5 +97,9 @@ public class Order extends AbstractAddress {
 
     public void addOrderDetail(OrderDetail orderDetail) {
         orderDetails.add(orderDetail);
+    }
+
+    public void addOrderTrack(OrderTrack orderTrack) {
+        orderTracks.add(orderTrack);
     }
 }

@@ -1,0 +1,62 @@
+[
+  {
+    "key": "config/defaults,production/",
+    "flags": 0,
+    "value": ""
+  },
+  {
+    "key": "config/defaults,production/application.yml",
+    "flags": 0,
+    "value": "bG9nZ2luZzoKIGxldmVsOgogIG9yZy5zcHJpbmdmcmFtZXdvcmsuY29yZS5lbnY6IERFQlVH"
+  },
+  {
+    "key": "config/defaults,rabbitmq-production/",
+    "flags": 0,
+    "value": ""
+  },
+  {
+    "key": "config/defaults,rabbitmq-production/application.yml",
+    "flags": 0,
+    "value": "bG9nZ2luZzoKIGxldmVsOgogIG9yZy5zcHJpbmdmcmFtZXdvcmsuY29yZS5lbnY6IERFQlVH"
+  },
+  {
+    "key": "config/defaults/",
+    "flags": 0,
+    "value": ""
+  },
+  {
+    "key": "config/defaults/application.yml",
+    "flags": 0,
+    "value": "bG9nZ2luZzoKIGxldmVsOgogIG9yZy5zcHJpbmdmcmFtZXdvcmsuY29yZS5lbnY6IERFQlVH"
+  },
+  {
+    "key": "config/multiplication,production/",
+    "flags": 0,
+    "value": ""
+  },
+  {
+    "key": "config/multiplication,production/application.yml",
+    "flags": 0,
+    "value": "c2VydmVyOgogcG9ydDogMTAwODA="
+  },
+  {
+    "key": "config/multiplication,rabbitmq-production/",
+    "flags": 0,
+    "value": ""
+  },
+  {
+    "key": "config/multiplication,rabbitmq-production/application.yml",
+    "flags": 0,
+    "value": "bG9nZ2luZzoKIGxldmVsOgogIG9yZy5zcHJpbmdmcmFtZXdvcmsuY29yZS5lbnY6IFRSQUNF"
+  },
+  {
+    "key": "config/multiplication/",
+    "flags": 0,
+    "value": ""
+  },
+  {
+    "key": "config/multiplication/application.yml",
+    "flags": 0,
+    "value": "bG9nZ2luZzoKIGxldmVsOgogIG9yZy5zcHJpbmdmcmFtZXdvcmsuY29yZS5lbnY6IERFQlVH"
+  }
+]

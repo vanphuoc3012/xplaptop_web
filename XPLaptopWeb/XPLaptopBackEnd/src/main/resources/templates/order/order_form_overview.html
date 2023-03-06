@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+    <div th:fragment="content" th:remove="tag">
+        <!-- Order id -->
+        <div class=" m-3 row">
+            <label class="col-sm-2 col-form-label">Order ID: </label>
+            <div class="col-sm">
+                <input class="form-control-plaintext" type="text" th:field="*{id}" readonly/>
+            </div>
+        </div>
+        <!-- customer-->
+        <div class=" m-3 row">
+            <label class="col-sm-2 col-form-label">Customer: </label>
+            <div class="col-sm">
+                <input class="form-control-plaintext" type="text" th:value="${order.customer.getFullName()}" readonly/>
+            </div>
+        </div>
+        <!--Product cost-->
+        <div class=" m-3 row">
+            <label class="col-sm-2 col-form-label">Product cost: </label>
+            <div class="col-sm">
+                <input class="form-control" type="number" required id="productCost" name="productCost" step="0.01"
+                th:value="${#numbers.formatDecimal(order.productCost, 1, CURRENCY_DIGITS)}">
+            </div>
+        </div>
+        <!-- Subtotal  -->
+        <div class=" m-3 row" id="categorySelection">
+            <label class="col-sm-2 col-form-label">Subtotal: </label>
+            <div class="col-sm">
+                <input class="form-control" type="number" required id="subtotal" name="subtotal" step="0.01"
+                       th:value="${#numbers.formatDecimal(order.subtotal, 1, CURRENCY_DIGITS)}">
+            </div>
+        </div>
+
+        <!-- Shipping cost -->
+        <div class=" m-3 row">
+            <label class="col-sm-2 col-form-label">Shipping cost: </label>
+            <div class="col-sm">
+                <input class="form-control" type="number" required id="shippingCost" name="shippingCost" step="0.01"
+                       th:value="${#numbers.formatDecimal(order.shippingCost, 1, CURRENCY_DIGITS)}">
+            </div>
+        </div>
+
+        <!-- Tax-->
+        <div class=" m-3 row">
+            <label class="col-sm-2 col-form-label">Tax: </label>
+            <div class="col-sm">
+                <input class="form-control" type="number" required id="tax" name="tax" step="0.01"
+                       th:value="${#numbers.formatDecimal(order.tax, 1, CURRENCY_DIGITS)}">
+            </div>
+        </div>
+
+        <!-- Total-->
+        <div class=" m-3 row">
+            <label class="col-sm-2 col-form-label">Total: </label>
+            <div class="col-sm">
+                <input class="form-control" type="number" required id="total" name="total" step="0.01"
+                       th:value="${#numbers.formatDecimal(order.total, 1, CURRENCY_DIGITS)}">
+                <div><span>TOTAL = Subtotal + Shipping cost + Tax</span></div>
+            </div>
+        </div>
+
+        <!-- Payment method-->
+        <div class=" m-3 row">
+            <label class="col-sm-2 col-form-label">Payment method: </label>
+            <div class="col-sm">
+                <select class="form-select" th:field="*{paymentMethod}">
+                    <th:block th:each="payMethod : ${T(com.xplaptop.common.entity.order.PaymentMethod).values()}">
+                        <option th:text="${payMethod}" th:value="${payMethod}"></option>
+                    </th:block>
+                </select>
+            </div>
+        </div>
+
+        <!-- Order Status-->
+        <div class=" m-3 row">
+            <label class="col-sm-2 col-form-label">Payment method: </label>
+            <div class="col-sm">
+                <select class="form-select" th:field="*{orderStatus}">
+                    <th:block th:each="orderStat : ${T(com.xplaptop.common.entity.order.OrderStatus).values()}">
+                        <option th:text="${orderStat}" th:value="${orderStat}"></option>
+                    </th:block>
+                </select>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -4,13 +4,14 @@ import com.xplaptop.admin.order.OrderService;
 import com.xplaptop.admin.paging.PagingAndSortingHelper;
 import com.xplaptop.admin.paging.PagingAndSortingParam;
 import com.xplaptop.admin.settting.SettingService;
+import com.xplaptop.common.entity.country.Country;
+import com.xplaptop.common.entity.country.State;
 import com.xplaptop.common.entity.order.Order;
 import com.xplaptop.common.entity.setting.Setting;
 import com.xplaptop.common.exception.OrderNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -43,7 +43,7 @@ public class OrderController {
         if(sortDir == null || sortField == null) {
             return "redirect:/customers/page/"+pageNumber+"?sortField=firstName&sortDir=asc";
         }
-        Page<Order> page = orderService.findOrders(pageNumber, sortDir, sortField, keyword);
+        Page<Order> page = orderService.findAllOrders(pageNumber, sortDir, sortField, keyword);
         List<Order> orderList = page.getContent();
         helper.updateModelPaginationAttributes(pageNumber, page);
         loadCurrencySettings(model);
@@ -78,6 +78,29 @@ public class OrderController {
         } catch (OrderNotFoundException e) {
             ra.addFlashAttribute("message", e.getMessage());
             return "redirect:"+path.replace(">", "&");
+        }
+    }
+
+    @GetMapping("/orders/edit/{id}")
+    public String editOrder(ModelMap model,
+                            @PathVariable(name = "id") Integer id,
+                            @RequestParam(name = "path") String path,
+                            RedirectAttributes ra) {
+        try {
+            Order order = orderService.findOrderById(id);
+            List<Country> listAllCountry = orderService.listAllCountry();
+            List<State> stateList = orderService.listAllStateFromCountry(order.getCountry());
+
+            loadCurrencySettings(model);
+            model.put("stateList", stateList);
+            model.put("order", order);
+            model.put("listAllCountry", listAllCountry);
+            model.put("pageTitle", "Edit Order (ID =" + id +")");
+            model.put("path", path);
+            return "order/order_form";
+        } catch (OrderNotFoundException e) {
+            ra.addFlashAttribute("message", e.getMessage());
+            return "redirect:" + path.replace(">", "&");
         }
     }
 

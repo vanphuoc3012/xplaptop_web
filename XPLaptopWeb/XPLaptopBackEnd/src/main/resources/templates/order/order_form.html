@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head(${pageTitle})"></head>
+<body>
+    <div class="container-fluid">
+        <nav th:replace="fragments :: navBar"></nav>
+        <div class="row justify-content-center">
+            <div class="mb-5">
+                <h2>Order Management | [[${pageTitle}]]</h2>
+            </div>
+
+            <div class="border border-secondary rounded border-2 mb-3" style="width: 1000px">
+                <form th:action="@{'/orders/save?path='+${path}}" th:object="${order}" method="post">
+                    <!--Form nav-->
+                    <nav>
+                        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                            <button class="nav-link active" id="nav-overview-tab" data-bs-toggle="tab" data-bs-target="#nav-overview" type="button" role="tab">Overview</button>
+                            <button class="nav-link" id="nav-products-tab" data-bs-toggle="tab" data-bs-target="#nav-products" type="button" role="tab">Products</button>
+                            <button class="nav-link" id="nav-shipping-tab" data-bs-toggle="tab" data-bs-target="#nav-shipping" type="button" role="tab">Shipping</button>
+                            <button class="nav-link" id="nav-tracking-tab" data-bs-toggle="tab" data-bs-target="#nav-tracking" type="button" role="tab">Track</button>
+                        </div>
+                    </nav>
+
+                    <div class="tab-content" id="nav-tabContent">
+                        <!-- Overview Tab -->
+                        <div class="tab-pane fade show active" id="nav-overview" role="tabpanel" tabindex="0">
+                            <div th:replace="order/order_form_overview :: content"></div>
+                        </div>
+
+                        <!-- Products Tab -->
+                        <div class="tab-pane fade" id="nav-products" role="tabpanel" tabindex="0">
+
+                        </div>
+
+                        <!-- Shipping Tab -->
+                        <div class="tab-pane fade" id="nav-shipping" role="tabpanel" tabindex="0">
+                            <div th:replace="order/order_form_shipping :: content"></div>
+                        </div>
+
+                        <!--Tracking tab-->
+                        <div class="tab-pane fade" id="nav-tracking" role="tabpanel" tabindex="0">
+
+                        </div>
+                    </div>
+
+                    <div class="mb-2 mt-2 text-center">
+                        <button class="btn btn-primary" type="submit">Save</button>
+                        <button class="btn btn-secondary" type="button" id="buttonCancel">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" th:src="@{/js/load_states_form.js}"></script>
+    <script>
+        var csrfHeaderName = "[[${_csrf.headerName}]]";
+        var csrfValue = "[[${_csrf.token}]]";
+        let contextPath = "[[@{/}]]"
+
+        $(document).ready(function () {
+            // cancle button
+            $("#buttonCancel").on("click", function() {
+                window.location = "[[@{/orders}]]";
+            });
+        })
+    </script>
+</body>
+</html>

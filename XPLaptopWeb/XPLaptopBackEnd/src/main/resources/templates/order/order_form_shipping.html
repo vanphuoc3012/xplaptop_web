@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div th:fragment="content" th:remove="tag">
+        <div class="row m-1">
+            <!--Delivery Days-->
+            <div class=" m-3 row">
+                <label class="col-sm-3 col-form-label">Deliver Days: </label>
+                <div class="col-sm">
+                    <input class="form-control" type="number" required th:field="*{deliverDays}"/>
+                </div>
+            </div>
+            <!--Expected Deliver Date:-->
+            <div class=" m-3 row">
+                <label class="col-sm-3 col-form-label">Expected Deliver Date: </label>
+                <div class="col-sm">
+                    <input class="form-control" type="date" required id="deliverDate" name="deliverDate"
+                           th:value="${#dates.format(order.deliverDate, 'yyyy-MM-dd')}"/>
+                </div>
+            </div>
+
+            <!--First Name-->
+            <div class=" m-3 row">
+                <label class="col-sm-3 col-form-label">First Name: </label>
+                <div class="col-sm">
+                    <input class="form-control" type="text" required th:field="${order.firstName}"/>
+                </div>
+            </div>
+
+            <!--Last Name-->
+            <div class=" m-3 row">
+                <label class="col-sm-3 col-form-label">Last Name: </label>
+                <div class="col-sm">
+                    <input class="form-control" type="text" th:field="${order.lastName}" required/>
+                </div>
+            </div>
+
+            <!--Phone Number-->
+            <div class=" m-3 row">
+                <label class="col-sm-3 col-form-label">Phone number: </label>
+                <div class="col-sm">
+                    <input class="form-control" type="text" th:field="${order.phoneNumber}" required/>
+                </div>
+            </div>
+
+            <!--Address Line 1-->
+            <div class=" m-3 row">
+                <label class="col-sm-3 col-form-label">Address Line 1: </label>
+                <div class="col-sm">
+                    <input class="form-control" type="text" th:field="${order.addressLine1}" required/>
+                </div>
+            </div>
+
+            <!--Address Line 2-->
+            <div class=" m-3 row">
+                <label class="col-sm-3 col-form-label">Address Line 2: </label>
+                <div class="col-sm">
+                    <input class="form-control" type="text" th:field="${order.addressLine2}"/>
+                </div>
+            </div>
+
+            <!--City-->
+            <div class=" m-3 row">
+                <label class="col-sm-3 col-form-label">City: </label>
+                <div class="col-sm">
+                    <input class="form-control" type="text" th:field="${order.city}" required/>
+                </div>
+            </div>
+
+            <!--Country-->
+            <div class=" m-3 row">
+                <label class="col-sm-3 col-form-label">Country: </label>
+                <div class="col-sm">
+                    <select class="form-select" th:field="*{country}">
+                        <th:block th:each="c : ${listAllCountry}">
+                            <option th:value="${c.name}" th:text="${c.name}"></option>
+                        </th:block>
+                    </select>
+                </div>
+            </div>
+
+            <!--State-->
+            <div class=" m-3 row">
+                <label class="col-sm-3 col-form-label">State: </label>
+                <div class="col-sm">
+                    <select class="form-select" th:field="*{state}" id="state">
+                        <th:block th:each="state : ${stateList}">
+                            <option th:text="${state.name}" th:value="${state.name}"></option>
+                        </th:block>
+                    </select>
+                </div>
+            </div>
+
+            <!--Postal Code-->
+            <div class=" m-3 row">
+                <label class="col-sm-3 col-form-label">Postal Code: </label>
+                <div class="col-sm">
+                    <input class="form-control" type="text" th:field="${order.postalCode}" readonly/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div>
+    <div class="row border border-secondary rounded-2 m-1">
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Notes</th>
+            </tr>
+            </thead>
+            <th:block th:each="track : ${order.orderTracks}">
+                <tr>
+                    <td th:text="${track.updatedTime}"></td>
+                    <td th:text="${track.status}"></td>
+                    <td th:text="${track.notes}"></td>
+                </tr>
+            </th:block>
+
+            <tbody>
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+<script>
+    var csrfHeaderName = "[[${_csrf.headerName}]]";
+    var csrfValue = "[[${_csrf.token}]]";
+    let contextPath = "[[@{/}]]"
+</script>
+</body>
+</html>
