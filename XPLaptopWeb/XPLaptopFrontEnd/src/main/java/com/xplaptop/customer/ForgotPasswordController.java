@@ -2,11 +2,9 @@ package com.xplaptop.customer;
 
 import com.xplaptop.Utitlity;
 import com.xplaptop.common.exception.CustomerNotFoundException;
-import com.xplaptop.setting.EmailSettingBag;
-import com.xplaptop.setting.SettingService;
+import com.xplaptop.dto.EmailDTO;
+import com.xplaptop.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 
@@ -25,8 +22,7 @@ public class ForgotPasswordController {
     @Autowired
     private CustomerService customerService;
     @Autowired
-    private SettingService settingService;
-
+    private EmailService emailService;
     @GetMapping("/forgot_password")
     public String viewForgotPasswordRequestForm(ModelMap model) {
         return "customer/forgot_password_form";
@@ -73,16 +69,8 @@ public class ForgotPasswordController {
         return "customer/message";
     }
 
-    private void sendResetEmail(String url, String email) throws MessagingException, UnsupportedEncodingException {
-        EmailSettingBag emailSettingBag = settingService.getEmailSettingBag();
-        JavaMailSenderImpl mailSender = Utitlity.prepareMailSender(emailSettingBag);
-        String subject = "Reset password";
-
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setFrom(emailSettingBag.getFromAddress(), emailSettingBag.getSenderName());
-        helper.setTo(email);
-        helper.setSubject(subject);
+    private void sendResetEmail(String url, String toEmail) throws MessagingException, UnsupportedEncodingException {
+        String subject = "Reset your password";
 
         String content = "\n" +
                 "<!doctype html>\n" +
@@ -164,9 +152,14 @@ public class ForgotPasswordController {
                 "</html>";
 
         content = content.replace("[[URL]]", url);
-        helper.setText(content, true);
 
-        mailSender.send(message);
+        EmailDTO emailDTO = new EmailDTO();
+        emailDTO.setToEmail(toEmail);
+        emailDTO.setSubject(subject);
+        emailDTO.setContent(content);
+        emailDTO.setHtml(true);
+
+        emailService.sendEmail(emailDTO);
     }
 
 

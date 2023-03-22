@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +28,7 @@ public class WebSecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		
 		http.authorizeRequests()
+				.mvcMatchers("/webjars/**", "/images/**", "/fontawesome/**","/css/**", "/js/**").permitAll()
 			.mvcMatchers("/users/**", "/setting/**").hasAuthority("Admin")
 			.mvcMatchers("/categories/**", "/brands/**","/articles/**", "/menus/**").hasAnyAuthority("Admin", "Editor")
 			
@@ -53,11 +53,6 @@ public class WebSecurityConfig {
 				.key("xplatop3012");
 		
 		return http.build();
-	}
-	
-	@Bean
-	public WebSecurityCustomizer webSecurityCustomizer() {
-		return (web) -> web.ignoring().antMatchers("/webjars/**", "/images/**", "/fontawesome/**","/css/**", "/js/**");
 	}
 	
 	@Bean

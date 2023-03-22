@@ -1,30 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-    <div>
+    <div th:fragment="content" id="productList">
         <th:block th:each="orderDetail, status : ${order.orderDetails}">
-            <div class="row border border-secondary rounded-2 m-1">
-                <!--Count Order Detail-->
-                <div class="col-1">
-                    <span th:text="${status.count}"></span>
+            <div class="border border-secondary rounded-2 m-1 ps-2">
+                <div class="row">
+                    <!--Count Order Detail-->
+                    <div class="col-1">
+                        <span th:text="${status.count}"></span>
+                    </div>
+
+                    <!--Product image-->
+                    <div class="col">
+                        <img class="img-fluid" th:src="@{${orderDetail.product.imagePath()}}" style="height: 200px">
+                    </div>
                 </div>
-                <!--Product image-->
-                <div class="col-4">
-                    <img th:src="@{${orderDetail.product.imagePath()}}" style="height: 200px">
-                </div>
+
                 <!--Product details-->
-                <div class="col-7">
+                <div>
                     <h5 th:text="${orderDetail.product.name}"></h5>
-                    <p>Product cost: <div th:replace="order/currency_fragment :: price(${orderDetail.productCost})"></div></p>
-                    <p>Subtotal: [[${orderDetail.quantity}]] x
-                    <div th:replace="order/currency_fragment :: price(${orderDetail.unitPrice})"></div>
-                    = <div th:replace="order/currency_fragment :: price(${orderDetail.subtotal})"></div>
-                    </p>
-                    <p>Shipping cost: <div th:replace="order/currency_fragment :: price(${orderDetail.shippingCost})"></div>
+                    <!--Product cost-->
+                    <div class=" m-2 row">
+                        <label class="col-sm-2 col-form-label">Product cost: </label>
+                        <div class="col-sm-4">
+                            <input class="form-control cost-input" type="text" th:value="${orderDetail.productCost}"
+                                   th:rowNumber="${status.count}">
+                        </div>
+                    </div>
+
+                    <!--Quantity-->
+                    <div class=" m-2 row">
+                        <label class="col-sm-2 col-form-label">Quantity: </label>
+                        <div class="col-sm-4">
+                            <input class="form-control quantity-input" type="number" th:value="${orderDetail.quantity}"
+                            step="1" min="1" max="5" th:rowNumber="${status.count}" th:id="'quantity'+${status.count}">
+                        </div>
+                    </div>
+
+                    <!--Unit price-->
+                    <div class=" m-2 row">
+                        <label class="col-sm-2 col-form-label">Unit price: </label>
+                        <div class="col-sm-4">
+                            <input class="form-control price-input" type="text" th:value="${orderDetail.unitPrice}"
+                            th:id="'price'+${status.count}" th:rowNumber="${status.count}">
+                        </div>
+                    </div>
+
+                    <!--Subtotal-->
+                    <div class=" m-2 row">
+                        <label class="col-sm-2 col-form-label">Subtotal: </label>
+                        <div class="col-sm-4">
+                            <input class="form-control subtotal-output" type="text" th:value="${orderDetail.subtotal}"
+                                   th:id="'subtotal'+${status.count}" readonly>
+                        </div>
+                    </div>
+
+                    <!--Shipping cost-->
+                    <div class=" m-2 row">
+                        <label class="col-sm-2 col-form-label">Shipping cost: </label>
+                        <div class="col-sm-4">
+                            <input class="form-control ship-input" type="text" th:value="${orderDetail.shippingCost}"
+                                   th:id="'shippingCost'+${status.count}">
+                        </div>
+                    </div>
                     </p>
                 </div>
             </div>

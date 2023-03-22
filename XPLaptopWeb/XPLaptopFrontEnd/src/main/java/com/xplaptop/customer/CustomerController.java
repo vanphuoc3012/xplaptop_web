@@ -5,13 +5,14 @@ import com.xplaptop.common.entity.country.Country;
 import com.xplaptop.common.entity.country.State;
 import com.xplaptop.common.entity.customer.Customer;
 import com.xplaptop.common.exception.CustomerNotFoundException;
+import com.xplaptop.dto.EmailDTO;
+import com.xplaptop.email.EmailService;
 import com.xplaptop.security.CustomerUserDetailsImpl;
 import com.xplaptop.security.oauth2.CustomerOauth2User;
 import com.xplaptop.setting.EmailSettingBag;
 import com.xplaptop.setting.SettingService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.RememberMeAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,19 +24,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.List;
 
 @Controller
+@Slf4j
 public class CustomerController {
     @Autowired
     private CustomerService customerService;
-
     @Autowired
     private SettingService settingService;
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/register")
     public String showRegisterForm(ModelMap model) {
@@ -51,6 +53,7 @@ public class CustomerController {
     public String createCustomer(Customer customer,
                                  ModelMap model,
                                  HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+        log.info("Customer: {}", customer.getAddressLine1());
         customerService.registerCustomer(customer);
         sendVerificationEmail(request, customer);
         model.put("pageTitle", "Registration Succeed");
@@ -118,23 +121,21 @@ public class CustomerController {
 
     private void sendVerificationEmail(HttpServletRequest request, Customer customer) throws MessagingException, UnsupportedEncodingException {
         EmailSettingBag emailSettingBag = settingService.getEmailSettingBag();
-        JavaMailSenderImpl mailSender = Utitlity.prepareMailSender(emailSettingBag);
 
         String customerEmail = customer.getEmail();
         String subject = emailSettingBag.getCustomerVerifySubject();
         String content = emailSettingBag.getCustomerVerifyContent();
 
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setFrom(emailSettingBag.getFromAddress(), emailSettingBag.getSenderName());
-        helper.setTo(customerEmail);
-        helper.setSubject(subject);
-
         content = content.replace("[[name]]", customer.getFullName());
         String verifyURL = Utitlity.getSiteURL(request) + "/verify?code=" + customer.getVerificationCode();
         content = content.replace("[[URL]]", verifyURL);
 
-        helper.setText(content, true);
-        mailSender.send(message);
+        EmailDTO emailDTO = new EmailDTO();
+        emailDTO.setToEmail(customerEmail);
+        emailDTO.setSubject(subject);
+        emailDTO.setContent(content);
+        emailDTO.setHtml(true);
+
+        emailService.sendEmail(emailDTO);
     }
 }

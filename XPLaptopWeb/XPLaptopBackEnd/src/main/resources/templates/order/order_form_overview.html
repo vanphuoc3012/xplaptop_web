@@ -22,7 +22,7 @@
         <div class=" m-3 row">
             <label class="col-sm-2 col-form-label">Product cost: </label>
             <div class="col-sm">
-                <input class="form-control" type="number" required id="productCost" name="productCost" step="0.01"
+                <input class="form-control" type="text" required id="productCost" name="productCost" step="0.01"
                 th:value="${#numbers.formatDecimal(order.productCost, 1, CURRENCY_DIGITS)}">
             </div>
         </div>
@@ -30,7 +30,7 @@
         <div class=" m-3 row" id="categorySelection">
             <label class="col-sm-2 col-form-label">Subtotal: </label>
             <div class="col-sm">
-                <input class="form-control" type="number" required id="subtotal" name="subtotal" step="0.01"
+                <input class="form-control" type="text" required id="subtotal" name="subtotal" step="0.01"
                        th:value="${#numbers.formatDecimal(order.subtotal, 1, CURRENCY_DIGITS)}">
             </div>
         </div>
@@ -39,7 +39,7 @@
         <div class=" m-3 row">
             <label class="col-sm-2 col-form-label">Shipping cost: </label>
             <div class="col-sm">
-                <input class="form-control" type="number" required id="shippingCost" name="shippingCost" step="0.01"
+                <input class="form-control" type="text" required id="shippingCost" name="shippingCost" step="0.01"
                        th:value="${#numbers.formatDecimal(order.shippingCost, 1, CURRENCY_DIGITS)}">
             </div>
         </div>
@@ -48,7 +48,7 @@
         <div class=" m-3 row">
             <label class="col-sm-2 col-form-label">Tax: </label>
             <div class="col-sm">
-                <input class="form-control" type="number" required id="tax" name="tax" step="0.01"
+                <input class="form-control" type="text" required id="tax" name="tax" step="0.01"
                        th:value="${#numbers.formatDecimal(order.tax, 1, CURRENCY_DIGITS)}">
             </div>
         </div>
@@ -57,7 +57,7 @@
         <div class=" m-3 row">
             <label class="col-sm-2 col-form-label">Total: </label>
             <div class="col-sm">
-                <input class="form-control" type="number" required id="total" name="total" step="0.01"
+                <input class="form-control" type="text" required id="total" name="total" step="0.01"
                        th:value="${#numbers.formatDecimal(order.total, 1, CURRENCY_DIGITS)}">
                 <div><span>TOTAL = Subtotal + Shipping cost + Tax</span></div>
             </div>

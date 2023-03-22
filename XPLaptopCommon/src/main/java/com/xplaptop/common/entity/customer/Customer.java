@@ -3,10 +3,7 @@ package com.xplaptop.common.entity.customer;
 import com.xplaptop.common.entity.AbstractAddress;
 import com.xplaptop.common.entity.country.Country;
 import com.xplaptop.common.entity.user.AuthenticationType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,6 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "customers")
+@Builder(toBuilder = true)
 public class Customer extends AbstractAddress {
 	@Column(name = "email", unique = true, length = 45, nullable = false)
 	private String email;

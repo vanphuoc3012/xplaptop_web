@@ -1,7 +1,8 @@
 package com.xplaptop.product;
 
-import java.util.List;
-
+import com.xplaptop.category.CategoryService;
+import com.xplaptop.common.entity.Category;
+import com.xplaptop.common.entity.product.Product;
 import com.xplaptop.common.exception.CategoryNotFoundException;
 import com.xplaptop.common.exception.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.xplaptop.category.CategoryService;
-import com.xplaptop.common.entity.Category;
-import com.xplaptop.common.entity.product.Product;
+import java.util.List;
 
 @Controller
 public class ProductsController {
@@ -115,7 +114,7 @@ public class ProductsController {
 		Page<Product> page = productService.findProductsByKeyword(keyword, pageNumber);
 		List<Product> searchResults = page.getContent();
 		
-		if(searchResults == null || searchResults.size() == 0) {
+		if(searchResults.isEmpty()) {
 			model.addAttribute("message", "No products found for keyword: "+keyword);
 		} else {
 			model.addAttribute("searchResults", searchResults);
